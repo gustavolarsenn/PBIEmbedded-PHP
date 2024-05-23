@@ -1,0 +1,38 @@
+body{
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+#report-action-buttons{
+    display: flex;
+    height: 100%;
+    max-width: 100%;
+    position: relative;
+    justify-content: space-between;
+}
+.report-buttons{
+    width: fit-content;
+    margin: auto 0;
+}
+
+
+.report-buttons svg{
+    width: fit-content;
+    height: 20px;
+    margin: auto auto auto 10px;
+    max-width: 150px;
+    vertical-align: middle;
+    fill: #593bdb;
+}
+
+.report-buttons svg:hover{
+    height: 22px;
+    cursor: pointer;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.report-container{
+    height: 75vh !important;
+    width: 100% !important;
+    max-height: 100vh;
+}
