@@ -1,4 +1,13 @@
+<?php
+require 'pbi_auth.php';
 
+$actualLink = isset($_GET['reportName']) ? basename($_GET['reportName']) : $_SERVER['REQUEST_URI'];
+
+$aaa = pbi($actualLink);
+
+
+echo $aaa;
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +23,8 @@
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="./css/pbi_reports.css">
+
+
 </head>
 
 <body>
@@ -125,11 +136,14 @@
 						<li><a href="solRelatorioDescarga1.php">Relatório por periodo</a></li>
 						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
 						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
-						<li><a href="pbi_report.php">Relatório PowerBI</a></li>
                         </ul>
                     </li>
-					
 
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios - BI</span></a>
+                        <ul aria-expanded="false" id="bi-reports">
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -161,6 +175,7 @@
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
     <script src="embed.js"></script>
+	<script src="pbi_report.js"></script>
 
     <!-- Required vendors -->
     <script src="./vendor/global/global.min.js"></script>
