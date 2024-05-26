@@ -92,5 +92,6 @@ function pbi($actualLink){
     $reportEmbedConfig = getEmbedParams($apiCalls, $reqHeader, $report_id, $embedToken);
     
     // AJUNTANDO TODAS AS INFORMAÇÕES EM UMA ROTA
-    echo json_encode($reportEmbedConfig);
+
+    return json_encode($reportEmbedConfig);
 }

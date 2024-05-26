@@ -1,37 +1,38 @@
-// fetch('http://localhost:3000/pbi_auth.php')
-//     .then(response => response.json())
-//     .then(reportEmbedConfig => {
-//         // Use reportEmbedConfig here
-//     });
-
 let models = window["powerbi-client"].models;
 let reportContainer = $("#report-container").get(0);
 
+$(document).ready(function() {
+    // const reportInfo = await fetch('/api/pbi_reports', {})
+    // const reports = await reportInfo.json();
+    // defaultReport = {'reportId': reports[0].report_id, 'rls': reports[0].rls}
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const reportName = urlParams.get('reportName');
+        loadReport("pbi_report.php?reportName=" + encodeURIComponent(reportName));
+    });
+    // loadReport("pbi_report.php?reportName=Line%20Up%20-%20Forecast");
 
-// $(document).ready(async function() {
-//     // const reportInfo = await fetch('/api/pbi_reports', {})
-//     // const reports = await reportInfo.json();
-//     // defaultReport = {'reportId': reports[0].report_id, 'rls': reports[0].rls}
+    // $(document).on("click", ".report-link", async function(event) {
+    //     event.preventDefault();
+    //     const reportLink = $(this).attr("href");
+    //     let reportLinkFix = reportLink.replace('http://localhost:3000', '');
+    //     console.log(reportLinkFix);
+    //     // let reportIdSelected = $(this).data("value1");
+    //     // let rlsSelected = $(this).data("value2");
 
-//     loadReport();
+    //     loadReport(reportLinkFix);
 
-//     // $(document).on("click", ".selectedReport", function() {
-//     //     // let reportIdSelected = $(this).data("value1");
-//     //     // let rlsSelected = $(this).data("value2");
+    // }).trigger("load");
+});
 
-//     //     loadReport();
-        
-//     // }).trigger('change');
-// });
-
-// function loadReport() {
-//     // Create a config object with type of the object, Embed details and Token Type
+function loadReport(reportLinkFix) {
+    // Create a config object with type of the object, Embed details and Token Type
     const reportContainer_ = document.querySelector('#report-container')
     reportContainer_.style.display = "none";
     // AJAX request to get Embed token
     $.ajax({
         type: "GET",
-        url: "/pbi_report.php",
+        url: reportLinkFix + "&json=true",
         // url: "/pbi_auth.php",
         dataType: "json",
         success: function(embedData) {
@@ -103,40 +104,40 @@ let reportContainer = $("#report-container").get(0);
 
         error: function(err) {
             console.log(err);
-            // // Show error container
-            // $(".embed-container").hide();
-            // $(".embed-section").hide();
-            // let errorContainer = $(".error-container");
+            // Show error container
+            $(".embed-container").hide();
+            $(".embed-section").hide();
+            let errorContainer = $(".error-container");
 
-            // errorContainer.show();
-            // // Get the error message from err object
-            // let errMsg = JSON.parse(err.responseText)["error"];
+            errorContainer.show();
+            // Get the error message from err object
+            let errMsg = JSON.parse(err.responseText)["error"];
 
-            // // Split the message with \r\n delimiter to get the errors from the error message
-            // let errorLines = errMsg.split("\r\n");
+            // Split the message with \r\n delimiter to get the errors from the error message
+            let errorLines = errMsg.split("\r\n");
 
-            // // Create error header
-            // let errHeader = document.createElement("p");
-            // let strong = document.createElement("strong");
-            // let node = document.createTextNode(
-            //     "Erro ao carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
-            // );
+            // Create error header
+            let errHeader = document.createElement("p");
+            let strong = document.createElement("strong");
+            let node = document.createTextNode(
+                "Erro ao carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
+            );
 
-            // // Get the error container
-            // let errContainer = errorContainer.get(0);
+            // Get the error container
+            let errContainer = errorContainer.get(0);
 
-            // // Add the error header in the container
-            // strong.appendChild(node);
-            // errHeader.appendChild(strong);
-            // errContainer.appendChild(errHeader);
+            // Add the error header in the container
+            strong.appendChild(node);
+            errHeader.appendChild(strong);
+            errContainer.appendChild(errHeader);
 
-            // // Create <p> as per the length of the array and append them to the container
-            // errorLines.forEach((element) => {
-            //     let errorContent = document.createElement("p");
-            //     let node = document.createTextNode(element);
-            //     errorContent.appendChild(node);
-            //     errContainer.appendChild(errorContent);
-            // });
+            // Create <p> as per the length of the array and append them to the container
+            errorLines.forEach((element) => {
+                let errorContent = document.createElement("p");
+                let node = document.createTextNode(element);
+                errorContent.appendChild(node);
+                errContainer.appendChild(errorContent);
+            });
         },
     });
-// }
+}

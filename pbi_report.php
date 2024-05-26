@@ -1,12 +1,15 @@
 <?php
 require 'pbi_auth.php';
 
-$actualLink = isset($_GET['reportName']) ? basename($_GET['reportName']) : $_SERVER['REQUEST_URI'];
+$actualLink = basename($_GET["reportName"]);
 
-$aaa = pbi($actualLink);
+$embedInfo = pbi($actualLink);
 
-
-echo $aaa;
+if (isset($_GET['json'])) {
+    header('Content-Type: application/json');
+    echo $embedInfo;
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -174,8 +177,8 @@ echo $aaa;
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-    <script src="embed.js"></script>
 	<script src="pbi_report.js"></script>
+    <script src="embed.js"></script>
 
     <!-- Required vendors -->
     <script src="./vendor/global/global.min.js"></script>

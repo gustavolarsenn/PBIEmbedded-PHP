@@ -13,6 +13,7 @@ const reports = [
 reports.forEach(report => {
     const reportList = document.createElement('li');
     const reportLink = document.createElement('a');
+    reportLink.classList.add('report-link');
     reportLink.href = `pbi_report.php?reportName=${report.name}`;
     reportLink.innerText = report.name;
     reportList.appendChild(reportLink);
