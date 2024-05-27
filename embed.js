@@ -1,34 +1,22 @@
 let models = window["powerbi-client"].models;
-let reportContainer = $("#report-container").get(0);
+let reportContainer = $("#report-container")[0];
 
 $(document).ready(function() {
-    // const reportInfo = await fetch('/api/pbi_reports', {})
-    // const reports = await reportInfo.json();
-    // defaultReport = {'reportId': reports[0].report_id, 'rls': reports[0].rls}
     $(document).ready(function() {
         const urlParams = new URLSearchParams(window.location.search);
         const reportName = urlParams.get('reportName');
+        const reportTitle = document.getElementById('report-title');
+        reportTitle.innerText = reportName;
         loadReport("pbi_report.php?reportName=" + encodeURIComponent(reportName));
     });
-    // loadReport("pbi_report.php?reportName=Line%20Up%20-%20Forecast");
-
-    // $(document).on("click", ".report-link", async function(event) {
-    //     event.preventDefault();
-    //     const reportLink = $(this).attr("href");
-    //     let reportLinkFix = reportLink.replace('http://localhost:3000', '');
-    //     console.log(reportLinkFix);
-    //     // let reportIdSelected = $(this).data("value1");
-    //     // let rlsSelected = $(this).data("value2");
-
-    //     loadReport(reportLinkFix);
-
-    // }).trigger("load");
 });
 
 function loadReport(reportLinkFix) {
     // Create a config object with type of the object, Embed details and Token Type
     const reportContainer_ = document.querySelector('#report-container')
+    const loaderContainer_ = document.querySelector('#preloader-report')
     reportContainer_.style.display = "none";
+    loaderContainer_.style.display = "flex";
     // AJAX request to get Embed token
     $.ajax({
         type: "GET",
@@ -36,8 +24,6 @@ function loadReport(reportLinkFix) {
         // url: "/pbi_auth.php",
         dataType: "json",
         success: function(embedData) {
-
-            console.log(embedData)
 
             let reportLoadConfig = {
                 type: "report",
@@ -82,6 +68,7 @@ function loadReport(reportLinkFix) {
             report.on("loaded", function() {
                 console.log("Report load successful");
                 reportContainer_.style.display = "flex";
+                loaderContainer_.style.display = "none";
             });
 
             // Clear any other rendered handler events
@@ -103,7 +90,6 @@ function loadReport(reportLinkFix) {
         },
 
         error: function(err) {
-            console.log(err);
             // Show error container
             $(".embed-container").hide();
             $(".embed-section").hide();

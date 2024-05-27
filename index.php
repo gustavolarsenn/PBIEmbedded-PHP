@@ -131,7 +131,11 @@
                         </ul>
                     </li>
 					
-
+                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
+                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios - BI</span></a>
+                        <ul aria-expanded="false" id="bi-reports">
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -139,14 +143,7 @@
 	
         <div class="content-body">
             <div class="container-fluid">
-			
 				<h2>Acompanhamento da Operação</h2>
-
-
-					
-
-
-
     </div>
 
     <!-- Required vendors -->
@@ -154,8 +151,7 @@
     <script src="./js/quixnav-init.js"></script>
     <script src="./js/custom.min.js"></script>
 	<script src="./js/logout.js"></script>
-    
-
+	<script src="pbi_report.js"></script>
 
     <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
     <script src="./vendor/jquery-validation/jquery.validate.min.js"></script>

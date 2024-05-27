@@ -1,24 +1,30 @@
 const biReportContainer = document.getElementById('bi-reports');
 
-const reports = [
-    {
-        'name': 'Port Statistics',
+fetch('/controller/pbi_reports.php', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
     },
-    {
-        'name': 'Line Up - Forecast'
+    body: new URLSearchParams({
+        action: 'getActiveReports',
+    }),
+})
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
-]
-{/* <li><a href="pbi_report.php">Port Statistics</a></li> */}
-
-reports.forEach(report => {
-    const reportList = document.createElement('li');
-    const reportLink = document.createElement('a');
-    reportLink.classList.add('report-link');
-    reportLink.href = `pbi_report.php?reportName=${report.name}`;
-    reportLink.innerText = report.name;
-    reportList.appendChild(reportLink);
-    // reportList.addEventListener('click', () => {
-    //     loadReport(report.id);
-    // });
-    biReportContainer.appendChild(reportList);
-});
+    return response.json();
+})
+.then(data => {
+    // Create report links based on the fetched data
+    Object.keys(data).forEach(function(report) {
+        const reportList = document.createElement('li');
+        const reportLink = document.createElement('a');
+        reportLink.classList.add('report-link');
+        reportLink.href = `pbi_report.php?reportName=${report}`;
+        reportLink.innerText = report;
+        reportList.appendChild(reportLink);
+        biReportContainer.appendChild(reportList);
+    });
+})
+.catch(error => console.error('Error:', error));

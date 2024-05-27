@@ -1,13 +1,30 @@
 <?php
 
-require 'PowerBiReportDetails.php';
-require 'EmbedConfig.php';
-require 'ApiCalls.php';
+require_once 'PowerBiReportDetails.php';
+require_once 'EmbedConfig.php';
+require_once 'ApiCalls.php';
+require_once 'config/database.php';
+require_once 'controller/pbi_reports.php';
 
 function pbi($actualLink){
     
     $apiCalls = new ApiCalls();
-    
+    $conn = (new Database())->getConnection();
+    $pbiReports = new PbiReports($conn);
+
+    $reports = $pbiReports->getActiveReports();
+
+    $currentReport = null;
+    if (isset($reports[$actualLink])) {
+        $currentReport = $reports[$actualLink];
+    } else {
+        // If it's not, redirect the user to another page
+        header('Location: /index.php');
+        exit;
+    }
+
+    $conn = null;
+
     $params = [
         'grant_type' => 'password',
         'client_id' => getenv('CLIENT_ID'),
@@ -31,21 +48,10 @@ function pbi($actualLink){
     
     // BUSCA DE EMBED TOKEN
     $embedTokenAPI = "https://api.powerbi.com/v1.0/myorg/GenerateToken";
-    
-    $reports = [
-        "Port Statistics" => "44cece6c-3c3a-4343-8c95-5da3fc5aacf1",
-        // "Port%20Statistics" => "44cece6c-3c3a-4343-8c95-5da3fc5aacf1",
-        "Line Up - Forecast" => "af1d8571-368a-4016-985c-1e53bb0c9aaa",
-        // "Line%20Up%20-%20Forecast" => "af1d8571-368a-4016-985c-1e53bb0c9aaa",
-    ];
-    
-    $currentReport = $reports[$actualLink];
-    // echo $actualLink;
-    
-    $dataset = "a0c518ac-3314-4cfa-bccb-790d7bd8297e"; // 
-    $report_id = $currentReport; // Puxar do banco de dados
-    // $report_id = "44cece6c-3c3a-4343-8c95-5da3fc5aacf1"; // Puxar do banco de dados
-    
+
+    $report_id = $currentReport['report_id'];
+    $dataset_id = $currentReport['dataset_id'];
+
     // Caso não houver RLS, retirar a linha de 'identities'
     $embedTokenParams = [
         'reports' => [
@@ -56,7 +62,7 @@ function pbi($actualLink){
         // 'identities' => [],
         'datasets' => [
             [
-                'id' => $dataset
+                'id' => $dataset_id
             ]
         ],
         'targetWorkspaces' => [
