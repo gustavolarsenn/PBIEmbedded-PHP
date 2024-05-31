@@ -1,5 +1,10 @@
 <?php
-require 'pbi_auth.php';
+require 'PBI/pbi_auth.php';
+require 'SessionManager.php';
+
+
+SessionManager::checarSessao();
+SessionManager::checarCsrfToken();
 
 $actualLink = basename($_GET["reportName"]);
 

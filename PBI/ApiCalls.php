@@ -1,7 +1,7 @@
 <?php
 
 class ApiCalls{
-    public function apiCall($method, $url, $params, $requestHeader) {
+    public static function apiCall($method, $url, $params, $requestHeader) {
         try {
             $ch = curl_init();
     

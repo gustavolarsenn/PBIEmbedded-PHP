@@ -1,4 +1,10 @@
+<?php
+require_once 'SessionManager.php';
 
+SessionManager::checarSessao();
+SessionManager::checarCsrfToken();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,14 +14,10 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
-    
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
-
-
-
 </head>
 
 <body>
@@ -143,7 +145,7 @@
 	
         <div class="content-body">
             <div class="container-fluid">
-				<h2>Acompanhamento da Operação</h2>
+				<h2>Acompanhamento da Operação <?php echo $_SESSION['nome'];?></h2>
     </div>
 
     <!-- Required vendors -->

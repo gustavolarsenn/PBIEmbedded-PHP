@@ -16,7 +16,6 @@ fetch('/controller/pbi_reports.php', {
     return response.json();
 })
 .then(data => {
-    // Create report links based on the fetched data
     Object.keys(data).forEach(function(report) {
         const reportList = document.createElement('li');
         const reportLink = document.createElement('a');
