@@ -155,19 +155,31 @@ if (isset($_GET['json'])) {
         </div>
         <div class="content-body">
             <div class="container-fluid">
-    <table>
-        <tr style="width: 100%; max-width: 100vw">
-            <th style="width: 25%"><canvas id="container_three" style="height: 200px; width:100%"></canvas></th>
-            <th style="width: 100%"><canvas id="container_two" style="height: 250px; width:100%"></canvas></th>
+    <table class="chart-table">
+        <tr style="max-width: 100vw">
+            <th style="height: 250px; min-width: 15vw; width:30vw"><canvas id="container_three" ></canvas></th>
+            <th style="max-height: 10vh; height: 250px; min-width: 50vw; width:70vw"><canvas id="container_two"></canvas></th>
         </tr>
         <tr>
-            <th><canvas id="container_one" style="height: 250px; width:100%;max-width:500px"></canvas></th>
-            <th><canvas id="container_four" style="height: 250px; width:100%;max-width:500px"></canvas></th>
-            <th><canvas id="container_five" style="height: 250px; width:100%;max-width:500px"></canvas></th>
+            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_one"></canvas></th>
+            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_four"></canvas></th>
+            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_five"></canvas></th>
         </tr>
     </table>
 
     </div>
+
+<style>
+    .chart-table {
+        height: 200px;
+        box-shadow: 0 2px 10px rgba(61, 68, 101, 0.2);
+    }
+    .chart-table th {
+        padding: 10px;
+        /* border: 1px solid #e0e0e0; */
+        background-color: #f9f9f9;
+    }
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script type="module">
@@ -287,8 +299,9 @@ async function getDischargingData(select, group_by, order_by, limit, where, colu
             datasets: [{
                 label: 'Peso',
                 data: data.map(d => d.peso),
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                // backgroundColor: '#3d4465',
+                backgroundColor: 'rgba(61, 68, 101, 0.8)',
+                borderColor: 'rgba(61, 68, 101, 1)',
                 borderWidth: 1
                 
             }]
@@ -321,7 +334,7 @@ async function getDischargingData(select, group_by, order_by, limit, where, colu
         return {
             label: periodo,
             data: data,
-            backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.2)`,
+            backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.8)`,
             borderColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 1)`,
             borderWidth: 1
         };
@@ -345,11 +358,11 @@ async function getDischargingData(select, group_by, order_by, limit, where, colu
             datasets: [{
                 data: [data3[0].peso, 40000000 - data3[0].peso],
                 backgroundColor: [
-                    'rgba(80, 200, 120, 0.2)',
+                    'rgba(80, 200, 120, 0.5)',
                     'rgba(54, 162, 235, 0.05)'
                 ],
                 borderColor: [
-                    'rgba(80, 200, 120, 0.5)'
+                    'rgba(80, 200, 120, 0.8)'
                 ],
             }]
         },
@@ -370,8 +383,8 @@ const fourthChart = new Chart('container_four', {
             datasets: [{
                 label: 'Peso',
                 data: data4.map(d => d.peso),
-                backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                borderColor: 'rgba(255, 99, 132, 1)',
+                backgroundColor: 'rgba(61, 68, 101, 0.8)',
+                borderColor: 'rgba(61, 68, 101, 1)',
                 borderWidth: 1
             }]
         },
