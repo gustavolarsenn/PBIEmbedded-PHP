@@ -92,6 +92,7 @@ $(document).ready(function(){
         var formValues = $(this).serializeArray();
         var action = formValues.find(item => item.name === 'action').value;
 
+        console.log(formValues)
         var request = {
             url: "Usuario/UsuarioController.php",
             method: 'POST',

@@ -1,8 +1,29 @@
 function logoutConfirmation() {
   var confirmLogout = confirm("Deseja realmente sair?");
   if (confirmLogout) {
-    window.location.href = "logout.php"; // Redirecionar para a página de logout
+    $(document).ready(function(event){
+          // event.preventDefault();
+          var request = {
+              url: "Usuario/UsuarioController.php",
+              method: 'GET',
+              data: [{
+                  name: 'action',
+                  value: 'logout'
+              }],
+              dataType: 'json'
+          };
+          console.log("Logging out...")
+          $.ajax(request).done(function(response) {
+              const error = document.getElementById('error-message');
+              if(response.error) {
+                  error.innerHTML = response.error;
+              } else {
+                  console.log("Logged out...")
+                  location.assign('login.php');
+                }
+              }
+            )
+          })
   } else {
-    // Ação de logout cancelada
   }
 }

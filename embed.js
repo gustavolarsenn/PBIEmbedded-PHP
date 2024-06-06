@@ -21,7 +21,6 @@ function loadReport(reportLinkFix) {
     $.ajax({
         type: "GET",
         url: reportLinkFix + "&json=true",
-        // url: "/pbi_auth.php",
         dataType: "json",
         success: function(embedData) {
 
@@ -43,7 +42,7 @@ function loadReport(reportLinkFix) {
                     },
                 }
             };
-
+            console.log(embedData);
             // Use the token expiry to regenerate Embed token for seamless end user experience
             // Refer https://aka.ms/RefreshEmbedToken
             tokenExpiry = embedData.expiry;

@@ -21,6 +21,7 @@ SessionManager::checarCsrfToken();
 </head>
 
 <body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <div id="preloader">
         <div class="sk-three-bounce">
@@ -73,21 +74,22 @@ SessionManager::checarCsrfToken();
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <ul class="list-unstyled">
                                         <li class="media dropdown-item">
+                                            <span class="ml-2"><?php echo $_SESSION['nome']?></span>
                                             
                             <li class="nav-item dropdown header-profile">
-                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
+                                <!-- <a class="nav-link" href="#" role="button" data-toggle="dropdown">
                                     <i class="mdi mdi-account"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
+                                </a> -->
+                                <div class="dropdown-menu-right">
                                     <a href="./app-profile.html" class="dropdown-item">
                                         <i class="icon-user"></i>
-                                        <span class="ml-2">Profile </span>
+                                        <span class="ml-2">Profile</span>
                                     </a>
                                     <a href="./email-inbox.html" class="dropdown-item">
                                         <i class="icon-envelope-open"></i>
-                                        <span class="ml-2">Inbox </span>
+                                        <span class="ml-2">Inbox</span>
                                     </a>
-									<a class="dropdown-item" href="#" onclick="logoutConfirmation()" >
+									<a href="#" class="dropdown-item" onclick="logoutConfirmation()" >
 										<i class="icon-key"></i>
 										<span class="ml-2">Logout</span>
 									</a>
