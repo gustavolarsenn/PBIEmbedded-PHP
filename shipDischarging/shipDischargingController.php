@@ -18,6 +18,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $shipDischarging = new ShipDischarging($pdo, null, null, null, null, null, null, null, null, null, null, null, null);
         $message = $shipDischarging->readQuery($pdo, $_POST['select'], $_POST['group_by'], $_POST['order_by'], $_POST['limit'], $_POST['where'], $_POST['column_agg'], $_POST['type_agg']);
         echo $message;
+    } else if ($action === 'readUnique') {
+    $shipDischarging = new ShipDischarging($pdo, null, null, null, null, null, null, null, null, null, null, null, null);
+    $message = $shipDischarging->pegarUnicos($pdo, $_POST['campo']);
+    echo $message;
     }
     
 }

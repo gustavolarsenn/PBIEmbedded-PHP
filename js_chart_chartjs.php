@@ -24,17 +24,15 @@ if (isset($_GET['json'])) {
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="./css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/pbi_reports.css">
+    <link rel="stylesheet" href="./css/charts.css">
 </head>
 <style>
 
 </style>
 
-<body>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
 <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
 <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-<!-- <script src="charts.js"></script> -->
 
     <div id="preloader">
         <div class="sk-three-bounce">
@@ -153,306 +151,129 @@ if (isset($_GET['json'])) {
                 </ul>
             </div>
         </div>
+
+
         <div class="content-body">
             <div class="container-fluid">
-    <table class="chart-table">
-        <tr style="max-width: 100vw">
-            <th style="height: 250px; min-width: 15vw; width:30vw"><canvas id="container_three" ></canvas></th>
-            <th style="max-height: 10vh; height: 250px; min-width: 50vw; width:70vw"><canvas id="container_two"></canvas></th>
-        </tr>
-        <tr>
-            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_one"></canvas></th>
-            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_four"></canvas></th>
-            <th style="height: 250px; width:33vw;max-width:500px"><canvas id="container_five"></canvas></th>
-        </tr>
-    </table>
+                <div class="filter-container">
+                    <div class="input-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" onclick='cleanFilters()' width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto">
+                            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+                        </svg>
+                    </div>
+                    <div class="input-label">
+                        <label>Navio</label>
+                        <select id='lista-navio'></select>
+                    </div>
+                    <div class="input-label">
+                        <label>Data</label>
+                        <input type="date" id='data'>
+                    </div>
+                    <div class="input-label">
+                        <label>Periodo</label>
+                        <select id='lista-periodo'>
+                            <option value="">Todos</option>
+                            <option value='01:00x07:00'>01:00x07:00</option>
+                            <option value='07:00x13:00'>07:00x13:00</option>
+                            <option value='13:00x19:00'>13:00x19:00</option>
+                            <option value='19:00x01:00'>19:00x01:00</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>Porao</label>
+                        <select id="lista-porao">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>Cliente</label>
+                        <select id="lista-cliente">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>Armazém</label>
+                        <select id="lista-armazem">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>Produto</label>
+                        <select id="lista-produto">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>DI</label>
+                        <select id="lista-di">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <input type="button" value="Filtrar" onclick="generateCharts()">
+                    </div>
+                </div>
+                <section>
+                        <div style="min-width: 100%; display: flex;">
+                            <div style="width: 30%; max-height: 60vh; min-height: fit-content; margin-left: 10px;">
+                                <div class="chart chart-small-block" style="margin-bottom: 10px;">
+                                    <label class="label-chart">Total descarregado / Restante</label>
+                                    <canvas id="graficoDescarregadoResto" class='any-chart'></canvas>
+                                    <div id="emptyGraficoDescarregadoResto" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                                <div class="chart chart-small-block">
+                                    <label class="label-chart">Descarregamento por porão</label>
+                                    <canvas id="graficoRealizadoPorao" class='any-chart'></canvas>
+                                    <div id="emptyGraficoRealizadoPorao" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                            </div>
+                                <div class="chart" style="width: 70%; height: 60vh; margin: 0 10px;">
+                                    <label class="label-chart">Volume por cliente e DI</label>
+                                    <canvas id="graficoRealizadoClienteDI" class='any-chart' ></canvas>
+                                    <div id="emptyGraficoRealizadoClienteDI" class="no-data" style="min-height: 7vh; height: 10vh;">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                        </div>
 
+                        <div style="height: 30vh; margin: 10px; display: flex;">
+                            <div class="chart half-chart" style="margin-right: 10px">
+                                <label class="label-chart">Descarregado por dia</label>
+                                <canvas id="graficoVolumeDia" class="any-chart" style="max-height: 95%"></canvas>
+                                <div id="emptyGraficoVolumeDia" class="no-data" style="min-height: 3vh; height: auto;">
+                                    <p>Nenhum valor encontrado!</p>
+                                </div>
+                            </div>
+                            <div class="chart half-chart" >
+                                <label class="label-chart">Volume por cliente</label>
+                                <canvas id="graficoVolumeCliente" class="any-chart" style="max-height: 95%"></canvas>
+                                <div id="emptyGraficoVolumeCliente" class="no-data" style="min-height: 3vh; height: auto;">
+                                    <p>Nenhum valor encontrado!</p>
+                                </div>
+                            </div>
+                        </div>
+                            <div style="margin: 10px;">
+                                <div class="chart full-chart" style="height: 40vh; display: grid;">
+                                    <label class="label-chart">Descarregamento por dia e período</label>
+                                    <canvas id="graficoVolumeDiaPeriodo" class="any-chart" style="max-height: 95%;"></canvas>
+                                    <div id="emptyGraficoVolumeDiaPeriodo" class="no-data" style="max-height: 95%;">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                            </div>
+
+                </section>
     </div>
-
-<style>
-    .chart-table {
-        height: 200px;
-        box-shadow: 0 2px 10px rgba(61, 68, 101, 0.2);
-    }
-    .chart-table th {
-        padding: 10px;
-        /* border: 1px solid #e0e0e0; */
-        background-color: #f9f9f9;
-    }
-</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script type="module">
 
-async function getDischargingData(select, group_by, order_by, limit, where, column_agg, type_agg){
-    var request = {
-        url: "shipDischarging/shipDischargingController.php",
-        method: 'POST',
-        data: [{
-            name: 'action',
-            value: 'readQuery'
-        }, {
-            name: 'select',
-            value: select
-        }, {
-            name: 'group_by',
-            value: group_by
-        }, {
-            name: 'order_by',
-            value: order_by
-        }, {
-            name: 'limit',
-            value: limit
-        }, {
-            name: 'where',
-            value: where
-        }, {
-            name: 'column_agg',
-            value: column_agg
-        }, {
-            name: 'type_agg',
-            value: type_agg
-        }],
-        dataType: 'json'
-    };
-
-    // Return a new Promise
-    return new Promise((resolve, reject) => {
-        $.ajax(request).done(function(response) {
-            const error = document.getElementById('error-message');
-            if(response.error) {
-                error.innerHTML = response.error;
-                reject(response.error);
-            } else {
-                resolve(response.data);
-            }
-        }).fail(function(response) {
-            console.log(response)
-            reject(response.error);
-        })
-    });
-}
-
-// Use an IIFE (Immediately Invoked Function Expression) to use await at the top level
-(async function() {
-    const data = await getDischargingData('cliente,', 'cliente', 'cliente DESC', null, null, 'peso', 'SUM');
-
-    const barOptions = {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    display: false
-                }],
-                xAxes: [{
-                    gridLines: {
-                        display: false
-                    }
-                }]
-            },
-            legend: {
-                display: false
-            },
-            responsive: true,
-        }
-
-    const horizontalBarOptions = {
-        scales: {
-            xAxes: [{
-                ticks: {
-                    beginAtZero: true
-                },
-                gridLines: {
-                    display: false,
-                    drawBorder: false
-                },
-                display: false,
-                stacked: true
-            }],
-            yAxes: [{
-                gridLines: {
-                    display: false
-                },
-                stacked: true
-            }]
-        },
-        legend: {
-            display: false
-        },
-        responsive: true,
-    }
-    let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
-    let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
-
-    secondBarChartOptions.legend.display = true;
-
-
-    const firstChart = new Chart('container_one', {
-        type: 'bar',
-        data: {
-            labels: data.map(d => d.cliente),
-            datasets: [{
-                label: 'Peso',
-                data: data.map(d => d.peso),
-                // backgroundColor: '#3d4465',
-                backgroundColor: 'rgba(61, 68, 101, 0.8)',
-                borderColor: 'rgba(61, 68, 101, 1)',
-                borderWidth: 1
-                
-            }]
-        },
-        options: firstBarChartOptions
-    });
-
-
-    // // Assume you have a second set of data
-    const data2 = await getDischargingData('CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)) AS data, periodo,', 'CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)), periodo', 'CAST(data AS date) ASC', null, null, 'peso', 'SUM');
-
-    // Group data by 'periodo'
-    const groupedData = data2.reduce((acc, d) => {
-        acc[d.periodo] = acc[d.periodo] || [];
-        acc[d.periodo].push(d);
-        return acc;
-    }, {});
-
-
-    // Create a unique set of 'data' values
-    const uniqueDataValues = [...new Set(data2.map(d => d.data))];
-
-    // Create a dataset for each 'periodo'
-    const datasets = Object.keys(groupedData).map((periodo, i) => {
-        const data = uniqueDataValues.map(d => {
-            const match = groupedData[periodo].find(x => x.data === d);
-            return match ? match.peso : null;
-        });
-
-        return {
-            label: periodo,
-            data: data,
-            backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.8)`,
-            borderColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 1)`,
-            borderWidth: 1
-        };
-    });
-
-    const secondChart = new Chart('container_two', {
-        type: 'bar',
-        data: {
-            labels: uniqueDataValues,
-            datasets: datasets
-        },
-        options: secondBarChartOptions
-    });
-
-    const data3 = await getDischargingData(null, null, null, null, null, 'peso', 'SUM');
-
-    const thirdChart = new Chart('container_three', {
-        type: 'doughnut',
-        data: {
-            labels: ['Realizado', 'Restante'],
-            datasets: [{
-                data: [data3[0].peso, 40000000 - data3[0].peso],
-                backgroundColor: [
-                    'rgba(80, 200, 120, 0.5)',
-                    'rgba(54, 162, 235, 0.05)'
-                ],
-                borderColor: [
-                    'rgba(80, 200, 120, 0.8)'
-                ],
-            }]
-        },
-        options: {
-            legend: {
-                display: false
-            },
-            cutoutPercentage: 80,
-        }
-    });
-
-const data4 = await getDischargingData('CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)) AS data,', 'CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data))', 'CAST(data AS date) ASC', null, null, 'peso', 'SUM');
-
-const fourthChart = new Chart('container_four', {
-        type: 'line',
-        data: {
-            labels: data4.map(d => d.data),
-            datasets: [{
-                label: 'Peso',
-                data: data4.map(d => d.peso),
-                backgroundColor: 'rgba(61, 68, 101, 0.8)',
-                borderColor: 'rgba(61, 68, 101, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    display: false
-                }],
-                xAxes: [{
-                    gridLines: {
-                        display: false
-                    }
-                }]
-            },
-            legend: {
-                display: false
-            },
-            responsive: true,
-        }
-    });
-
-
-const data5 = await getDischargingData('cliente, di,', 'cliente, di', 'cliente, di DESC', null, null, 'peso', 'SUM');
-
-console.log(data5)
-
-const fifthChart = new Chart('container_five', {
-    type: 'horizontalBar',
-    data: {
-        labels: data5.map(d => d.cliente + " - " + d.di),
-        datasets: [{
-            label: 'Realizado',
-            data: data5.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
-            backgroundColor: 'rgba(80, 200, 120, 0.5)',
-            borderColor: 'rgba(80, 200, 120, 0.5)',
-            borderWidth: 1
-        },
-        {
-            label: 'Restante',
-            data: data5.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
-            backgroundColor: 'rgba(54, 162, 235, 0.05)',
-            borderColor: 'rgba(54, 162, 235, 0.5)',
-            borderWidth: 1
-        }
-    ]
-    },
-    options: 
-       {...horizontalBarOptions, 
-        legend: {
-            display: true
-        }
-       },
-});
-
-})();
-
 // Declare the chart dimensions and margins.
-
     </script>
-
-
+    <script src="charts.js"></script>
 
     <!-- Required vendors -->
     <script src="./vendor/global/global.min.js"></script>
