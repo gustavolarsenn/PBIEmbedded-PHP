@@ -23,8 +23,6 @@ function collapsedMenu() {
 
 hamburger.addEventListener('click', () => {})
 
-console.log(hamburger);
-
 function cleanFilters(){
     document.getElementById('lista-navio').value = '';
     document.getElementById('data').value = '';
@@ -327,15 +325,16 @@ async function generateCharts() {
         noDataGraficoVolumeDia.style.visibility = 'hidden';
         dataGraficoVolumeDia.style.visibility = 'visible';
 
-
-    const ctx = noDataGraficoVolumeDia.value.getContext('2d');
+    
+    const ctx = dataGraficoVolumeDia.getContext('2d');
     var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-    gradientStroke.addColorStop(0, '#80b6f4');
-    gradientStroke.addColorStop(1, '#f49080');
+    gradientStroke.addColorStop(1, "rgba(128, 182, 244, 1)");
+    gradientStroke.addColorStop(0, "rgba(61, 68, 101, 1)");
+
     
     var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
-    gradientFill.addColorStop(0, "rgba(128, 182, 244, 0.6)");
-    gradientFill.addColorStop(1, "rgba(244, 144, 128, 0.6)");
+    gradientFill.addColorStop(1, "rgba(128, 182, 244, 0.3)");
+    gradientFill.addColorStop(0, "rgba(61, 68, 101, 0.3)");
 
     graficoVolumeDia = new Chart('graficoVolumeDia', {
         type: 'line',
@@ -353,9 +352,10 @@ async function generateCharts() {
                 pointBorderWidth: 10,
                 pointHoverRadius: 10,
                 pointHoverBorderWidth: 1,
-                pointRadius: 3,
+                pointRadius: 2,
                 fill: true,
-                borderWidth: 1
+                borderWidth: 1,
+                lineTension: 0
             }]
         },
         options: {
@@ -373,12 +373,17 @@ async function generateCharts() {
                 xAxes: [{
                     gridLines: {
                         display: false
-                    }
+                    },
                 }]
             },
             legend: {
                 display: false
             },
+            layout: {
+                padding: {
+                    top: 5,
+            }
+        },
             responsive: true,
             maintainAspectRatio: false
         }

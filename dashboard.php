@@ -240,17 +240,17 @@ if (isset($_GET['json'])) {
                                 </div>
                         </div>
 
-                        <div style="height: 30vh; margin: 10px; display: flex;">
+                        <div style="height: 40vh; margin: 10px; display: flex;">
                             <div class="chart half-chart" style="margin-right: 10px">
                                 <label class="label-chart">Descarregado por dia</label>
-                                <canvas id="graficoVolumeDia" class="any-chart" style="max-height: 95%"></canvas>
+                                <canvas id="graficoVolumeDia" class="any-chart" style="padding: 30px 5px;"></canvas>
                                 <div id="emptyGraficoVolumeDia" class="no-data" style="min-height: 3vh; height: auto;">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
                             <div class="chart half-chart" >
                                 <label class="label-chart">Volume por cliente</label>
-                                <canvas id="graficoVolumeCliente" class="any-chart" style="max-height: 95%"></canvas>
+                                <canvas id="graficoVolumeCliente" class="any-chart" style="padding: 30px 5px;"></canvas>
                                 <div id="emptyGraficoVolumeCliente" class="no-data" style="min-height: 3vh; height: auto;">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
