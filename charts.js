@@ -1,27 +1,77 @@
 window.addEventListener("load", async function() {
-    const listaPorao = await getUniqueData('porao');
-    const listaCliente = await getUniqueData('cliente');
-    const listaArmazem = await getUniqueData('armazem');
-    const listaProduto = await getUniqueData('produto');
-    const listaDI = await getUniqueData('di');
+    // const listaNavio = await getUniqueData('navio');
+    // const listaPorao = await getUniqueData('porao');
+    // const listaCliente = await getUniqueData('cliente');
+    // const listaArmazem = await getUniqueData('armazem');
+    // const listaProduto = await getUniqueData('produto');
+    // const listaDI = await getUniqueData('di');
 
-    generateFilters('porao', listaPorao);
-    generateFilters('cliente', listaCliente);
-    generateFilters('armazem', listaArmazem);
-    generateFilters('produto', listaProduto);
-    generateFilters('di', listaDI);
+    // generateFilters('navio', listaNavio);
+    // generateFilters('porao', listaPorao);
+    // generateFilters('cliente', listaCliente);
+    // generateFilters('armazem', listaArmazem);
+    // generateFilters('produto', listaProduto);
+    // generateFilters('di', listaDI);
 
     // Call the generateFilters function here
     generateCharts();
 });
 
-const hamburger = document.querySelector('.hamburger');
-
-function collapsedMenu() {
-    
+function renameKeys(obj, keyMap) {
+    return Object.keys(obj).reduce((acc, key) => {
+        const newKey = keyMap[key] || key; // Use new key name if it exists in the mapping, otherwise use the original key
+        acc[newKey] = obj[key]; // Assign the value to the new key in the accumulator object
+        return acc;
+    }, {}); // Initial value for the accumulator is an empty object
 }
 
-hamburger.addEventListener('click', () => {})
+async function generateFilters(campo, filterData){
+    const filterField = document.getElementById(`lista-${campo}`);
+    const filteredField = document.getElementById(`lista-${campo}`).value;
+
+    newData = await getUniqueData(campo);
+    var filteredData = filterData.filter(item => !newData.includes(item));
+
+    // if (campo === 'navio') {
+    //     filterField.innerHTML = `<option value="${filteredData[0].navio}">${filteredData[0].navio}</option>`;
+    //     filteredData.shift();
+    // } else if (filteredField){
+    //     filterField.innerHTML = `<option value="${filteredField}">${filteredField}</option>`;
+    //     filteredData.shift();
+    // } else {
+    //     filterField.innerHTML = '<option value="">Todos</option>';
+    // }
+    // Example mapping of old key names to new key names
+
+// Function to rename keys in an object based on the provided mapping
+
+    const keyMapping = {
+        0: 'value',
+        [campo]: 'text',
+    };
+    const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
+
+    new MultiSelect(`#lista-${campo}`, {
+        data: renamedFilteredData,
+        placeholder: 'Todos',
+        keepOpen: true,
+        multiple: true,
+        search: true,
+        selectAll: true,
+        count: true,
+        // onChange: function() {
+        //     generateCharts();
+        // }
+    });
+
+    filteredData.forEach((item) => {
+        const option = document.createElement("option");
+        option.value = Object.values(item)[0];
+        option.text = Object.values(item)[0];
+        if (option in filteredData) return;
+        filterField.appendChild(option);
+        });
+}
 
 function cleanFilters(){
     document.getElementById('lista-navio').value = '';
@@ -35,107 +85,6 @@ function cleanFilters(){
 
     generateCharts();
 }
-
-async function getUniqueData(campo){
-    var request = {
-        url: "shipDischarging/shipDischargingController.php",
-        method: 'POST',
-        data: [{
-            name: 'action',
-            value: 'readUnique'
-        }, {
-            name: 'campo',
-            value: campo
-        }],
-        dataType: 'json'
-    };
-
-    // Return a new Promise
-    return new Promise((resolve, reject) => {
-        $.ajax(request).done(function(response) {
-            const error = document.getElementById('error-message');
-            if(response.error) {
-                error.innerHTML = response.error;
-                reject(response.error);
-            } else {
-                resolve(response.data);
-            }
-        }).fail(function(response) {
-            console.log(response)
-            reject(response.error);
-        })
-    });
-
-}
-
-async function getDischargingData(select, group_by, order_by, limit, where, column_agg, type_agg){
-
-    const filtroNavio = document.getElementById('lista-navio').value;
-    const filtroData = document.getElementById('data').value;
-    const filtroPeriodo = document.getElementById('lista-periodo').value;
-    const filtroPorao = document.getElementById('lista-porao').value;
-    const filtroCliente = document.getElementById('lista-cliente').value;
-    const filtroArmazem = document.getElementById('lista-armazem').value;
-    const filtroProduto = document.getElementById('lista-produto').value;
-    const filtroDI = document.getElementById('lista-di').value;
-
-    var request = {
-        url: "shipDischarging/shipDischargingController.php",
-        method: 'POST',
-        data: [{
-            name: 'action',
-            value: 'readQuery'
-        }, {
-            name: 'select',
-            value: select
-        }, {
-            name: 'group_by',
-            value: group_by
-        }, {
-            name: 'order_by',
-            value: order_by
-        }, {
-            name: 'limit',
-            value: limit
-        }, {
-            name: 'where',
-            value: JSON.stringify({
-                navio: filtroNavio ? filtroNavio : null,
-                data: filtroData ? filtroData : null,
-                periodo: filtroPeriodo ? filtroPeriodo : null,
-                porao: filtroPorao ? filtroPorao : null,
-                cliente: filtroCliente ? filtroCliente : null,
-                armazem: filtroArmazem ? filtroArmazem : null,
-                produto: filtroProduto ? filtroProduto : null,
-                di: filtroDI ? filtroDI : null
-            })
-        }, {
-            name: 'column_agg',
-            value: column_agg
-        }, {
-            name: 'type_agg',
-            value: type_agg
-        }],
-        dataType: 'json'
-    };
-
-    // Return a new Promise
-    return new Promise((resolve, reject) => {
-        $.ajax(request).done(function(response) {
-            const error = document.getElementById('error-message');
-            if(response.error) {
-                error.innerHTML = response.error;
-                reject(response.error);
-            } else {
-                resolve(response.data);
-            }
-        }).fail(function(response) {
-            console.log(response)
-            reject(response.error);
-        })
-    });
-}
-
 var graficoDescarregadoResto, graficoVolumeCliente, graficoVolumeDiaPeriodo, graficoVolumeDia, graficoRealizadoClienteDI, graficoRealizadoPorao;
 
 async function generateCharts() {
@@ -146,6 +95,20 @@ async function generateCharts() {
     if (graficoVolumeDia) graficoVolumeDia.destroy();
     if (graficoRealizadoClienteDI) graficoRealizadoClienteDI.destroy();
     if (graficoRealizadoPorao) graficoRealizadoPorao.destroy();
+
+    const listaNavio = await getUniqueData('navio');
+    const listaPorao = await getUniqueData('porao');
+    const listaCliente = await getUniqueData('cliente');
+    const listaArmazem = await getUniqueData('armazem');
+    const listaProduto = await getUniqueData('produto');
+    const listaDI = await getUniqueData('di');
+
+    generateFilters('navio', listaNavio);
+    generateFilters('porao', listaPorao);
+    generateFilters('cliente', listaCliente);
+    generateFilters('armazem', listaArmazem);
+    generateFilters('produto', listaProduto);
+    generateFilters('di', listaDI);
 
     const barOptions = {
             scales: {
@@ -196,99 +159,21 @@ async function generateCharts() {
         },
         responsive: true,
     }
+
     let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
     let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 
     secondBarChartOptions.legend.display = true;
 
-    const dadosVolumeCliente = await getDischargingData('cliente,', 'cliente', 'cliente DESC', null, null, 'peso', 'SUM');
-    const noDataGraficoVolumeCliente = document.getElementById('emptyGraficoVolumeCliente');
-    const dataGraficoVolumeCliente = document.getElementById('graficoVolumeCliente');
-
-    dataGraficoVolumeCliente.style.visibility = 'hidden';
-    noDataGraficoVolumeCliente.style.visibility = 'visible';
-    if (dadosVolumeCliente.length > 0) {
-        noDataGraficoVolumeCliente.style.visibility = 'hidden';
-        dataGraficoVolumeCliente.style.visibility = 'visible';
-
-        graficoVolumeCliente = new Chart('graficoVolumeCliente', {
-            type: 'horizontalBar',
-            data: {
-                labels: dadosVolumeCliente.map(d => d.cliente),
-                datasets: [{
-                    label: 'Peso',
-                    data: dadosVolumeCliente.map(d => d.peso),
-                    backgroundColor: 'rgba(61, 68, 101, 0.8)',
-                    borderColor: 'rgba(61, 68, 101, 1)',
-                    borderWidth: 1
-                    
-                }]
-            },
-            options: {...horizontalBarOptions,
-                maintainAspectRatio: false
-            }
-
-        });
-    }
-
-    // // Assume you have a second set of data
-    const dadosVolumeDiaPeriodo = await getDischargingData('CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)) AS data, periodo,', 'CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)), periodo', 'CAST(data AS date) ASC', null, null, 'peso', 'SUM');
-
-    // Group data by 'periodo'
-    const dadosAgrupadosDiaPeriodo = dadosVolumeDiaPeriodo.reduce((acc, d) => {
-        acc[d.periodo] = acc[d.periodo] || [];
-        acc[d.periodo].push(d);
-        return acc;
-    }, {});
-
-
-    // Create a unique set of 'data' values
-    const datasUnicas = [...new Set(dadosVolumeDiaPeriodo.map(d => d.data))];
-
-    // Create a dataset for each 'periodo'
-    const datasets = Object.keys(dadosAgrupadosDiaPeriodo).map((periodo, i) => {
-        const data = datasUnicas.map(d => {
-            const match = dadosAgrupadosDiaPeriodo[periodo].find(x => x.data === d);
-            return match ? match.peso : null;
-        });
-
-        return {
-            label: periodo,
-            data: data,
-            backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.8)`,
-            borderColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 1)`,
-            borderWidth: 1
-        };
-    });
-
-    const noDataGraficoVolumeDiaPeriodo = document.getElementById('emptyGraficoVolumeDiaPeriodo');
-    const dataGraficoVolumeDiaPeriodo = document.getElementById('graficoVolumeDiaPeriodo');
-
-    dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-    noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-    if (dadosVolumeDiaPeriodo.length > 0) {
-        noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-        dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-
-    graficoVolumeDiaPeriodo = new Chart('graficoVolumeDiaPeriodo', {
-        type: 'bar',
-        data: {
-            labels: datasUnicas,
-            datasets: datasets
-        },
-        options: {...secondBarChartOptions,
-            maintainAspectRatio: false
-        }
-    });
-}
-
-    const dadosDescarregadoResto = await getDischargingData(null, null, null, null, null, 'peso', 'SUM');
+    // 1 - Total descarregado e restante
+    const dadosDescarregadoResto = await getDischargingData('totalDescarregado');
+    const dadosPlanejado = await getDischargingData('totalPlanejado');
     const noDataGraficoDescarregadoResto = document.getElementById('emptyGraficoDescarregadoResto');
     const dataGraficoDescarregadoResto = document.getElementById('graficoDescarregadoResto');
-
+    
     dataGraficoDescarregadoResto.style.visibility = 'hidden';
     noDataGraficoDescarregadoResto.style.visibility = 'visible';
-    if (dadosDescarregadoResto[0].peso !== null) {
+    if (dadosDescarregadoResto.peso !== null) {
         noDataGraficoDescarregadoResto.style.visibility = 'hidden';
         dataGraficoDescarregadoResto.style.visibility = 'visible';
 
@@ -297,7 +182,7 @@ async function generateCharts() {
         data: {
             labels: ['Realizado', 'Restante'],
             datasets: [{
-                data: [dadosDescarregadoResto[0].peso, 40000000 - dadosDescarregadoResto[0].peso],
+                data: [dadosDescarregadoResto.peso, dadosPlanejado.planejado - dadosDescarregadoResto.peso],
                 backgroundColor: [
                     'rgba(82, 183, 136, 0.5)',
                     'rgba(54, 162, 235, 0.05)'
@@ -314,8 +199,92 @@ async function generateCharts() {
             cutoutPercentage: 80,
         }
     });
+
+
+    // 2 - Realizado por porão
+    const dadosRealizadoPorao = await getDischargingData('descarregadoPorao');
+    const noDataRealizadoPorao = document.getElementById('emptyGraficoRealizadoPorao');
+    const dataGraficoRealizadoPorao = document.getElementById('graficoRealizadoPorao');
+
+    dataGraficoRealizadoPorao.style.visibility = 'hidden';
+    noDataRealizadoPorao.style.visibility = 'visible';
+    if(dadosRealizadoPorao.length > 0){
+        noDataRealizadoPorao.style.visibility = 'hidden';
+        dataGraficoRealizadoPorao.style.visibility = 'visible';
+
+        graficoRealizadoPorao = new Chart('graficoRealizadoPorao', {
+        type: 'horizontalBar',
+        data: {
+            labels: dadosRealizadoPorao.map(d => d.porao),
+            datasets: [{
+                label: 'Realizado',
+                data: dadosRealizadoPorao.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
+                backgroundColor: 'rgba(82, 183, 136, 0.5)',
+                borderColor: 'rgba(82, 183, 136, 0.8)',
+                borderWidth: 1
+            },
+            {
+                label: 'Restante',
+                data: dadosRealizadoPorao.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
+                backgroundColor: 'rgba(54, 162, 235, 0.05)',
+                borderColor: 'rgba(54, 162, 235, 0.5)',
+                borderWidth: 1
+            }
+        ]
+        },
+        options: 
+        {...horizontalBarOptions, 
+            legend: {
+                display: true
+            }
+        },
+        });
     }
-    const dadosVolumeDia = await getDischargingData('CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data)) AS data,', 'CONCAT(LPAD(DAY(data), 2, "0"), "/",LPAD(MONTH(data), 2, "0"), "/",YEAR(data))', 'CAST(data AS date) ASC', null, null, 'peso', 'SUM');
+
+    // 3 - Realizado por cliente, armazém e DI
+    const dadosRealizadoClienteDI = await getDischargingData('descarregadoClienteArmazemDI');
+
+    const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
+    const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
+
+    dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
+    noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
+
+    if (dadosRealizadoClienteDI.length > 0) {
+        noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
+        dataGraficoRealizadoClienteDI.style.visibility = 'visible';
+
+    graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
+        type: 'horizontalBar',
+        data: {
+            labels: dadosRealizadoClienteDI.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
+            datasets: [{
+                label: 'Realizado',
+                data: dadosRealizadoClienteDI.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
+                backgroundColor: 'rgba(82, 183, 136, 0.5)',
+                borderColor: 'rgba(82, 183, 136, 0.65)',
+                borderWidth: 1
+            },
+            {
+                label: 'Restante',
+                data: dadosRealizadoClienteDI.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
+                backgroundColor: 'rgba(54, 162, 235, 0.05)',
+                borderColor: 'rgba(54, 162, 235, 0.5)',
+                borderWidth: 1
+            }
+        ]
+        },
+        options: 
+        {...horizontalBarOptions, 
+            legend: {
+                display: true
+            }
+        },
+        });
+    }
+
+    // 4 - Volume descarregado por dia
+    const dadosVolumeDia = await getDischargingData('descarregadoDia');
     const noDataGraficoVolumeDia = document.getElementById('emptyGraficoVolumeDia');
     const dataGraficoVolumeDia = document.getElementById('graficoVolumeDia');
 
@@ -390,91 +359,197 @@ async function generateCharts() {
     });
     }
 
-    const dadosRealizadoClienteDI = await getDischargingData('cliente, di,', 'cliente, di', 'cliente, di DESC', null, null, 'peso', 'SUM');
-    const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
-    const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
 
-    dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
-    noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
+    // 5 - Volume descarregado por cliente
+    const dadosVolumeCliente = await getDischargingData('descarregadoCliente');
+    const noDataGraficoVolumeCliente = document.getElementById('emptyGraficoVolumeCliente');
+    const dataGraficoVolumeCliente = document.getElementById('graficoVolumeCliente');
 
-    if (dadosRealizadoClienteDI.length > 0) {
-        noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
-        dataGraficoRealizadoClienteDI.style.visibility = 'visible';
+    dataGraficoVolumeCliente.style.visibility = 'hidden';
+    noDataGraficoVolumeCliente.style.visibility = 'visible';
+    if (dadosVolumeCliente.length > 0) {
+        noDataGraficoVolumeCliente.style.visibility = 'hidden';
+        dataGraficoVolumeCliente.style.visibility = 'visible';
 
-    graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
-        type: 'horizontalBar',
-        data: {
-            labels: dadosRealizadoClienteDI.map(d => d.cliente + " - " + d.di),
-            datasets: [{
-                label: 'Realizado',
-                data: dadosRealizadoClienteDI.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(82, 183, 136, 0.5)',
-                borderColor: 'rgba(82, 183, 136, 0.65)',
-                borderWidth: 1
+        graficoVolumeCliente = new Chart('graficoVolumeCliente', {
+            type: 'horizontalBar',
+            data: {
+                labels: dadosVolumeCliente.map(d => d.cliente),
+                datasets: [{
+                    label: 'Peso',
+                    data: dadosVolumeCliente.map(d => d.peso),
+                    backgroundColor: 'rgba(61, 68, 101, 0.8)',
+                    borderColor: 'rgba(61, 68, 101, 1)',
+                    borderWidth: 1
+                    
+                }]
             },
-            {
-                label: 'Restante',
-                data: dadosRealizadoClienteDI.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(54, 162, 235, 0.05)',
-                borderColor: 'rgba(54, 162, 235, 0.5)',
-                borderWidth: 1
+            options: {...horizontalBarOptions,
+                maintainAspectRatio: false
             }
-        ]
-        },
-        options: 
-        {...horizontalBarOptions, 
-            legend: {
-                display: true
-            }
-        },
         });
     }
-    const dadosRealizadoPorao = await getDischargingData('porao,', 'porao', 'porao ASC', null, null, 'peso', 'SUM');
-    const noDataRealizadoPorao = document.getElementById('emptyGraficoRealizadoPorao');
-    const dataGraficoRealizadoPorao = document.getElementById('graficoRealizadoPorao');
 
-    dataGraficoRealizadoPorao.style.visibility = 'hidden';
-    noDataRealizadoPorao.style.visibility = 'visible';
-    if(dadosRealizadoPorao.length > 0){
-        noDataRealizadoPorao.style.visibility = 'hidden';
-        dataGraficoRealizadoPorao.style.visibility = 'visible';
+    // // Assume you have a second set of data
+    const dadosVolumeDiaPeriodo = await getDischargingData('descarregadoDiaPeriodo');
 
-        graficoRealizadoPorao = new Chart('graficoRealizadoPorao', {
-        type: 'horizontalBar',
-        data: {
-            labels: dadosRealizadoPorao.map(d => d.porao),
-            datasets: [{
-                label: 'Realizado',
-                data: dadosRealizadoPorao.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(82, 183, 136, 0.5)',
-                borderColor: 'rgba(82, 183, 136, 0.8)',
-                borderWidth: 1
-            },
-            {
-                label: 'Restante',
-                data: dadosRealizadoPorao.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(54, 162, 235, 0.05)',
-                borderColor: 'rgba(54, 162, 235, 0.5)',
-                borderWidth: 1
-            }
-        ]
-        },
-        options: 
-        {...horizontalBarOptions, 
-            legend: {
-                display: true
-            }
-        },
+    // Group data by 'periodo'
+    const dadosAgrupadosDiaPeriodo = dadosVolumeDiaPeriodo.reduce((acc, d) => {
+        acc[d.periodo] = acc[d.periodo] || [];
+        acc[d.periodo].push(d);
+        return acc;
+    }, {});
+
+
+    // Create a unique set of 'data' values
+    const datasUnicas = [...new Set(dadosVolumeDiaPeriodo.map(d => d.data))];
+
+    // Create a dataset for each 'periodo'
+    const datasets = Object.keys(dadosAgrupadosDiaPeriodo).map((periodo, i) => {
+        const data = datasUnicas.map(d => {
+            const match = dadosAgrupadosDiaPeriodo[periodo].find(x => x.data === d);
+            return match ? match.peso : null;
         });
+
+        return {
+            label: periodo,
+            data: data,
+            backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.8)`,
+            borderColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 1)`,
+            borderWidth: 1
+        };
+    });
+
+    // 6 - Volume descarregado por dia e período
+    const noDataGraficoVolumeDiaPeriodo = document.getElementById('emptyGraficoVolumeDiaPeriodo');
+    const dataGraficoVolumeDiaPeriodo = document.getElementById('graficoVolumeDiaPeriodo');
+
+    dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
+    noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
+    if (dadosVolumeDiaPeriodo.length > 0) {
+        noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
+        dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
+
+    graficoVolumeDiaPeriodo = new Chart('graficoVolumeDiaPeriodo', {
+        type: 'bar',
+        data: {
+            labels: datasUnicas,
+            datasets: datasets
+        },
+        options: {...secondBarChartOptions,
+            maintainAspectRatio: false
+        }
+    });
+}
+
     }
 }
-function generateFilters(campo, filterData){
-    const filterField = document.getElementById(`lista-${campo}`);
-    
-    filterData.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = Object.values(item)[0];
-        option.text = Object.values(item)[0];
-        filterField.appendChild(option);
-        });
+
+async function getDischargingData(agrupamento){
+
+    const filtroNavio = document.getElementById('lista-navio').value;
+    const filtroData = document.getElementById('data').value;
+    const filtroPeriodo = document.getElementById('lista-periodo').value;
+    const filtroPorao = document.getElementById('lista-porao').value;
+    const filtroCliente = document.getElementById('lista-cliente').value;
+    const filtroArmazem = document.getElementById('lista-armazem').value;
+    const filtroProduto = document.getElementById('lista-produto').value;
+    const filtroDI = document.getElementById('lista-di').value;
+
+    var request = {
+        url: "shipDischarging/shipDischargingController.php",
+        method: 'POST',
+        data: [{
+            name: 'action',
+            value: agrupamento
+        }, {
+            name: 'where',
+            value: JSON.stringify({
+                navio: filtroNavio ? filtroNavio : null,
+                data: filtroData ? filtroData : null,
+                periodo: filtroPeriodo ? filtroPeriodo : null,
+                porao: filtroPorao ? filtroPorao : null,
+                cliente: filtroCliente ? filtroCliente : null,
+                armazem: filtroArmazem ? filtroArmazem : null,
+                produto: filtroProduto ? filtroProduto : null,
+                di: filtroDI ? filtroDI : null
+            })
+        }],
+        dataType: 'json'
+    };
+
+    // Return a new Promise
+    return new Promise((resolve, reject) => {
+        $.ajax(request).done(function(response) {
+            const error = document.getElementById('error-message');
+            if(response.error) {
+                error.innerHTML = response.error;
+                reject(response.error);
+            } else {
+                resolve(response.data);
+            }
+        }).fail(function(response) {
+            console.log(response)
+            reject(response.error);
+        })
+    });
+}
+
+async function getUniqueData(campo){
+
+    const filtroNavio = document.getElementById('lista-navio').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroData = document.getElementById('data').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroPeriodo = document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroPorao = document.getElementById('lista-porao').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroCliente = document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroArmazem = document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroProduto = document.getElementById('lista-produto').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+
+    // document.getElementById('lista-di').querySelectorAll('.multi-select-selected').forEach((item) => console.log(item.dataset.value))
+    // console.log(document.getElementById('lista-di').querySelectorAll('.multi-select-selected').forEach((item) => console.log(item.dataset.value)))
+    console.log(filtroDI)
+    var request = {
+        url: "shipDischarging/shipDischargingController.php",
+        method: 'POST',
+        data: [{
+            name: 'action',
+            value: 'readUnique'
+        }, {
+            name: 'campo',
+            value: campo
+        },{
+            name: 'where',
+            value: JSON.stringify({
+                navio: filtroNavio ? filtroNavio : null,
+                data: filtroData ? filtroData : null,
+                periodo: filtroPeriodo ? filtroPeriodo : null,
+                porao: filtroPorao ? filtroPorao : null,
+                cliente: filtroCliente ? filtroCliente : null,
+                armazem: filtroArmazem ? filtroArmazem : null,
+                produto: filtroProduto ? filtroProduto : null,
+                di: filtroDI ? filtroDI : null,
+                peso: 0
+            })
+        
+        }],
+        dataType: 'json'
+    };
+
+    // Return a new Promise
+    return new Promise((resolve, reject) => {
+        $.ajax(request).done(function(response) {
+            const error = document.getElementById('error-message');
+            if(response.error) {
+                error.innerHTML = response.error;
+                reject(response.error);
+            } else {
+                resolve(response.data);
+            }
+        }).fail(function(response) {
+            console.log(response)
+            reject(response.error);
+        })
+    });
+
 }
