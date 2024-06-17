@@ -171,6 +171,9 @@ async function generateCharts() {
     const noDataGraficoDescarregadoResto = document.getElementById('emptyGraficoDescarregadoResto');
     const dataGraficoDescarregadoResto = document.getElementById('graficoDescarregadoResto');
     
+    console.log(dadosDescarregadoResto)
+    console.log(dadosPlanejado)
+
     dataGraficoDescarregadoResto.style.visibility = 'hidden';
     noDataGraficoDescarregadoResto.style.visibility = 'visible';
     if (dadosDescarregadoResto.peso !== null) {
@@ -205,6 +208,8 @@ async function generateCharts() {
     const dadosRealizadoPorao = await getDischargingData('descarregadoPorao');
     const noDataRealizadoPorao = document.getElementById('emptyGraficoRealizadoPorao');
     const dataGraficoRealizadoPorao = document.getElementById('graficoRealizadoPorao');
+
+    console.log(dadosRealizadoPorao)
 
     dataGraficoRealizadoPorao.style.visibility = 'hidden';
     noDataRealizadoPorao.style.visibility = 'visible';
@@ -243,6 +248,8 @@ async function generateCharts() {
 
     // 3 - Realizado por cliente, armazém e DI
     const dadosRealizadoClienteDI = await getDischargingData('descarregadoClienteArmazemDI');
+
+    console.log(dadosRealizadoClienteDI)
 
     const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
     const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
@@ -287,6 +294,8 @@ async function generateCharts() {
     const dadosVolumeDia = await getDischargingData('descarregadoDia');
     const noDataGraficoVolumeDia = document.getElementById('emptyGraficoVolumeDia');
     const dataGraficoVolumeDia = document.getElementById('graficoVolumeDia');
+
+    console.log(dadosVolumeDia)
 
     dataGraficoVolumeDia.style.visibility = 'hidden';
     noDataGraficoVolumeDia.style.visibility = 'visible';
@@ -447,14 +456,14 @@ async function generateCharts() {
 
 async function getDischargingData(agrupamento){
 
-    const filtroNavio = document.getElementById('lista-navio').value;
-    const filtroData = document.getElementById('data').value;
-    const filtroPeriodo = document.getElementById('lista-periodo').value;
-    const filtroPorao = document.getElementById('lista-porao').value;
-    const filtroCliente = document.getElementById('lista-cliente').value;
-    const filtroArmazem = document.getElementById('lista-armazem').value;
-    const filtroProduto = document.getElementById('lista-produto').value;
-    const filtroDI = document.getElementById('lista-di').value;
+    const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroData = Array.from(document.getElementById('data').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroPorao = Array.from(document.getElementById('lista-porao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroCliente = Array.from(document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroArmazem = Array.from(document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
 
     var request = {
         url: "shipDischarging/shipDischargingController.php",
@@ -486,6 +495,7 @@ async function getDischargingData(agrupamento){
                 error.innerHTML = response.error;
                 reject(response.error);
             } else {
+                console.log(response.data)
                 resolve(response.data);
             }
         }).fail(function(response) {
@@ -497,18 +507,17 @@ async function getDischargingData(agrupamento){
 
 async function getUniqueData(campo){
 
-    const filtroNavio = document.getElementById('lista-navio').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroData = document.getElementById('data').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroPeriodo = document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroPorao = document.getElementById('lista-porao').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroCliente = document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroArmazem = document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
-    const filtroProduto = document.getElementById('lista-produto').querySelectorAll('.multi-select-selected').forEach((item) => item.dataset.value);;
+    const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroData = Array.from(document.getElementById('data').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroPorao = Array.from(document.getElementById('lista-porao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroCliente = Array.from(document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroArmazem = Array.from(document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
+    const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
     const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`).join(', ');
 
-    // document.getElementById('lista-di').querySelectorAll('.multi-select-selected').forEach((item) => console.log(item.dataset.value))
-    // console.log(document.getElementById('lista-di').querySelectorAll('.multi-select-selected').forEach((item) => console.log(item.dataset.value)))
-    console.log(filtroDI)
+    console.log(filtroCliente)
+
     var request = {
         url: "shipDischarging/shipDischargingController.php",
         method: 'POST',
@@ -544,6 +553,7 @@ async function getUniqueData(campo){
                 error.innerHTML = response.error;
                 reject(response.error);
             } else {
+                console.log(response.data)
                 resolve(response.data);
             }
         }).fail(function(response) {

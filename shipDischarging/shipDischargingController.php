@@ -16,10 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = ShipDischarging::readAll($pdo);
             echo $message;
             break;
-        case 'readQuery':
-            $message = $shipDischarging->readQuery($pdo, $_POST['select'], $_POST['group_by'], $_POST['order_by'], $_POST['limit'], $_POST['where'], $_POST['column_agg'], $_POST['type_agg']);
-            echo $message;
-            break;
         case 'readUnique':
             $message = $shipDischarging->pegarUnicos($pdo, $_POST['campo'], $_POST['where']);
             echo $message;
