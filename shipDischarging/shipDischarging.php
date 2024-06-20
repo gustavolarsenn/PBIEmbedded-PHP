@@ -61,7 +61,22 @@
         return $stmt->fetch();
     }
 
+    // public function pegarUnicos($pdo, $campo, $where){
+    //     $query = 'SELECT DISTINCT ' . $campo . ' FROM shipdischarging WHERE 1=1';
+
+    //     $query = $this->concatWhereArray($query, $where, 'filter');
+
+    //     if ($campo == 'navio') $query =  $query . ' ORDER BY CAST(data AS date) DESC';
+    //     else $query = $query . ' ORDER BY ' . $campo . ' ASC';
+    //     // $query = $query . ' ORDER BY ' . $campo . ' ASC';
+
+    //     $stmt = $pdo->prepare($query);
+    //     $stmt = $this->bindWhereArray($stmt, $where, 'filter');
+    //     $stmt->execute();
+    //     return json_encode(['data' => $stmt->fetchAll()]);
+    // }
     public function pegarUnicos($pdo, $campo, $where){
+        // QUANDO MUDO A ORDEM DO ORDER BY, PARA SER ADICIONADO DEPOIS, DA ERRO!!!
         $query = 'SELECT DISTINCT ' . $campo . ' FROM shipdischarging WHERE 1=1 ORDER BY ' . $campo . ' ASC';
 
         if ($campo === 'navio') {
@@ -120,12 +135,13 @@
         if ($json_where->produto) $query .= $this->loopThroughWhere('produto', $json_where->produto);
         if ($json_where->di) $query .= $this->loopThroughWhere('di', $json_where->di);
         
-        if ($type === 'realizado') {
-            if ($json_where->data) $query .= $this->loopThroughWhere('data', $json_where->data);
-        } else if ($type === 'planejado') {
+        if ($type !== 'planejado') {
             if ($json_where->periodo) $query .= $this->loopThroughWhere('periodo', $json_where->periodo);
             if ($json_where->porao) $query .= $this->loopThroughWhere('porao', $json_where->porao);
-        } else if ($type === 'filter'){
+            if ($json_where->data) $query .= $this->loopThroughWhere('data', $json_where->data);
+        } 
+        
+        if ($type === 'filter'){
             if ($json_where->peso) $query .= " AND peso > :peso";
         }
 
@@ -142,17 +158,24 @@
                 $item = trim($item, "'");
             }
         });
-
-        $num = 0;
+        
+        if ($type === 'planejado') {
+            unset($json_where->periodo);
+            unset($json_where->porao);
+            unset($json_where->data);
+        }
         foreach ($json_where as $key => $values) {
             if (!empty($values)) {
-                    foreach ($values as $index => $value) {
-                        print_r("Key: " . $key . " Value: " . $value . " Index: " . $index . "\n");
-                        $stmt->bindParam(':' . $key . $index, $value);
+                foreach ($values as $index => $value) {
+                    $stmt->bindParam(':' . $key . $index, $value);
                 }
             }
 
         }
+
+        // if ($type === 'filter') {
+        //     $stmt->bindParam(':peso', $json_where->peso);
+        // }
         // Additional bindings based on $type can be added here
         return $stmt;
     }
@@ -175,18 +198,18 @@
         $query = $this->concatWhereArray($query, $where, $type);
         $stmt = $pdo->prepare($query);
         $stmt = $this->bindWhereArray($stmt, $where, $type);
-        print_r($stmt);
+        // print_r($stmt);
         $stmt->execute();
         return json_encode(['data' => $stmt->fetch()]);
     }
 
     public function descarregadoClienteArmazemDI($pdo, $where, $type = 'realizado'){
         $query_realizado = 'SELECT cliente, armazem, di, SUM(peso) AS peso FROM shipdischarging WHERE 1=1';
-        $query_realizado = $this->concatWhereArray($query_realizado, $where, $type);
+        $query_realizado = $this->concatWhereArray($query_realizado, $where, 'realizado');
         $query_realizado .= ' GROUP BY cliente, armazem, di';
 
         $query_planejado = 'SELECT cliente, armazem, di, SUM(planejado) AS planejado FROM shipplanned WHERE 1=1';
-        $query_planejado = $this->concatWhereArray($query_planejado, $where, $type);
+        $query_planejado = $this->concatWhereArray($query_planejado, $where, 'planejado');
         $query_planejado .= ' GROUP BY cliente, armazem, di';
 
         $query = 'SELECT realizado.cliente, realizado.armazem, realizado.di, realizado.peso, planejado.planejado FROM 
