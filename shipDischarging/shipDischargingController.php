@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo $message;
             break;
         case 'totalPlanejado':
-            $message = $shipDischarging->totalPlanejado($pdo, $_POST['where'],);
+            $message = $shipDischarging->totalPlanejado($pdo, $_POST['where'], 'planejado');
             echo $message;
             break;
         case 'descarregadoClienteArmazemDI':

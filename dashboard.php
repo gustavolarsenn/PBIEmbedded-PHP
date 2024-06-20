@@ -170,10 +170,6 @@ if (isset($_GET['json'])) {
                     <div class="input-label">
                         <label>Periodo</label>
                         <select id='lista-periodo' multiple data-multi-select>
-                            <option value='01:00x07:00'>01:00x07:00</option>
-                            <option value='07:00x13:00'>07:00x13:00</option>
-                            <option value='13:00x19:00'>13:00x19:00</option>
-                            <option value='19:00x01:00'>19:00x01:00</option>
                         </select>
                     </div>
                     <div class="input-label">
@@ -201,12 +197,6 @@ if (isset($_GET['json'])) {
                         <select id="lista-di"  data-placeholder="Selecione DIs" multiple data-multi-select>
                         </select>
                     </div>
-                    <!-- <div class="input-label">
-                        <label>DI</label>
-                        <select id="lista-di" multiple data-multi-select>
-                            <option value="">Todos</option>
-                        </select>
-                    </div> -->
                     <div class="input-label">
                         <input type="button" value="Filtrar" onclick="generateCharts()">
                     </div>

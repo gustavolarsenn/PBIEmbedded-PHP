@@ -62,7 +62,7 @@
     }
 
     public function pegarUnicos($pdo, $campo, $where){
-        $query = 'SELECT DISTINCT ' . $campo . ' FROM shipdischarging WHERE 1=1';
+        $query = 'SELECT DISTINCT ' . $campo . ' FROM shipdischarging WHERE 1=1 ORDER BY ' . $campo . ' ASC';
 
         if ($campo === 'navio') {
             $query = $this->concatWhereArray($query, $where, 'filter');
@@ -103,35 +103,6 @@
         return $where;
     }
 
-    public function concatWhere($query, $where, $type){
-        $json_where = json_decode($where);
-
-                // Iterate through the decoded array and remove extra quotes
-        array_walk_recursive($json_where, function(&$item, $key) {
-            if (is_string($item)) {
-                // Trim single quotes from the beginning and end of the string
-                $item = trim($item, "'");
-            }
-        });
-
-        if ($json_where->navio) $query .= " AND navio = :navio";
-        if ($json_where->cliente) $query .= " AND cliente =  :cliente";
-        if ($json_where->armazem) $query .= " AND armazem = :armazem";
-        if ($json_where->produto) $query .= " AND produto = :produto";
-        if ($json_where->di) $query .= " AND di = :di";
-
-        if ($type == 'planejado'){
-            if ($json_where->data) $query .= " AND data = :data";
-            if ($json_where->periodo) $query .= " AND periodo = :periodo";
-            if ($json_where->porao) $query .= " AND porao = :porao";
-        }
-
-        if ($type == 'filter'){
-            if ($json_where->peso) $query .= " AND peso > :peso";
-        }
-
-        return $query;
-    }
     public function concatWhereArray($query, $where, $type){
         $json_where = json_decode($where);
 
@@ -148,46 +119,17 @@
         if ($json_where->armazem) $query .= $this->loopThroughWhere('armazem', $json_where->armazem);
         if ($json_where->produto) $query .= $this->loopThroughWhere('produto', $json_where->produto);
         if ($json_where->di) $query .= $this->loopThroughWhere('di', $json_where->di);
-
-        if ($type == 'planejado'){
+        
+        if ($type === 'realizado') {
             if ($json_where->data) $query .= $this->loopThroughWhere('data', $json_where->data);
+        } else if ($type === 'planejado') {
             if ($json_where->periodo) $query .= $this->loopThroughWhere('periodo', $json_where->periodo);
             if ($json_where->porao) $query .= $this->loopThroughWhere('porao', $json_where->porao);
-        }
-
-        if ($type == 'filter'){
+        } else if ($type === 'filter'){
             if ($json_where->peso) $query .= " AND peso > :peso";
         }
 
         return $query;
-    }
-
-    public function bindWhere($stmt, $where, $type){
-        $json_where = json_decode($where);
-
-        // Iterate through the decoded array and remove extra quotes
-        array_walk_recursive($json_where, function(&$item, $key) {
-            if (is_string($item)) {
-                // Trim single quotes from the beginning and end of the string
-                $item = trim($item, "'");
-            }
-        });
-        if ($json_where->navio) $stmt->bindParam(':navio', $json_where->navio);
-        if ($json_where->armazem) $stmt->bindParam(':armazem', $json_where->armazem);
-        if ($json_where->cliente) $stmt->bindParam(':cliente', $json_where->cliente);
-        if ($json_where->produto) $stmt->bindParam(':produto', $json_where->produto);
-        if ($json_where->di) $stmt->bindParam(':di', $json_where->di);
-
-        if ($type == 'planejado'){
-            if ($json_where->data) $stmt->bindParam(':data', $json_where->data);
-            if ($json_where->periodo) $stmt->bindParam(':periodo', $json_where->periodo);
-            if ($json_where->porao) $stmt->bindParam(':porao', $json_where->porao);
-        }
-
-        if ($type == 'filter'){
-            if ($json_where->peso) $stmt->bindParam(':peso', $json_where->peso);
-        }
-        return $stmt;
     }
 
     public function bindWhereArray($stmt, $where, $type){
@@ -200,13 +142,13 @@
                 $item = trim($item, "'");
             }
         });
+
         $num = 0;
         foreach ($json_where as $key => $values) {
-            // $num
             if (!empty($values)) {
-                foreach ($values as $index => $value) {
-                    print_r(':' . $key . $index, $value);
-                    $stmt->bindValue(':' . $key . $index, $value); // Bind each value to its placeholder
+                    foreach ($values as $index => $value) {
+                        print_r("Key: " . $key . " Value: " . $value . " Index: " . $index . "\n");
+                        $stmt->bindParam(':' . $key . $index, $value);
                 }
             }
 
@@ -216,19 +158,24 @@
     }
 
     public function totalDescarregado($pdo, $where, $type = 'realizado'){
-        $query = 'SELECT SUM(peso) AS peso FROM shipdischarging WHERE 1=1';
-        $query = $this->concatWhereArray($query, $where, $type);
-        $stmt = $pdo->prepare($query);
-        $stmt = $this->bindWhereArray($stmt, $where, $type);
-        $stmt->execute();
-        return json_encode(['data' => $stmt->fetch()]);
+        try {
+            $query = 'SELECT SUM(peso) AS peso FROM shipdischarging WHERE 1=1';
+            $query = $this->concatWhereArray($query, $where, $type);
+            $stmt = $pdo->prepare($query);
+            $stmt = $this->bindWhereArray($stmt, $where, $type);
+            $stmt->execute();
+            return json_encode(['data' => $stmt->fetch(), 'query' => $query]);
+        } catch (PDOException $e) {
+            return json_encode(['query' => $query]);
+        }
     }
 
-    public function totalPlanejado($pdo, $where, $type = 'realizado'){
+    public function totalPlanejado($pdo, $where, $type = 'planejado'){
         $query = 'SELECT sum(planejado) AS planejado FROM shipplanned WHERE 1=1';
         $query = $this->concatWhereArray($query, $where, $type);
         $stmt = $pdo->prepare($query);
         $stmt = $this->bindWhereArray($stmt, $where, $type);
+        print_r($stmt);
         $stmt->execute();
         return json_encode(['data' => $stmt->fetch()]);
     }
