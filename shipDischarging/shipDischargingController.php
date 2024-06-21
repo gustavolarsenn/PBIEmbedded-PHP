@@ -16,38 +16,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = ShipDischarging::readAll($pdo);
             echo $message;
             break;
-        case 'readUnique':
-            $message = $shipDischarging->pegarUnicos($pdo, $_POST['campo'], $_POST['where']);
+        // case 'readUnique':
+        //     $message = $shipDischarging->pegarUnicos($pdo, $_POST['campo'], $_POST['where']);
+        //     echo $message;
+        //     break;
+        case 'uniqueVessels':
+            $message = $shipDischarging->pegarNaviosUnicos($pdo);
             echo $message;
             break;
-        case 'totalDescarregado':
-            $message = $shipDischarging->totalDescarregado($pdo, $_POST['where'],);
+        case 'vesselDataDischarged':
+            $message = $shipDischarging->pegarDadosNavioRealizado($pdo, $_POST['navio']);
             echo $message;
             break;
-        case 'totalPlanejado':
-            $message = $shipDischarging->totalPlanejado($pdo, $_POST['where'], 'planejado');
+        case 'vesselDataPlanned':
+            $message = $shipDischarging->pegarDadosNavioPlanejado($pdo, $_POST['navio']);
             echo $message;
             break;
-        case 'descarregadoClienteArmazemDI':
-            $message = $shipDischarging->descarregadoClienteArmazemDI($pdo, $_POST['where'],);
-            echo $message;
-            break;
-        case 'descarregadoPorao':
-            $message = $shipDischarging->descarregadoPorao($pdo, $_POST['where'],);
-            echo $message;
-            break;
-        case 'descarregadoDia':
-            $message = $shipDischarging->descarregadoDia($pdo, $_POST['where'],);
-            echo $message;
-            break;
-        case 'descarregadoCliente':
-            $message = $shipDischarging->descarregadoCliente($pdo, $_POST['where'],);
-            echo $message;
-            break;
-        case 'descarregadoDiaPeriodo':
-            $message = $shipDischarging->descarregadoDiaPeriodo($pdo, $_POST['where'],);
-            echo $message;
-            break;
+        // case 'totalDescarregado':
+        //     $message = $shipDischarging->totalDescarregado($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
+        // case 'totalPlanejado':
+        //     $message = $shipDischarging->totalPlanejado($pdo, $_POST['where'], 'planejado');
+        //     echo $message;
+        //     break;
+        // case 'descarregadoClienteArmazemDI':
+        //     $message = $shipDischarging->descarregadoClienteArmazemDI($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
+        // case 'descarregadoPorao':
+        //     $message = $shipDischarging->descarregadoPorao($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
+        // case 'descarregadoDia':
+        //     $message = $shipDischarging->descarregadoDia($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
+        // case 'descarregadoCliente':
+        //     $message = $shipDischarging->descarregadoCliente($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
+        // case 'descarregadoDiaPeriodo':
+        //     $message = $shipDischarging->descarregadoDiaPeriodo($pdo, $_POST['where'],);
+        //     echo $message;
+        //     break;
         default:
             echo json_encode(['message' => 'Ação não encontrada']);
             break;

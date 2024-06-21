@@ -160,7 +160,7 @@ if (isset($_GET['json'])) {
                 <div class="filter-container">
                     <div class="input-label">
                         <label>Navio</label>
-                        <select id='lista-navio' multiple data-multi-select>
+                        <select id='lista-navio' data-multi-select>
                         </select>
                     </div>
                     <div class="input-label" >

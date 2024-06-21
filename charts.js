@@ -14,18 +14,20 @@ function renameKeys(obj, keyMap) {
 async function generateFilters(campo, filterData){
     const filterField = document.getElementById(`lista-${campo}`);
     
-    const newData = await getUniqueData(campo);
+    // const newData = await getUniqueData(campo);
 
-    try {
-        var filteredData = filterData.filter(item => !newData.includes(item));
-    } catch (error) {
-        console.log(error, 'Undefined', campo)
-    }
+    // try {
+    //     var filteredData = filterData.filter(item => !newData.includes(item));
+    // } catch (error) {
+    //     console.log(error, 'Undefined', campo)
+    // }
     
     const keyMapping = {
         0: 'value',
         [campo]: 'text',
     };
+
+    let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
     new MultiSelect(`#lista-${campo}`, {
@@ -42,27 +44,89 @@ async function generateFilters(campo, filterData){
         const option = document.createElement("option");
         option.value = Object.values(item)[0];
         option.text = Object.values(item)[0];
+        
         if (option in filteredData) return;
         filterField.appendChild(option);
         });
 }
 
-function cleanFilters(){
-    document.getElementById('lista-navio').innerHTML = '';
-    document.getElementById('data').innerHTML = '';
-    document.getElementById('lista-periodo').innerHTML = '';
-    document.getElementById('lista-porao').innerHTML = '';
-    document.getElementById('lista-cliente').innerHTML = '';
-    document.getElementById('lista-armazem').innerHTML = '';
-    document.getElementById('lista-produto').innerHTML = '';
-    document.getElementById('lista-di').innerHTML = '';
+// function cleanFilters(){
+//     document.getElementById('lista-navio').innerHTML = '';
+//     document.getElementById('data').innerHTML = '';
+//     document.getElementById('lista-periodo').innerHTML = '';
+//     document.getElementById('lista-porao').innerHTML = '';
+//     document.getElementById('lista-cliente').innerHTML = '';
+//     document.getElementById('lista-armazem').innerHTML = '';
+//     document.getElementById('lista-produto').innerHTML = '';
+//     document.getElementById('lista-di').innerHTML = '';
 
-    generateCharts();
-}
+//     generateCharts();
+// }
 var graficoDescarregadoResto, graficoVolumeCliente, graficoVolumeDiaPeriodo, graficoVolumeDia, graficoRealizadoClienteDI, graficoRealizadoPorao;
 
 async function generateCharts() {
     
+    const listaNavio = await getUniqueVessels();
+
+    // Map through listaNavio, convert each object's values to a Set to remove duplicates, then convert back to array
+    const arrayNaviosUnicos = listaNavio.map(obj => [...new Set(Object.values(obj))]);
+    
+    // Flatten the array of arrays to get a single array with all values
+    const listaNaviosUnicos = arrayNaviosUnicos.flat();
+
+    const rawDate = document.getElementById('data').value;
+    const filtroData = rawDate === '' ? null : [new Date(rawDate).toISOString().replace('T', ' ').substring(0, 19)];
+
+    const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroPorao = Array.from(document.getElementById('lista-porao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroCliente = Array.from(document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroArmazem = Array.from(document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+
+    const navioSelecionado = filtroNavio.length > 0 ? filtroNavio[0] : listaNavio[0].navio;
+
+    const dataDischarged = await getVesselData('discharged', navioSelecionado);
+    const dataPlanned = await getVesselData('planned', navioSelecionado);
+
+    // Assuming the structure of each item in `data` is known and matches the filter criteria
+    const filteredDataDischarged = dataDischarged.filter((item) => {
+        // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
+        const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
+        const matchesData = !filtroData || filtroData.includes(item.data); // Assuming `item.data` is in the same format as `filtroData`
+        const matchesPeriodo = filtroPeriodo.length === 0 || filtroPeriodo.includes(`'${item.periodo}'`);
+        const matchesPorao = filtroPorao.length === 0 || filtroPorao.includes(`'${item.porao}'`);
+        const matchesCliente = filtroCliente.length === 0 || filtroCliente.includes(`'${item.cliente}'`);
+        const matchesArmazem = filtroArmazem.length === 0 || filtroArmazem.includes(`'${item.armazem}'`);
+        const matchesProduto = filtroProduto.length === 0 || filtroProduto.includes(`'${item.produto}'`);
+        const matchesDI = filtroDI.length === 0 || filtroDI.includes(`'${item.di}'`);
+
+        // A record must match all active filters to be included
+        return matchesNavio && matchesData && matchesPeriodo && matchesPorao && matchesCliente && matchesArmazem && matchesProduto && matchesDI;
+    });
+
+    // Assuming the structure of each item in `data` is known and matches the filter criteria
+    const filteredDataPlanned = dataPlanned.filter((item) => {
+        // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
+        const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
+        const matchesCliente = filtroCliente.length === 0 || filtroCliente.includes(`'${item.cliente}'`);
+        const matchesArmazem = filtroArmazem.length === 0 || filtroArmazem.includes(`'${item.armazem}'`);
+        const matchesProduto = filtroProduto.length === 0 || filtroProduto.includes(`'${item.produto}'`);
+        const matchesDI = filtroDI.length === 0 || filtroDI.includes(`'${item.di}'`);
+
+        // A record must match all active filters to be included
+        return matchesNavio && matchesCliente && matchesArmazem && matchesProduto && matchesDI;
+    });
+
+    // const listaNavio = [...new Set(filteredData.map(d => d.navio))];
+    const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))];
+    const listaPorao = [...new Set(filteredDataDischarged.map(d => d.porao))];
+    const listaCliente = [...new Set(filteredDataDischarged.map(d => d.cliente))];
+    const listaArmazem = [...new Set(filteredDataDischarged.map(d => d.armazem))];
+    const listaProduto = [...new Set(filteredDataDischarged.map(d => d.produto))];
+    const listaDI = [...new Set(filteredDataDischarged.map(d => d.di))];
+
     if (graficoDescarregadoResto) graficoDescarregadoResto.destroy();
     if (graficoVolumeCliente) graficoVolumeCliente.destroy();
     if (graficoVolumeDiaPeriodo) graficoVolumeDiaPeriodo.destroy();
@@ -70,21 +134,13 @@ async function generateCharts() {
     if (graficoRealizadoClienteDI) graficoRealizadoClienteDI.destroy();
     if (graficoRealizadoPorao) graficoRealizadoPorao.destroy();
 
-    const listaNavio = await getUniqueData('navio');
-    const listaPeriodo = await getUniqueData('periodo');
-    const listaPorao = await getUniqueData('porao');
-    const listaCliente = await getUniqueData('cliente');
-    const listaArmazem = await getUniqueData('armazem');
-    const listaProduto = await getUniqueData('produto');
-    const listaDI = await getUniqueData('di');
-
-    generateFilters('navio', listaNavio);
-    generateFilters('periodo', listaPeriodo);
-    generateFilters('porao', listaPorao);
-    generateFilters('cliente', listaCliente);
-    generateFilters('armazem', listaArmazem);
-    generateFilters('produto', listaProduto);
-    generateFilters('di', listaDI);
+    generateFilters('navio', listaNaviosUnicos, filtroNavio);
+    generateFilters('periodo', listaPeriodo, filtroPeriodo);
+    generateFilters('porao', listaPorao, filtroPorao);
+    generateFilters('cliente', listaCliente, filtroCliente);
+    generateFilters('armazem', listaArmazem, filtroArmazem);
+    generateFilters('produto', listaProduto, filtroProduto);
+    generateFilters('di', listaDI, filtroDI);
 
     const barOptions = {
             scales: {
@@ -142,8 +198,16 @@ async function generateCharts() {
     secondBarChartOptions.legend.display = true;
 
     // 1 - Total descarregado e restante
-    const dadosDescarregadoResto = await getDischargingData('totalDescarregado');
-    const dadosPlanejado = await getDischargingData('totalPlanejado');
+    const dadosDescarregadoResto = filteredDataDischarged.reduce((acc, d) => {
+        acc.peso += d.peso;
+        return acc;
+    }, { peso: 0 });
+
+    const dadosPlanejado = filteredDataPlanned.reduce((acc, d) => {
+        acc.planejado += d.planejado;
+        return acc;
+    }
+    , { planejado: 0 });
     const noDataGraficoDescarregadoResto = document.getElementById('emptyGraficoDescarregadoResto');
     const dataGraficoDescarregadoResto = document.getElementById('graficoDescarregadoResto');
     
@@ -178,30 +242,42 @@ async function generateCharts() {
 
 
     // 2 - Realizado por porão
-    const dadosRealizadoPorao = await getDischargingData('descarregadoPorao');
+    const dadosRealizadoPorao = filteredDataDischarged.reduce((acc, d) => {
+        acc[d.porao] = acc[d.porao] || { peso: 0 };
+        acc[d.porao].peso += d.peso;
+        return acc;
+    }, {});
+
+    const dadosRealizadoPoraoArray = Object.keys(dadosRealizadoPorao).map(porao => ({
+        porao: porao,
+        peso: dadosRealizadoPorao[porao].peso
+    }));
+
+    
+    // const dadosRealizadoPorao = await getDischargingData('descarregadoPorao');
     const noDataRealizadoPorao = document.getElementById('emptyGraficoRealizadoPorao');
     const dataGraficoRealizadoPorao = document.getElementById('graficoRealizadoPorao');
 
     dataGraficoRealizadoPorao.style.visibility = 'hidden';
     noDataRealizadoPorao.style.visibility = 'visible';
-    if(dadosRealizadoPorao.length > 0){
+    if(dadosRealizadoPoraoArray.length > 0){
         noDataRealizadoPorao.style.visibility = 'hidden';
         dataGraficoRealizadoPorao.style.visibility = 'visible';
 
         graficoRealizadoPorao = new Chart('graficoRealizadoPorao', {
         type: 'horizontalBar',
         data: {
-            labels: dadosRealizadoPorao.map(d => d.porao),
+            labels: dadosRealizadoPoraoArray.map(d => d.porao),
             datasets: [{
                 label: 'Realizado',
-                data: dadosRealizadoPorao.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
+                data: dadosRealizadoPoraoArray.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(82, 183, 136, 0.5)',
                 borderColor: 'rgba(82, 183, 136, 0.8)',
                 borderWidth: 1
             },
             {
                 label: 'Restante',
-                data: dadosRealizadoPorao.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
+                data: dadosRealizadoPoraoArray.map(d => ((1 - (d.peso / (d.peso + 1000000)))* 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(54, 162, 235, 0.05)',
                 borderColor: 'rgba(54, 162, 235, 0.5)',
                 borderWidth: 1
@@ -218,7 +294,41 @@ async function generateCharts() {
     }
 
     // 3 - Realizado por cliente, armazém e DI
-    const dadosRealizadoClienteDI = await getDischargingData('descarregadoClienteArmazemDI');
+    // Tratamento dos dados para o uso no gráfico
+    const dadosPlanejadoClienteDI = filteredDataPlanned.reduce((acc, d) => {
+        acc[`${d.cliente} - ${d.armazem} - ${d.di}`] = acc[`${d.cliente} - ${d.armazem} - ${d.di}`] || { planejado: 0 };
+        acc[`${d.cliente} - ${d.armazem} - ${d.di}`].planejado += d.planejado;
+        return acc;
+    }, {});
+
+    const dadosRealizadoClienteDI = filteredDataDischarged.reduce((acc, d) => {
+        acc[`${d.cliente} - ${d.armazem} - ${d.di}`] = acc[`${d.cliente} - ${d.armazem} - ${d.di}`] || { peso: 0};
+        acc[`${d.cliente} - ${d.armazem} - ${d.di}`].peso += d.peso;
+        return acc;
+    }, {});
+    
+    const mergedDados = {};
+
+    // Merge dadosPlanejadoClienteDI into mergedDados
+    Object.keys(dadosPlanejadoClienteDI).forEach(key => {
+        mergedDados[key] = { ...dadosPlanejadoClienteDI[key] };
+    
+        if (dadosRealizadoClienteDI[key]) {
+            mergedDados[key] = { ...mergedDados[key], ...dadosRealizadoClienteDI[key] };
+        }
+    });
+    
+    // Add missing keys from dadosRealizadoClienteDI to mergedDados
+    Object.keys(dadosRealizadoClienteDI).forEach(key => {
+        if (!mergedDados[key]) {
+            mergedDados[key] = { ...dadosRealizadoClienteDI[key] };
+        }
+    });
+
+    const mergedDadosArray = Object.entries(mergedDados).map(([key, value]) => {
+        const [cliente, armazem, di] = key.split(' - ');
+        return { cliente, armazem, di, ...value };
+    });
 
     const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
     const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
@@ -226,24 +336,24 @@ async function generateCharts() {
     dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
     noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
 
-    if (dadosRealizadoClienteDI.length > 0) {
+    if (mergedDadosArray.length > 0) {
         noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
         dataGraficoRealizadoClienteDI.style.visibility = 'visible';
 
     graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
         type: 'horizontalBar',
         data: {
-            labels: dadosRealizadoClienteDI.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
+            labels: mergedDadosArray.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
             datasets: [{
                 label: 'Realizado',
-                data: dadosRealizadoClienteDI.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
+                data: mergedDadosArray.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(82, 183, 136, 0.5)',
                 borderColor: 'rgba(82, 183, 136, 0.65)',
                 borderWidth: 1
             },
             {
                 label: 'Restante',
-                data: dadosRealizadoClienteDI.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
+                data: mergedDadosArray.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(54, 162, 235, 0.05)',
                 borderColor: 'rgba(54, 162, 235, 0.5)',
                 borderWidth: 1
@@ -260,13 +370,24 @@ async function generateCharts() {
     }
 
     // 4 - Volume descarregado por dia
-    const dadosVolumeDia = await getDischargingData('descarregadoDia');
+    // const dadosVolumeDia = await getDischargingData('descarregadoDia');
+    const dadosVolumeDia = filteredDataDischarged.reduce((acc, d) => {
+        acc[d.data] = acc[d.data] || { peso: 0 };
+        acc[d.data].peso += d.peso;
+        return acc;
+    }, {});
+
+    const dadosVolumeDiaArray = Object.keys(dadosVolumeDia).map(data => ({
+        data: data,
+        peso: dadosVolumeDia[data].peso
+    }));
+
     const noDataGraficoVolumeDia = document.getElementById('emptyGraficoVolumeDia');
     const dataGraficoVolumeDia = document.getElementById('graficoVolumeDia');
 
     dataGraficoVolumeDia.style.visibility = 'hidden';
     noDataGraficoVolumeDia.style.visibility = 'visible';
-    if (dadosVolumeDia.length > 0) {
+    if (dadosVolumeDiaArray.length > 0) {
         noDataGraficoVolumeDia.style.visibility = 'hidden';
         dataGraficoVolumeDia.style.visibility = 'visible';
 
@@ -284,10 +405,10 @@ async function generateCharts() {
     graficoVolumeDia = new Chart('graficoVolumeDia', {
         type: 'line',
         data: {
-            labels: dadosVolumeDia.map(d => d.data),
+            labels: dadosVolumeDiaArray.map(d => d.data),
             datasets: [{
                 label: 'Peso',
-                data: dadosVolumeDia.map(d => d.peso),
+                data: dadosVolumeDiaArray.map(d => d.peso),
                 backgroundColor: gradientFill,
                 borderColor: gradientStroke,
                 pointBorderColor: gradientStroke,
@@ -337,23 +458,34 @@ async function generateCharts() {
 
 
     // 5 - Volume descarregado por cliente
-    const dadosVolumeCliente = await getDischargingData('descarregadoCliente');
+    // const dadosVolumeCliente = await getDischargingData('descarregadoCliente');
+    const dadosVolumeCliente = filteredDataDischarged.reduce((acc, d) => {
+        acc[d.cliente] = acc[d.cliente] || { peso: 0 };
+        acc[d.cliente].peso += d.peso;
+        return acc;
+    }, {});
+
+    const dadosVolumeClienteArray = Object.keys(dadosVolumeCliente).map(cliente => ({
+        cliente: cliente,
+        peso: dadosVolumeCliente[cliente].peso
+    }));
+
     const noDataGraficoVolumeCliente = document.getElementById('emptyGraficoVolumeCliente');
     const dataGraficoVolumeCliente = document.getElementById('graficoVolumeCliente');
 
     dataGraficoVolumeCliente.style.visibility = 'hidden';
     noDataGraficoVolumeCliente.style.visibility = 'visible';
-    if (dadosVolumeCliente.length > 0) {
+    if (dadosVolumeClienteArray.length > 0) {
         noDataGraficoVolumeCliente.style.visibility = 'hidden';
         dataGraficoVolumeCliente.style.visibility = 'visible';
 
         graficoVolumeCliente = new Chart('graficoVolumeCliente', {
             type: 'horizontalBar',
             data: {
-                labels: dadosVolumeCliente.map(d => d.cliente),
+                labels: dadosVolumeClienteArray.map(d => d.cliente),
                 datasets: [{
                     label: 'Peso',
-                    data: dadosVolumeCliente.map(d => d.peso),
+                    data: dadosVolumeClienteArray.map(d => d.peso),
                     backgroundColor: 'rgba(61, 68, 101, 0.8)',
                     borderColor: 'rgba(61, 68, 101, 1)',
                     borderWidth: 1
@@ -366,19 +498,26 @@ async function generateCharts() {
         });
     }
 
-    // // Assume you have a second set of data
-    const dadosVolumeDiaPeriodo = await getDischargingData('descarregadoDiaPeriodo');
+    const groupedData = filteredDataDischarged.reduce((acc, d) => {
+        const key = `${d.data}-${d.periodo}`; // Combine data and periodo into a single key
+        if (!acc[key]) {
+            acc[key] = { data: d.data, periodo: d.periodo, peso: 0 };
+        }
+        acc[key].peso += d.peso;
+        return acc;
+    }, {});
+    
+    const dataArray = Object.values(groupedData);
 
     // Group data by 'periodo'
-    const dadosAgrupadosDiaPeriodo = dadosVolumeDiaPeriodo.reduce((acc, d) => {
+    const dadosAgrupadosDiaPeriodo = dataArray.reduce((acc, d) => {
         acc[d.periodo] = acc[d.periodo] || [];
         acc[d.periodo].push(d);
         return acc;
     }, {});
 
-
     // Create a unique set of 'data' values
-    const datasUnicas = [...new Set(dadosVolumeDiaPeriodo.map(d => d.data))];
+    const datasUnicas = [...new Set(dataArray.map(d => d.data))];
 
     // Create a dataset for each 'periodo'
     const datasets = Object.keys(dadosAgrupadosDiaPeriodo).map((periodo, i) => {
@@ -402,7 +541,7 @@ async function generateCharts() {
 
     dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
     noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-    if (dadosVolumeDiaPeriodo.length > 0) {
+    if (dataArray.length > 0) {
         noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
         dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
 
@@ -422,38 +561,16 @@ async function generateCharts() {
     }
 }
 
-async function getDischargingData(agrupamento){
-
-    const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value]
-    const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroPorao = Array.from(document.getElementById('lista-porao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroCliente = Array.from(document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroArmazem = Array.from(document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-
-    console.log('filtros: ', filtroNavio, filtroData, filtroPeriodo, filtroPorao, filtroCliente, filtroArmazem, filtroProduto, filtroDI)
-
+async function getUniqueVessels(){
     var request = {
         url: "shipDischarging/shipDischargingController.php",
         method: 'POST',
-        data: [{
+        data: [
+        {
             name: 'action',
-            value: agrupamento
-        }, {
-            name: 'where',
-            value: JSON.stringify({
-                navio: filtroNavio ? filtroNavio : null,
-                data: filtroData ? filtroData : null,
-                periodo: filtroPeriodo ? filtroPeriodo : null,
-                porao: filtroPorao ? parseInt(filtroPorao) : null,
-                cliente: filtroCliente ? filtroCliente : null,
-                armazem: filtroArmazem ? filtroArmazem : null,
-                produto: filtroProduto ? filtroProduto : null,
-                di: filtroDI ? filtroDI : null
-            })
-        }],
+            value: 'uniqueVessels'
+        }
+    ],
         dataType: 'json'
     };
 
@@ -464,54 +581,32 @@ async function getDischargingData(agrupamento){
             if(response.error) {
                 error.innerHTML = response.error;
                 reject(response.error);
-                console.log(response.error)
             } else {
-                console.log(response.query)
                 resolve(response.data);
             }
         }).fail(function(response) {
-            console.log(response.query)
-            console.log(response)
             reject(response.error);
         })
     });
 }
 
-async function getUniqueData(campo){
+async function getVesselData($type, $vessel){
 
-    const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value]
-    const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroPorao = Array.from(document.getElementById('lista-porao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroCliente = Array.from(document.getElementById('lista-cliente').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroArmazem = Array.from(document.getElementById('lista-armazem').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
-    const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)//.join(', ');
+    $key = $type == 'discharged' ? 'vesselDataDischarged' : 'vesselDataPlanned';
 
     var request = {
         url: "shipDischarging/shipDischargingController.php",
         method: 'POST',
-        data: [{
+        data: [
+        {
             name: 'action',
-            value: 'readUnique'
-        }, {
-            name: 'campo',
-            value: campo
-        },{
-            name: 'where',
-            value: JSON.stringify({
-                navio: filtroNavio ? filtroNavio : null,
-                data: filtroData ? filtroData : null,
-                periodo: filtroPeriodo ? filtroPeriodo : null,
-                porao: filtroPorao ? parseInt(filtroPorao) : null,
-                cliente: filtroCliente ? filtroCliente : null,
-                armazem: filtroArmazem ? filtroArmazem : null,
-                produto: filtroProduto ? filtroProduto : null,
-                di: filtroDI ? filtroDI : null,
-                peso: 0
-            })
-        
-        }],
+            value: $key
+        },
+        {
+            name: 'navio',
+            value: $vessel
+        }
+    ],
         dataType: 'json'
     };
 
@@ -522,16 +617,11 @@ async function getUniqueData(campo){
             if(response.error) {
                 error.innerHTML = response.error;
                 reject(response.error);
-                console.log(response.error)
             } else {
-                console.log(response.query)
                 resolve(response.data);
             }
         }).fail(function(response) {
-            console.log(response.query)
-            console.log(response)
             reject(response.error);
         })
     });
-
 }
