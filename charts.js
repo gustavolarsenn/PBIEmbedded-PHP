@@ -3,6 +3,15 @@ window.addEventListener("load", async function() {
     generateCharts();
 });
 
+var jaFiltradoPeriodo = [];
+var jaFiltradoPorao = [];
+var jaFiltradoCliente = [];
+var jaFiltradoArmazem = [];
+var jaFiltradoProduto = [];
+var jaFiltradoDI = [];
+
+var count = 0;
+
 function renameKeys(obj, keyMap) {
     return Object.keys(obj).reduce((acc, key) => {
         const newKey = keyMap[key] || key; // Use new key name if it exists in the mapping, otherwise use the original key
@@ -13,15 +22,7 @@ function renameKeys(obj, keyMap) {
 
 async function generateFilters(campo, filterData){
     const filterField = document.getElementById(`lista-${campo}`);
-    
-    // const newData = await getUniqueData(campo);
 
-    // try {
-    //     var filteredData = filterData.filter(item => !newData.includes(item));
-    // } catch (error) {
-    //     console.log(error, 'Undefined', campo)
-    // }
-    
     const keyMapping = {
         0: 'value',
         [campo]: 'text',
@@ -31,38 +32,75 @@ async function generateFilters(campo, filterData){
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
     new MultiSelect(`#lista-${campo}`, {
-        data: renamedFilteredData,
-        placeholder: 'Todos',
-        keepOpen: true,
-        multiple: true,
-        search: true,
-        selectAll: true,
-        count: true,
-    });
-
-    filteredData.forEach((item) => {
-        const option = document.createElement("option");
-        option.value = Object.values(item)[0];
-        option.text = Object.values(item)[0];
-        
-        if (option in filteredData) return;
-        filterField.appendChild(option);
+            data: renamedFilteredData,
+            placeholder: 'Todos',
+            keepOpen: true,
+            multiple: true,
+            search: true,
+            selectAll: true,
+            count: true,
+            keepOpen: true,
         });
 }
 
-// function cleanFilters(){
-//     document.getElementById('lista-navio').innerHTML = '';
-//     document.getElementById('data').innerHTML = '';
-//     document.getElementById('lista-periodo').innerHTML = '';
-//     document.getElementById('lista-porao').innerHTML = '';
-//     document.getElementById('lista-cliente').innerHTML = '';
-//     document.getElementById('lista-armazem').innerHTML = '';
-//     document.getElementById('lista-produto').innerHTML = '';
-//     document.getElementById('lista-di').innerHTML = '';
+async function updateFilters(campo, filterData){
+    const keyMapping = {
+        0: 'value',
+        [campo]: 'text',
+    };
 
-//     generateCharts();
-// }
+    let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
+    const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
+
+    const listaElement = document.getElementById(`lista-${campo}`);
+    const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
+    
+    if (campo === 'porao') console.log('porao', allOptions)
+    if (campo === 'periodo') console.log('periodo', allOptions)
+
+    allOptions.forEach(option => {
+        const value = option.getAttribute('data-value');
+        const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
+    
+        if (!filterData.map(String).includes(value) && !isSelected) {
+            // If the option is not in filterData and not already selected, remove or deselect it
+            // This example assumes you want to remove the option. If you need to deselect it instead, adjust accordingly.
+            option.remove();
+        }
+    });
+
+    // if (campo === 'periodo') console.log(filterField)
+    // filterData.forEach(item => {
+    //     if (document.getElementById(`lista-${campo}`).querySelector(`[data-value="${item}"]`)) {
+    //         document.getElementById(`lista-${campo}`).querySelector(`[data-value="${item}"]`).classList.add('multi-select-selected');
+    //     }
+    // });
+}
+
+function cleanFilters(){
+    document.getElementById('lista-navio').innerHTML = '';
+    document.getElementById('data').value = '';
+    document.getElementById('lista-periodo').innerHTML = '';
+    document.getElementById('lista-porao').innerHTML = '';
+    document.getElementById('lista-cliente').innerHTML = '';
+    document.getElementById('lista-armazem').innerHTML = '';
+    document.getElementById('lista-produto').innerHTML = '';
+    document.getElementById('lista-di').innerHTML = '';
+
+    count = 0;
+
+    jaFiltradoPeriodo = [];
+    jaFiltradoPorao = [];
+    jaFiltradoCliente = [];
+    jaFiltradoArmazem = [];
+    jaFiltradoProduto = [];
+    jaFiltradoDI = [];
+
+    generateCharts();
+}
 var graficoDescarregadoResto, graficoVolumeCliente, graficoVolumeDiaPeriodo, graficoVolumeDia, graficoRealizadoClienteDI, graficoRealizadoPorao;
+
+var count = 0;
 
 async function generateCharts() {
     
@@ -74,8 +112,7 @@ async function generateCharts() {
     // Flatten the array of arrays to get a single array with all values
     const listaNaviosUnicos = arrayNaviosUnicos.flat();
 
-    const rawDate = document.getElementById('data').value;
-    const filtroData = rawDate === '' ? null : [new Date(rawDate).toISOString().replace('T', ' ').substring(0, 19)];
+    const filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value];
 
     const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
@@ -85,22 +122,40 @@ async function generateCharts() {
     const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
 
+    jaFiltradoPeriodo.push(...filtroPeriodo);
+    jaFiltradoPorao.push(...filtroPorao);
+    jaFiltradoCliente.push(...filtroCliente);
+    jaFiltradoArmazem.push(...filtroArmazem);
+    jaFiltradoProduto.push(...filtroProduto);
+    jaFiltradoDI.push(...filtroDI);
+    
     const navioSelecionado = filtroNavio.length > 0 ? filtroNavio[0] : listaNavio[0].navio;
 
     const dataDischarged = await getVesselData('discharged', navioSelecionado);
+
+    const formattedDataDischarged = dataDischarged.map(item => {
+        if (item.data) {
+            // Split the date string by space and take the first part (date)
+            const formattedDate = item.data.split(' ')[0];
+
+            // Return a new object with the formatted date
+            return { ...item, data: formattedDate };
+        }
+    });
+
     const dataPlanned = await getVesselData('planned', navioSelecionado);
 
     // Assuming the structure of each item in `data` is known and matches the filter criteria
-    const filteredDataDischarged = dataDischarged.filter((item) => {
+    const filteredDataDischarged = formattedDataDischarged.filter((item) => {
         // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
         const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
         const matchesData = !filtroData || filtroData.includes(item.data); // Assuming `item.data` is in the same format as `filtroData`
-        const matchesPeriodo = filtroPeriodo.length === 0 || filtroPeriodo.includes(`'${item.periodo}'`);
-        const matchesPorao = filtroPorao.length === 0 || filtroPorao.includes(`'${item.porao}'`);
-        const matchesCliente = filtroCliente.length === 0 || filtroCliente.includes(`'${item.cliente}'`);
-        const matchesArmazem = filtroArmazem.length === 0 || filtroArmazem.includes(`'${item.armazem}'`);
-        const matchesProduto = filtroProduto.length === 0 || filtroProduto.includes(`'${item.produto}'`);
-        const matchesDI = filtroDI.length === 0 || filtroDI.includes(`'${item.di}'`);
+        const matchesPeriodo = jaFiltradoPeriodo.length === 0 || jaFiltradoPeriodo.includes(`'${item.periodo}'`);
+        const matchesPorao = jaFiltradoPorao.length === 0 || jaFiltradoPorao.includes(`'${item.porao}'`);
+        const matchesCliente = jaFiltradoCliente.length === 0 || jaFiltradoCliente.includes(`'${item.cliente}'`);
+        const matchesArmazem = jaFiltradoArmazem.length === 0 || jaFiltradoArmazem.includes(`'${item.armazem}'`);
+        const matchesProduto = jaFiltradoProduto.length === 0 || jaFiltradoProduto.includes(`'${item.produto}'`);
+        const matchesDI = jaFiltradoDI.length === 0 || jaFiltradoDI.includes(`'${item.di}'`);
 
         // A record must match all active filters to be included
         return matchesNavio && matchesData && matchesPeriodo && matchesPorao && matchesCliente && matchesArmazem && matchesProduto && matchesDI;
@@ -110,10 +165,10 @@ async function generateCharts() {
     const filteredDataPlanned = dataPlanned.filter((item) => {
         // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
         const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
-        const matchesCliente = filtroCliente.length === 0 || filtroCliente.includes(`'${item.cliente}'`);
-        const matchesArmazem = filtroArmazem.length === 0 || filtroArmazem.includes(`'${item.armazem}'`);
-        const matchesProduto = filtroProduto.length === 0 || filtroProduto.includes(`'${item.produto}'`);
-        const matchesDI = filtroDI.length === 0 || filtroDI.includes(`'${item.di}'`);
+        const matchesCliente = jaFiltradoCliente.length === 0 || jaFiltradoCliente.includes(`'${item.cliente}'`);
+        const matchesArmazem = jaFiltradoArmazem.length === 0 || jaFiltradoArmazem.includes(`'${item.armazem}'`);
+        const matchesProduto = jaFiltradoProduto.length === 0 || jaFiltradoProduto.includes(`'${item.produto}'`);
+        const matchesDI = jaFiltradoDI.length === 0 || jaFiltradoDI.includes(`'${item.di}'`);
 
         // A record must match all active filters to be included
         return matchesNavio && matchesCliente && matchesArmazem && matchesProduto && matchesDI;
@@ -133,14 +188,26 @@ async function generateCharts() {
     if (graficoVolumeDia) graficoVolumeDia.destroy();
     if (graficoRealizadoClienteDI) graficoRealizadoClienteDI.destroy();
     if (graficoRealizadoPorao) graficoRealizadoPorao.destroy();
+    
+    if (count < 1) {
+        generateFilters('navio', listaNaviosUnicos);
+        generateFilters('periodo', listaPeriodo);
+        generateFilters('porao', listaPorao);
+        generateFilters('cliente', listaCliente);
+        generateFilters('armazem', listaArmazem);
+        generateFilters('produto', listaProduto);
+        generateFilters('di', listaDI);
+    } else {
+        updateFilters('navio', listaNaviosUnicos);
+        updateFilters('periodo', listaPeriodo);
+        updateFilters('porao', listaPorao);
+        updateFilters('cliente', listaCliente);
+        updateFilters('armazem', listaArmazem);
+        updateFilters('produto', listaProduto);
+        updateFilters('di', listaDI);
+    }
 
-    generateFilters('navio', listaNaviosUnicos, filtroNavio);
-    generateFilters('periodo', listaPeriodo, filtroPeriodo);
-    generateFilters('porao', listaPorao, filtroPorao);
-    generateFilters('cliente', listaCliente, filtroCliente);
-    generateFilters('armazem', listaArmazem, filtroArmazem);
-    generateFilters('produto', listaProduto, filtroProduto);
-    generateFilters('di', listaDI, filtroDI);
+    count++;
 
     const barOptions = {
             scales: {
@@ -336,24 +403,26 @@ async function generateCharts() {
     dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
     noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
 
-    if (mergedDadosArray.length > 0) {
+    const mergedDadosArrayFiltered = mergedDadosArray.filter(row => "peso" in row);
+
+    if (mergedDadosArrayFiltered.length > 0) {
         noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
         dataGraficoRealizadoClienteDI.style.visibility = 'visible';
 
     graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
         type: 'horizontalBar',
         data: {
-            labels: mergedDadosArray.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
+            labels: mergedDadosArrayFiltered.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
             datasets: [{
                 label: 'Realizado',
-                data: mergedDadosArray.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
+                data: mergedDadosArrayFiltered.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(82, 183, 136, 0.5)',
                 borderColor: 'rgba(82, 183, 136, 0.65)',
                 borderWidth: 1
             },
             {
                 label: 'Restante',
-                data: mergedDadosArray.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
+                data: mergedDadosArrayFiltered.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
                 backgroundColor: 'rgba(54, 162, 235, 0.05)',
                 borderColor: 'rgba(54, 162, 235, 0.5)',
                 borderWidth: 1
