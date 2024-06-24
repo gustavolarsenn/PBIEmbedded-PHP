@@ -129,7 +129,8 @@ async function generateCharts() {
     const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
 
     const filtroNavioLimpo = filtroNavio.map(item => item.replace(/^'(.*)'$/, '$1'));
-    console.log(filtroNavioLimpo)
+
+    if (filtroNavioLimpo.length > 0) count = 0;
 
     jaFiltradoPeriodo.push(...filtroPeriodo);
     jaFiltradoPorao.push(...filtroPorao);
@@ -142,12 +143,7 @@ async function generateCharts() {
 
     const dataDischarged = await getVesselData('discharged', navioSelecionado);
 
-    console.log(vesselName)
-
-    
     vesselName.innerText = navioSelecionado;
-    console.log('Navio selecionado: ', navioSelecionado)
-    console.log(dataDischarged)
 
     const formattedDataDischarged = dataDischarged.map(item => {
         if (item.data) {
@@ -191,12 +187,12 @@ async function generateCharts() {
     });
 
     // const listaNavio = [...new Set(filteredData.map(d => d.navio))];
-    const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))];
-    const listaPorao = [...new Set(filteredDataDischarged.map(d => d.porao))];
-    const listaCliente = [...new Set(filteredDataDischarged.map(d => d.cliente))];
-    const listaArmazem = [...new Set(filteredDataDischarged.map(d => d.armazem))];
-    const listaProduto = [...new Set(filteredDataDischarged.map(d => d.produto))];
-    const listaDI = [...new Set(filteredDataDischarged.map(d => d.di))];
+    const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
+    const listaPorao = [...new Set(filteredDataDischarged.map(d => d.porao))].sort();
+    const listaCliente = [...new Set(filteredDataDischarged.map(d => d.cliente))].sort();
+    const listaArmazem = [...new Set(filteredDataDischarged.map(d => d.armazem))].sort();
+    const listaProduto = [...new Set(filteredDataDischarged.map(d => d.produto))].sort();
+    const listaDI = [...new Set(filteredDataDischarged.map(d => d.di))].sort();
 
     if (graficoDescarregadoResto) graficoDescarregadoResto.destroy();
     if (graficoVolumeCliente) graficoVolumeCliente.destroy();
@@ -664,12 +660,9 @@ async function getUniqueVessels(){
                 console.log(response.message)
                 reject(response.error);
             } else {
-                // console.log("5")
-                // console.log(response.message)
                 resolve(response.data);
             }
         }).fail(function(response) {
-            console.log(response)
             console.log(response.error)
             reject(response.error);
         })
@@ -705,7 +698,6 @@ async function getVesselData($type, $vessel){
                 console.log(response.message)
                 reject(response.error);
             } else {
-                // console.log(response.message)
                 resolve(response.data);
             }
         }).fail(function(response) {
