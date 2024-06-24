@@ -3,6 +3,8 @@ window.addEventListener("load", async function() {
     generateCharts();
 });
 
+var vesselName = document.getElementById('vessel-name');
+
 var jaFiltradoPeriodo = [];
 var jaFiltradoPorao = [];
 var jaFiltradoCliente = [];
@@ -31,16 +33,27 @@ async function generateFilters(campo, filterData){
     let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
-    new MultiSelect(`#lista-${campo}`, {
-            data: renamedFilteredData,
-            placeholder: 'Todos',
-            keepOpen: true,
-            multiple: true,
-            search: true,
-            selectAll: true,
-            count: true,
-            keepOpen: true,
-        });
+
+    let multiSelectOptions = {
+        data: renamedFilteredData,
+        placeholder: 'Todos',
+        multiple: true,
+        search: true,
+        selectAll: true,
+        count: true,
+        keepOpen: true,
+        listAll: false
+    } 
+
+    if (campo === 'navio') {
+        multiSelectOptions['multiple'] = false;
+        multiSelectOptions['selectAll'] = false;
+        multiSelectOptions['listAll'] = false;
+    } 
+
+    new MultiSelect(`#lista-${campo}`, 
+        multiSelectOptions
+    );
 }
 
 async function updateFilters(campo, filterData){
@@ -68,13 +81,6 @@ async function updateFilters(campo, filterData){
             option.remove();
         }
     });
-
-    // if (campo === 'periodo') console.log(filterField)
-    // filterData.forEach(item => {
-    //     if (document.getElementById(`lista-${campo}`).querySelector(`[data-value="${item}"]`)) {
-    //         document.getElementById(`lista-${campo}`).querySelector(`[data-value="${item}"]`).classList.add('multi-select-selected');
-    //     }
-    // });
 }
 
 function cleanFilters(){
@@ -122,6 +128,9 @@ async function generateCharts() {
     const filtroProduto = Array.from(document.getElementById('lista-produto').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroDI = Array.from(document.getElementById('lista-di').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
 
+    const filtroNavioLimpo = filtroNavio.map(item => item.replace(/^'(.*)'$/, '$1'));
+    console.log(filtroNavioLimpo)
+
     jaFiltradoPeriodo.push(...filtroPeriodo);
     jaFiltradoPorao.push(...filtroPorao);
     jaFiltradoCliente.push(...filtroCliente);
@@ -129,9 +138,16 @@ async function generateCharts() {
     jaFiltradoProduto.push(...filtroProduto);
     jaFiltradoDI.push(...filtroDI);
     
-    const navioSelecionado = filtroNavio.length > 0 ? filtroNavio[0] : listaNavio[0].navio;
+    const navioSelecionado = filtroNavioLimpo.length > 0 ? filtroNavioLimpo[0] : listaNavio[0].navio;
 
     const dataDischarged = await getVesselData('discharged', navioSelecionado);
+
+    console.log(vesselName)
+
+    
+    vesselName.innerText = navioSelecionado;
+    console.log('Navio selecionado: ', navioSelecionado)
+    console.log(dataDischarged)
 
     const formattedDataDischarged = dataDischarged.map(item => {
         if (item.data) {
@@ -466,7 +482,6 @@ async function generateCharts() {
     gradientStroke.addColorStop(1, "rgba(128, 182, 244, 1)");
     gradientStroke.addColorStop(0, "rgba(61, 68, 101, 1)");
 
-    
     var gradientFill = ctx.createLinearGradient(500, 0, 100, 0);
     gradientFill.addColorStop(1, "rgba(128, 182, 244, 0.3)");
     gradientFill.addColorStop(0, "rgba(61, 68, 101, 0.3)");
@@ -524,7 +539,6 @@ async function generateCharts() {
         }
     });
     }
-
 
     // 5 - Volume descarregado por cliente
     // const dadosVolumeCliente = await getDischargingData('descarregadoCliente');
@@ -625,11 +639,9 @@ async function generateCharts() {
             maintainAspectRatio: false
         }
     });
-}
-
+        }
     }
 }
-
 async function getUniqueVessels(){
     var request = {
         url: "shipDischarging/shipDischargingController.php",
@@ -649,11 +661,16 @@ async function getUniqueVessels(){
             const error = document.getElementById('error-message');
             if(response.error) {
                 error.innerHTML = response.error;
+                console.log(response.message)
                 reject(response.error);
             } else {
+                // console.log("5")
+                // console.log(response.message)
                 resolve(response.data);
             }
         }).fail(function(response) {
+            console.log(response)
+            console.log(response.error)
             reject(response.error);
         })
     });
@@ -685,11 +702,14 @@ async function getVesselData($type, $vessel){
             const error = document.getElementById('error-message');
             if(response.error) {
                 error.innerHTML = response.error;
+                console.log(response.message)
                 reject(response.error);
             } else {
+                // console.log(response.message)
                 resolve(response.data);
             }
         }).fail(function(response) {
+            console.log(response.error);
             reject(response.error);
         })
     });

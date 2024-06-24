@@ -157,6 +157,9 @@ if (isset($_GET['json'])) {
 
         <div class="content-body">
             <div class="container-fluid">
+
+                <h1 id="vessel-name" style="text-align: center; padding: 10px;"></h1>
+                
                 <div class="filter-container">
                     <div class="input-label">
                         <label>Navio</label>

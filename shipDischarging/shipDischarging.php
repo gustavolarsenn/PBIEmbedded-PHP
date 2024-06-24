@@ -77,19 +77,23 @@
         $stmt = $pdo->prepare('SELECT * FROM shipdischarging WHERE navio = :navio');
         $stmt->bindParam(':navio', $navio);
         $stmt->execute();
-        return json_encode(['data' => $stmt->fetchAll()]);
+        return json_encode(['data' => $stmt->fetchAll(), 'message' => 'Dados do navio realizado']);
     }
 
     public function pegarDadosNavioPlanejado($pdo, $navio){
         $stmt = $pdo->prepare('SELECT * FROM shipplanned WHERE navio = :navio');
         $stmt->bindParam(':navio', $navio);
         $stmt->execute();
-        return json_encode(['data' => $stmt->fetchAll()]);
+        return json_encode(['data' => $stmt->fetchAll(), 'message' => 'Dados do navio planejado']);
     }
 
     public function pegarNaviosUnicos($pdo){
-        $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
-        $stmt->execute();
-        return json_encode(['data' => $stmt->fetchAll()]);
+        try {
+            $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
+            $stmt->execute();
+            return json_encode(['data' => $stmt->fetchAll(), 'message' => 'Navios únicos']);
+        } catch (PDOException $e) {
+            return json_encode(['message' => $e->getMessage()]);
+        }
     }
 }
