@@ -1,6 +1,8 @@
 <?php
-require 'SessionManager.php';
 
+$basePath = '..'; // Adjust this path as needed 
+
+require $basePath . '/SessionManager.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -20,13 +22,13 @@ if (isset($_GET['json'])) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
-    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
-    <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
-    <link href="./css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/charts.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
+    <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/charts.css">
 
-    <link href="css/MultiSelect.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo $basePath; ?>/css/MultiSelect.css" rel="stylesheet" type="text/css">
 </head>
 <style>
 
@@ -49,8 +51,8 @@ if (isset($_GET['json'])) {
 
         <div class="nav-header">
             <a href="index.php" class="brand-logo">
-                <img class="logo-compact" src="./images/logo-zport-branca-3x.png" alt="">
-                <img class="brand-title" src="./images/logo-zport-branca-3x.png" alt="">
+                <img class="logo-compact" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
+                <img class="brand-title" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
             </a>
 
             <div class="nav-control">
@@ -119,18 +121,18 @@ if (isset($_GET['json'])) {
 					
 					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-single-04"></i><span class="nav-text">Cadastro</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="cadNavios.php">Navios</a></li>	
-						<li><a href="cliente.php">Clientes</a></li>
-						<li><a href="carga.php">Carga</a></li>
+                        <li><a href="<?php echo $basePath; ?>/cadNavios.php">Navios</a></li>	
+						<li><a href="<?php echo $basePath; ?>/cliente.php">Clientes</a></li>
+						<li><a href="<?php echo $basePath; ?>/carga.php">Carga</a></li>
                         </ul>
                     </li>
 					
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-form"></i><span class="nav-text">Inclusão</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="Escala1.php">Escala</a></li>
-						<li><a href="paralizacao.php">Paralizações</a></li>
-						<li><a href="periodosTrabalhados.php">Periodo Trabalhado</a></li>
-						<li><a href="planoDistribuicao.php">Plano de Distribuição</a></li>
+                        <li><a href="<?php echo $basePath; ?>/Escala1.php">Escala</a></li>
+						<li><a href="<?php echo $basePath; ?>/paralizacao.php">Paralizações</a></li>
+						<li><a href="<?php echo $basePath; ?>/periodosTrabalhados.php">Periodo Trabalhado</a></li>
+						<li><a href="<?php echo $basePath; ?>/planoDistribuicao.php">Plano de Distribuição</a></li>
 						
                         </ul>
                     </li>
@@ -138,10 +140,11 @@ if (isset($_GET['json'])) {
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon icon-layout-25"></i><span class="nav-text">Relatórios</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="relatorioEscala1.php">Relatório de Escala</a></li>	
-						<li><a href="solRelatorioDescarga1.php">Relatório por periodo</a></li>
-						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
-						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
+                        <li><a href="<?php echo $basePath; ?>/relatorioEscala1.php">Relatório de Escala</a></li>	
+						<li><a href="<?php echo $basePath; ?>/solRelatorioDescarga1.php">Relatório por periodo</a></li>
+						<li><a href="<?php echo $basePath; ?>/solRelatorioCliente.php">Relatório por cliente</a></li>
+						<li><a href="<?php echo $basePath; ?>/cadChuvaNavio.php">Relatório Chuva</a></li>
+						<li><a href="<?php echo $basePath; ?>/relatorios/relatorio_balanca.php">Relatório Balança</a></li>
                         </ul>
                     </li>
 
@@ -203,15 +206,15 @@ if (isset($_GET['json'])) {
                     <div class="input-label">
                         <input type="button" value="Filtrar" onclick="generateCharts()">
                     </div>
-                    <div class="input-label">
-                        <svg xmlns="http://www.w3.org/2000/svg" onclick='cleanFilters()' width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto">
+                    <div class="input-label" style="width: 5%">
+                        <svg xmlns="http://www.w3.org/2000/svg" onclick='cleanFilters()' width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto 10px;">
                             <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
                         </svg>
                     </div>
                 </div>
                 <section>
                         <div style="min-width: 100%; display: flex;">
-                            <div style="width: 30%; max-height: 60vh; min-height: fit-content; margin-left: 10px;">
+                            <div style="width: 30%; height: 60vh; margin-left: 10px;">
                                 <div class="chart chart-small-block" style="margin-bottom: 10px;">
                                     <label class="label-chart">Total descarregado / Restante</label>
                                     <canvas id="graficoDescarregadoResto" class='any-chart'></canvas>
@@ -265,29 +268,30 @@ if (isset($_GET['json'])) {
     </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script src="MultiSelect.js"></script>
-<script src="charts.js"></script>
+<script src="<?php echo $basePath; ?>/js/relatorios/MultiSelect.js"></script>
+<script src="<?php echo $basePath; ?>/js/relatorios/charts.js"></script>
 
     <!-- Required vendors -->
-    <script src="./vendor/global/global.min.js"></script>
-    <script src="./js/quixnav-init.js"></script>
-    <script src="./js/custom.min.js"></script>
-	<script src="./js/logout.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>
+    <script src="<?php echo $basePath; ?>/js/quixnav-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
+	<script src="<?php echo $basePath; ?>/js/logout.js"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/pbi_report.js"></script>
     
-    <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>
     
 	<!-- Form validate init -->
-    <script src="./js/plugins-init/jquery.validate-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/jquery.validate-init.js"></script>
 
     <!-- Chart ChartJS plugin files -->
-    <script src="./vendor/chart.js/Chart.bundle.min.js"></script>
-    <script src="./js/plugins-init/chartjs-init.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/chartjs-init.js"></script>
 
     <!-- Form step init -->
-    <script src="./js/plugins-init/jquery-steps-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/jquery-steps-init.js"></script>
 
-    <script src="MultiSelect.js"></script>
+    <script src="<?php echo $basePath; ?>/js/relatorios/MultiSelect.js"></script>
 
     </body>
 </html>

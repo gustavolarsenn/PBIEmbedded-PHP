@@ -5,6 +5,7 @@ window.addEventListener("load", async function() {
 
 var vesselName = document.getElementById('vessel-name');
 
+var jaFoiFiltradoNavio = '';
 var jaFiltradoPeriodo = [];
 var jaFiltradoPorao = [];
 var jaFiltradoCliente = [];
@@ -95,6 +96,7 @@ function cleanFilters(){
 
     count = 0;
 
+    jaFoiFiltradoNavio = '';
     jaFiltradoPeriodo = [];
     jaFiltradoPorao = [];
     jaFiltradoCliente = [];
@@ -109,7 +111,6 @@ var graficoDescarregadoResto, graficoVolumeCliente, graficoVolumeDiaPeriodo, gra
 var count = 0;
 
 async function generateCharts() {
-    
     const listaNavio = await getUniqueVessels();
 
     // Map through listaNavio, convert each object's values to a Set to remove duplicates, then convert back to array
@@ -130,14 +131,12 @@ async function generateCharts() {
 
     const filtroNavioLimpo = filtroNavio.map(item => item.replace(/^'(.*)'$/, '$1'));
 
-    if (filtroNavioLimpo.length > 0) count = 0;
-
-    jaFiltradoPeriodo.push(...filtroPeriodo);
-    jaFiltradoPorao.push(...filtroPorao);
-    jaFiltradoCliente.push(...filtroCliente);
-    jaFiltradoArmazem.push(...filtroArmazem);
-    jaFiltradoProduto.push(...filtroProduto);
-    jaFiltradoDI.push(...filtroDI);
+    jaFiltradoPeriodo = filtroPeriodo;
+    jaFiltradoPorao = filtroPorao;
+    jaFiltradoCliente = filtroCliente;
+    jaFiltradoArmazem = filtroArmazem;
+    jaFiltradoProduto = filtroProduto;
+    jaFiltradoDI = filtroDI;
     
     const navioSelecionado = filtroNavioLimpo.length > 0 ? filtroNavioLimpo[0] : listaNavio[0].navio;
 
@@ -201,8 +200,8 @@ async function generateCharts() {
     if (graficoRealizadoClienteDI) graficoRealizadoClienteDI.destroy();
     if (graficoRealizadoPorao) graficoRealizadoPorao.destroy();
     
-    if (count < 1) {
-        generateFilters('navio', listaNaviosUnicos);
+    if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
+        if (count < 1) generateFilters('navio', listaNaviosUnicos);
         generateFilters('periodo', listaPeriodo);
         generateFilters('porao', listaPorao);
         generateFilters('cliente', listaCliente);
@@ -210,7 +209,7 @@ async function generateCharts() {
         generateFilters('produto', listaProduto);
         generateFilters('di', listaDI);
     } else {
-        updateFilters('navio', listaNaviosUnicos);
+        // updateFilters('navio', listaNaviosUnicos);
         updateFilters('periodo', listaPeriodo);
         updateFilters('porao', listaPorao);
         updateFilters('cliente', listaCliente);
@@ -218,7 +217,8 @@ async function generateCharts() {
         updateFilters('produto', listaProduto);
         updateFilters('di', listaDI);
     }
-
+    
+    jaFoiFiltradoNavio = navioSelecionado;
     count++;
 
     const barOptions = {
@@ -640,7 +640,7 @@ async function generateCharts() {
 }
 async function getUniqueVessels(){
     var request = {
-        url: "shipDischarging/shipDischargingController.php",
+        url: "../shipDischarging/shipDischargingController.php",
         method: 'POST',
         data: [
         {
@@ -674,7 +674,7 @@ async function getVesselData($type, $vessel){
     $key = $type == 'discharged' ? 'vesselDataDischarged' : 'vesselDataPlanned';
 
     var request = {
-        url: "shipDischarging/shipDischargingController.php",
+        url: "../shipDischarging/shipDischargingController.php",
         method: 'POST',
         data: [
         {

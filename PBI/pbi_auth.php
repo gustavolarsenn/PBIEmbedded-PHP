@@ -3,8 +3,8 @@ require_once 'AzureAPI.php';
 require_once 'PowerBiReportDetails.php';
 require_once 'EmbedConfig.php';
 require_once 'ApiCalls.php';
-require_once 'config/database.php';
-require_once 'controller/pbi_reports.php';
+require_once '../config/database.php';
+require_once '../controller/pbi_reports.php';
 require_once 'PowerBISession.php';
 
 function pbi($actualLink){

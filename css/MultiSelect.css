@@ -11,7 +11,7 @@
     padding: 7px 30px 7px 12px;
     overflow: hidden;
     gap: 7px;
-    min-height: 45px;
+    min-height: 20px;
   }
   .multi-select .multi-select-header::after {
     content: "";
@@ -40,8 +40,8 @@
     display: inline-flex;
     align-items: center;
     background-color: #f3f4f7;
-    font-size: 14px;
-    padding: 3px 8px;
+    font-size: 12px;
+    /* padding: 3px 8px; */
     border-radius: 5px;
   }
   .multi-select .multi-select-header .multi-select-header-max {
@@ -79,13 +79,13 @@
     background: #b2b6b9;
   }
   .multi-select .multi-select-options .multi-select-option, .multi-select .multi-select-options .multi-select-all {
-    padding: 4px 12px;
-    height: 42px;
+    padding: 4px 4px;
+    height: 35px;
   }
   .multi-select .multi-select-options .multi-select-option .multi-select-option-radio, .multi-select .multi-select-options .multi-select-all .multi-select-option-radio {
-    margin-right: 14px;
-    height: 16px;
-    width: 16px;
+    margin-right: 6px;
+    height: 4px;
+    width: 4px;
     border: 1px solid #ced4da;
     border-radius: 4px;
   }
@@ -96,7 +96,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     color: inherit;
-    font-size: 16px;
+    font-size: 12px;
     line-height: 20px;
   }
   .multi-select .multi-select-options .multi-select-option.multi-select-selected .multi-select-option-radio, .multi-select .multi-select-options .multi-select-all.multi-select-selected .multi-select-option-radio {
@@ -120,17 +120,18 @@
     background-color: #f3f4f7;
   }
   .multi-select .multi-select-options .multi-select-all {
-    border-bottom: 1px solid #f1f3f5;
-    border-radius: 0;
+    /* border-bottom: 1px solid #f1f3f5;
+    border-radius: 0; */
   }
   .multi-select .multi-select-options .multi-select-search {
     padding: 7px 10px;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    margin: 10px 10px 5px 10px;
+    border: 0px;
+    border-bottom: 2px solid #f1f3f5;
+    border-radius: 0px;
+    /* margin: 10px 10px 5px 10px; */
     width: 100%;
     outline: none;
-    font-size: 16px;
+    font-size: 12px;
   }
   .multi-select .multi-select-options .multi-select-search::placeholder {
     color: #b2b5b9;
@@ -145,6 +146,6 @@
     display: flex;
     align-items: center;
     width: 100%;
-    font-size: 16px;
-    color: #212529;
+    font-size: 13px;
+    color: #212529c2;
   }

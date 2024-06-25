@@ -33,7 +33,6 @@ SessionManager::checarCsrfToken();
 
     <div id="main-wrapper">
 
-
         <div class="nav-header">
             <a href="index.php" class="brand-logo">
                 <!--<img class="logo-abbr" src="./images/logo-zport-branca-3x.png" alt="">-->
@@ -131,7 +130,7 @@ SessionManager::checarCsrfToken();
 						<li><a href="solRelatorioDescarga1.php">Relatório por periodo</a></li>
 						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
 						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
-						<li><a href="pbi_report.php">Relatório PowerBI</a></li>
+						<li><a href="relatorios/relatorio_balanca.php">Relatório Balança</a></li>
                         </ul>
                     </li>
 					

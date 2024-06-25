@@ -1,6 +1,9 @@
 <?php
-require 'PBI/pbi_auth.php';
-require 'SessionManager.php';
+
+$basePath = '..'; // Adjust this path as needed 
+
+require 'pbi_auth.php';
+require $basePath . '/SessionManager.php';
 
 
 SessionManager::checarSessao();
@@ -25,11 +28,11 @@ if (isset($_GET['json'])) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
-    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
-    <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
-    <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
-    <link href="./css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/pbi_reports.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
+    <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
+    <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/pbi_reports.css">
 </head>
 
 <body>
@@ -47,8 +50,8 @@ if (isset($_GET['json'])) {
 
         <div class="nav-header">
             <a href="index.php" class="brand-logo">
-                <img class="logo-compact" src="./images/logo-zport-branca-3x.png" alt="">
-                <img class="brand-title" src="./images/logo-zport-branca-3x.png" alt="">
+                <img class="logo-compact" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
+                <img class="brand-title" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
             </a>
 
             <div class="nav-control">
@@ -117,18 +120,18 @@ if (isset($_GET['json'])) {
 					
 					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-single-04"></i><span class="nav-text">Cadastro</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="cadNavios.php">Navios</a></li>	
-						<li><a href="cliente.php">Clientes</a></li>
-						<li><a href="carga.php">Carga</a></li>
+                        <li><a href="<?php echo $basePath; ?>/cadNavios.php">Navios</a></li>	
+						<li><a href="<?php echo $basePath; ?>/cliente.php">Clientes</a></li>
+						<li><a href="<?php echo $basePath; ?>/carga.php">Carga</a></li>
                         </ul>
                     </li>
 					
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-form"></i><span class="nav-text">Inclusão</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="Escala1.php">Escala</a></li>
-						<li><a href="paralizacao.php">Paralizações</a></li>
-						<li><a href="periodosTrabalhados.php">Periodo Trabalhado</a></li>
-						<li><a href="planoDistribuicao.php">Plano de Distribuição</a></li>
+                        <li><a href="<?php echo $basePath; ?>/Escala1.php">Escala</a></li>
+						<li><a href="<?php echo $basePath; ?>/paralizacao.php">Paralizações</a></li>
+						<li><a href="<?php echo $basePath; ?>/periodosTrabalhados.php">Periodo Trabalhado</a></li>
+						<li><a href="<?php echo $basePath; ?>/planoDistribuicao.php">Plano de Distribuição</a></li>
 						
                         </ul>
                     </li>
@@ -136,10 +139,11 @@ if (isset($_GET['json'])) {
                     <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
                                 class="icon icon-layout-25"></i><span class="nav-text">Relatórios</span></a>
                         <ul aria-expanded="false">
-                        <li><a href="relatorioEscala1.php">Relatório de Escala</a></li>	
-						<li><a href="solRelatorioDescarga1.php">Relatório por periodo</a></li>
-						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
-						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
+                        <li><a href="<?php echo $basePath; ?>/relatorioEscala1.php">Relatório de Escala</a></li>	
+						<li><a href="<?php echo $basePath; ?>/solRelatorioDescarga1.php">Relatório por periodo</a></li>
+						<li><a href="<?php echo $basePath; ?>/solRelatorioCliente.php">Relatório por cliente</a></li>
+						<li><a href="<?php echo $basePath; ?>/cadChuvaNavio.php">Relatório Chuva</a></li>
+						<li><a href="<?php echo $basePath; ?>/relatorios/relatorio_balanca.php">Relatório Balança</a></li>
                         </ul>
                     </li>
 
@@ -185,27 +189,27 @@ if (isset($_GET['json'])) {
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-	<script src="pbi_report.js"></script>
-    <script src="embed.js"></script>
+	<script src="<?php echo $basePath; ?>/js/pbi/pbi_report.js"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
 
     <!-- Required vendors -->
-    <script src="./vendor/global/global.min.js"></script>
-    <script src="./js/quixnav-init.js"></script>
-    <script src="./js/custom.min.js"></script>
-	<script src="./js/logout.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>
+    <script src="<?php echo $basePath; ?>/js/quixnav-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
+	<script src="<?php echo $basePath; ?>/js/logout.js"></script>
     
-    <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>
     
 	<!-- Form validate init -->
-    <script src="./js/plugins-init/jquery.validate-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/jquery.validate-init.js"></script>
 
     <!-- Chart ChartJS plugin files -->
-    <script src="./vendor/chart.js/Chart.bundle.min.js"></script>
-    <script src="./js/plugins-init/chartjs-init.js"></script>
+    <script src="<?php echo $basePath; ?>/vendor/chart.js/Chart.bundle.min.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/chartjs-init.js"></script>
 
     <!-- Form step init -->
-    <script src="./js/plugins-init/jquery-steps-init.js"></script>
+    <script src="<?php echo $basePath; ?>/js/plugins-init/jquery-steps-init.js"></script>
 
     </body>
 </html>
