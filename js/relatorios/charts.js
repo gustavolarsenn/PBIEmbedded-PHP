@@ -31,6 +31,8 @@ async function generateFilters(campo, filterData){
         [campo]: 'text',
     };
 
+    if (campo === 'armazem') console.log('Generate', filterData)
+    
     let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
@@ -63,25 +65,26 @@ async function updateFilters(campo, filterData){
         [campo]: 'text',
     };
 
+    if (campo === 'armazem') console.log('update', filterData)
+
     let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
     const listaElement = document.getElementById(`lista-${campo}`);
     const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
     
-    if (campo === 'porao') console.log('porao', allOptions)
-    if (campo === 'periodo') console.log('periodo', allOptions)
-
-    allOptions.forEach(option => {
-        const value = option.getAttribute('data-value');
-        const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
-    
-        if (!filterData.map(String).includes(value) && !isSelected) {
-            // If the option is not in filterData and not already selected, remove or deselect it
-            // This example assumes you want to remove the option. If you need to deselect it instead, adjust accordingly.
-            option.remove();
-        }
-    });
+        allOptions.forEach(option => {
+            const value = option.getAttribute('data-value');
+            const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
+        
+            if (!filterData.map(String).includes(value) && !isSelected) {
+                // If the option is not in filterData and not already selected, hide it
+                option.style.display = 'none';
+            } else {
+                // Otherwise, ensure it's visible
+                option.style.display = 'flex';
+            }
+        });
 }
 
 function cleanFilters(){

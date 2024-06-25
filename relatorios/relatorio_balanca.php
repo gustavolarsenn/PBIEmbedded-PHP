@@ -179,7 +179,7 @@ if (isset($_GET['json'])) {
                         </select>
                     </div>
                     <div class="input-label">
-                        <label>Porao</label>
+                        <label>Porão</label>
                         <select id="lista-porao" multiple data-multi-select>
                         </select>
                     </div>
