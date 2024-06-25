@@ -3,6 +3,11 @@ window.addEventListener("load", async function() {
     generateCharts();
 });
 
+// Ao trocar o valor do filtro de data, os gráficos são alterados com os valores atualizados
+document.getElementById('data').addEventListener('change', async function() {
+    await generateCharts();
+});
+
 var vesselName = document.getElementById('vessel-name');
 
 var jaFoiFiltradoNavio = '';
@@ -31,8 +36,6 @@ async function generateFilters(campo, filterData){
         [campo]: 'text',
     };
 
-    if (campo === 'armazem') console.log('Generate', filterData)
-    
     let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
 
@@ -45,7 +48,13 @@ async function generateFilters(campo, filterData){
         selectAll: true,
         count: true,
         keepOpen: true,
-        listAll: false
+        listAll: false,
+        onSelect: async function() {
+            await generateCharts();
+        },
+        onUnselect: async function() {
+            await generateCharts();
+        }
     } 
 
     if (campo === 'navio') {
@@ -55,17 +64,16 @@ async function generateFilters(campo, filterData){
     } 
 
     new MultiSelect(`#lista-${campo}`, 
-        multiSelectOptions
+        multiSelectOptions,
     );
 }
 
-async function updateFilters(campo, filterData){
+async function updateFilters(campo, filterData, alreadySelected){
+    if (alreadySelected.length < 1) {
     const keyMapping = {
         0: 'value',
         [campo]: 'text',
     };
-
-    if (campo === 'armazem') console.log('update', filterData)
 
     let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
     const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
@@ -85,6 +93,7 @@ async function updateFilters(campo, filterData){
                 option.style.display = 'flex';
             }
         });
+    }
 }
 
 function cleanFilters(){
@@ -122,7 +131,7 @@ async function generateCharts() {
     // Flatten the array of arrays to get a single array with all values
     const listaNaviosUnicos = arrayNaviosUnicos.flat();
 
-    const filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value];
+    let filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value];
 
     const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
@@ -145,6 +154,17 @@ async function generateCharts() {
 
     const dataDischarged = await getVesselData('discharged', navioSelecionado);
 
+    if (navioSelecionado !== jaFoiFiltradoNavio && count > 1) {
+        filtroData = null;
+        document.getElementById('data').value = ''
+        jaFiltradoArmazem = [];
+        jaFiltradoCliente = [];
+        jaFiltradoDI = [];
+        jaFiltradoPeriodo = [];
+        jaFiltradoPorao = [];
+        jaFiltradoProduto = [];
+
+    }
     vesselName.innerText = navioSelecionado;
 
     const formattedDataDischarged = dataDischarged.map(item => {
@@ -213,17 +233,20 @@ async function generateCharts() {
         generateFilters('di', listaDI);
     } else {
         // updateFilters('navio', listaNaviosUnicos);
-        updateFilters('periodo', listaPeriodo);
-        updateFilters('porao', listaPorao);
-        updateFilters('cliente', listaCliente);
-        updateFilters('armazem', listaArmazem);
-        updateFilters('produto', listaProduto);
-        updateFilters('di', listaDI);
+        updateFilters('periodo', listaPeriodo, jaFiltradoPeriodo);
+        updateFilters('porao', listaPorao, jaFiltradoPorao);
+        updateFilters('cliente', listaCliente, jaFiltradoCliente);
+        updateFilters('armazem', listaArmazem, jaFiltradoArmazem);
+        updateFilters('produto', listaProduto, jaFiltradoProduto);
+        updateFilters('di', listaDI, jaFiltradoDI);
     }
     
+    console.log('Selecionado', navioSelecionado)
+    console.log('Filtrado', jaFoiFiltradoNavio)
     jaFoiFiltradoNavio = navioSelecionado;
     count++;
-
+    console.log('Selecionado', navioSelecionado)
+    console.log('Filtrado', jaFoiFiltradoNavio)
     const barOptions = {
             scales: {
                 yAxes: [{
