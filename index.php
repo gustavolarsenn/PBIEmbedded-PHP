@@ -131,6 +131,7 @@ SessionManager::checarCsrfToken();
 						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
 						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
 						<li><a href="relatorios/relatorio_balanca.php">Relatório Balança</a></li>
+						<li><a href="relatorios/relatorio_controle_prancha.php">Controle de Prancha</a></li>
                         </ul>
                     </li>
 					

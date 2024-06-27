@@ -20,7 +20,7 @@ if (isset($_GET['json'])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Zport</title>
+    <title>Controle de Prancha</title>
 
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
@@ -161,11 +161,18 @@ if (isset($_GET['json'])) {
 
         <div class="content-body">
             <div class="container-fluid">
+
                 <h1 id="vessel-name" style="text-align: center; padding: 10px;"></h1>
+                
                 <div class="filter-container">
                     <div class="input-label">
                         <label>Navio</label>
                         <select id='lista-navio' data-multi-select>
+                        </select>
+                    </div>
+                    <div class="input-label">
+                        <label>Relatório nº</label>
+                        <select id="lista-no-relatorio" multiple data-multi-select>
                         </select>
                     </div>
                     <div class="input-label" >
@@ -175,11 +182,6 @@ if (isset($_GET['json'])) {
                     <div class="input-label">
                         <label>Período</label>
                         <select id='lista-periodo' multiple data-multi-select>
-                        </select>
-                    </div>
-                    <div class="input-label">
-                        <label>Porão</label>
-                        <select id="lista-porao" multiple data-multi-select>
                         </select>
                     </div>
                     <div class="input-label">
@@ -209,56 +211,92 @@ if (isset($_GET['json'])) {
                     </div>
                 </div>
                 <section>
-                        <div style="min-width: 100%; display: flex; margin: 10px 0;">
-                            <div style="width: 30%; height: 60vh; ">
-                                <div class="chart chart-small-block" style="margin-bottom: 10px; height: 30vh;">
+
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
+                                <div class="chart chart-small-block" style="width: 20%; height: 30vh;">
                                     <label class="label-chart">Total descarregado / Restante</label>
-                                    <canvas id="graficoDescarregadoResto" class='any-chart'></canvas>
+                                    <!-- <canvas id="graficoDescarregadoResto" class='any-chart'></canvas> -->
                                     <div id="emptyGraficoDescarregadoResto" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
-                                <div class="chart chart-small-block" style="height: 30vh;">
-                                    <label class="label-chart">Descarregamento por porão</label>
-                                    <canvas id="graficoRealizadoPorao" class='any-chart'></canvas>
-                                    <div id="emptyGraficoRealizadoPorao" class="no-data">
+                                <div class="chart chart-small-block" style="width: 20%; margin: 0 0 0 10px; height: 30vh;">
+                                    <!-- <label class="label-chart"></label> -->
+                                    <!-- <canvas id="graficoInfosNavio" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoInfosNavio" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
-                            </div>
-                                <div class="chart" style="width: 70%; height: 60vh; margin-left: 10px;">
-                                    <label class="label-chart">Volume por cliente e DI</label>
-                                    <canvas id="graficoRealizadoClienteDI" class='any-chart' ></canvas>
-                                    <div id="emptyGraficoRealizadoClienteDI" class="no-data" style="min-height: 7vh; height: 10vh;">
+                                <div class="chart chart-small-block" style="width: 20%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Resumo Geral</label>
+                                    <!-- <canvas id="graficoResumoGeralDuracao" class='any-chart' ></canvas> -->
+                                    <div id="emptyGraficoResumoGeralDuracao" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                                <div class="chart chart-small-block" style="width: 40%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Paralisações por <strong>chuva</strong></label>
+                                    <!-- <canvas id="graficoParalisacoesChuva" class='any-chart' ></canvas> -->
+                                    <div id="emptyGraficoParalisacoesChuva" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
                         </div>
-
-                        <div style="height: 40vh; margin: 10px 0; display: flex; ">
-                            <div class="chart half-chart">
-                                <label class="label-chart">Descarregado por dia</label>
-                                <canvas id="graficoVolumeDia" class="any-chart" style="padding: 30px 5px;"></canvas>
-                                <div id="emptyGraficoVolumeDia" class="no-data" style="min-height: 3vh; height: auto;">
-                                    <p>Nenhum valor encontrado!</p>
-                                </div>
-                            </div>
-                            <div class="chart half-chart" style="margin-left: 10px">
-                                <label class="label-chart">Volume por cliente</label>
-                                <canvas id="graficoVolumeCliente" class="any-chart" style="padding: 30px 5px;"></canvas>
-                                <div id="emptyGraficoVolumeCliente" class="no-data" style="min-height: 3vh; height: auto;">
-                                    <p>Nenhum valor encontrado!</p>
-                                </div>
-                            </div>
-                        </div>
-                            <div>
-                                <div class="chart full-chart" style="height: 40vh; display: grid;">
-                                    <label class="label-chart">Descarregamento por dia e período</label>
-                                    <canvas id="graficoVolumeDiaPeriodo" class="any-chart" style="max-height: 95%;"></canvas>
-                                    <div id="emptyGraficoVolumeDiaPeriodo" class="no-data" style="max-height: 95%;">
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
+                                <div class="chart chart-small-block" style="width: 20%; height: 30vh;">
+                                    <label class="label-chart">Prancha aferida 1</label>
+                                    <!-- <canvas id="graficoPranchaAferida1" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoPranchaAferida1" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
-                            </div>
+                                </div>
+                                <div class="chart chart-small-block" style="width: 20%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Prancha aferida 2</label>
+                                    <!-- <canvas id="graficoPranchaAferida2" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoPranchaAferida2" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                                <div class="chart chart-small-block" style="width: 20%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Prancha aferida 3</label>
+                                    <!-- <canvas id="graficoPranchaAferida3" class='any-chart' ></canvas> -->
+                                    <div id="emptyGraficoPranchaAferida3" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                                <div class="chart chart-small-block" style="width: 40%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Transporte (Paralisações por fila na balança/Congestionamento na rodovia)</label>
+                                    <!-- <canvas id="graficoRealizadoClienteDI" class='any-chart' ></canvas> -->
+                                    <div id="emptyGraficoRealizadoClienteDI" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
+                                <div class="chart chart-small-block" style="width: 60%; height: 30vh;">
+                                    <label class="label-chart">Total descarregado por dia, MT</label>
+                                    <!-- <canvas id="graficoDescarregadoPorDia" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoDescarregadoPorDia" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                                <div class="chart chart-small-block" style="width: 40%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Força maior/Outros (Paralisações por questões operacionais)</label>
+                                    <!-- <canvas id="graficoForcaMaiorOutros" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoForcaMaiorOutros" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                        </div>
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
+                                <div class="chart chart-small-block" style="width: 100%; height: 30vh;">
+                                    <label class="label-chart">Total descarregado por dia e período, MT</label>
+                                    <!-- <canvas id="graficoDescarregadoDiaPeriodo" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoDescarregadoDiaPeriodo" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
+                        </div>
                 </section>
     </div>
 
