@@ -43,7 +43,7 @@ class SessionManager{
     public static function checarSessao() {
         self::sessaoIniciada();
         if (empty($_SESSION['id_usuario'])){
-            header('Location: login.php');
+            header('Location: /login.php');
             exit;
         }
     }

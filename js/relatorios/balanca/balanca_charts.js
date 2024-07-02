@@ -201,6 +201,14 @@ async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
             legend: {
                 display: false
             },
+            layout: {
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 10,
+                    right: 10
+                }
+            },
             cutoutPercentage: 80,
         }
     });
@@ -254,7 +262,16 @@ async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
         {...horizontalBarOptions, 
             legend: {
                 display: true
-            }
+            },
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 15,
+                    left: 15,
+                    right: 15
+                }
+            },
+            responsive: true,
         },
         });
     }
@@ -335,7 +352,15 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
         {...horizontalBarOptions, 
             legend: {
                 display: true
-            }
+            },
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 15,
+                    left: 15,
+                    right: 15
+                }
+            },
         },
         });
     }
@@ -423,7 +448,15 @@ async function gerarGraficoVolumePorDia(dataDischarged) {
             }
         },
             responsive: true,
-            maintainAspectRatio: false
+            maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 15,
+                    left: 15,
+                    right: 15
+                }
+            },
         }
     });
     }
@@ -465,7 +498,16 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
                 }]
             },
             options: {...horizontalBarOptions,
-                maintainAspectRatio: false
+                responsive: true,
+                maintainAspectRatio: true,
+                layout: {
+                    padding: {
+                        top: 15,
+                        bottom: 15,
+                        left: 15,
+                        right: 15
+                    }
+                },
             }
         });
     }
@@ -527,7 +569,16 @@ async function gerarGraficoVolumeDiaPeriodo(dataDischarged) {
             datasets: datasets
         },
         options: {...secondBarChartOptions,
-            maintainAspectRatio: false
+            responsive: true,
+            maintainAspectRatio: true,
+            layout: {
+                padding: {
+                    top: 15,
+                    bottom: 15,
+                    left: 15,
+                    right: 15
+                }
+            },
         }
     });
         }

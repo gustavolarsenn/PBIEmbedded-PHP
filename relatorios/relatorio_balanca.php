@@ -210,17 +210,17 @@ if (isset($_GET['json'])) {
                 </div>
                 <section>
                         <div style="min-width: 100%; display: flex; margin: 10px 0;">
-                            <div style="width: 30%; height: 60vh; ">
+                            <div style="width: 30%; height: 60vh;">
                                 <div class="chart chart-small-block" style="margin-bottom: 10px; height: 30vh;">
                                     <label class="label-chart">Total descarregado / Restante</label>
-                                    <canvas id="graficoDescarregadoResto" class='any-chart'></canvas>
+                                    <canvas id="graficoDescarregadoResto" height="25" width="50"></canvas>
                                     <div id="emptyGraficoDescarregadoResto" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
                                 <div class="chart chart-small-block" style="height: 30vh;">
                                     <label class="label-chart">Descarregamento por porão</label>
-                                    <canvas id="graficoRealizadoPorao" class='any-chart'></canvas>
+                                    <canvas id="graficoRealizadoPorao" height="25" width="50"></canvas>
                                     <div id="emptyGraficoRealizadoPorao" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
@@ -228,7 +228,7 @@ if (isset($_GET['json'])) {
                             </div>
                                 <div class="chart" style="width: 70%; height: 60vh; margin-left: 10px;">
                                     <label class="label-chart">Volume por cliente e DI</label>
-                                    <canvas id="graficoRealizadoClienteDI" class='any-chart' ></canvas>
+                                    <canvas id="graficoRealizadoClienteDI" height="27" width="55"></canvas>
                                     <div id="emptyGraficoRealizadoClienteDI" class="no-data" style="min-height: 7vh; height: 10vh;">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
@@ -238,23 +238,23 @@ if (isset($_GET['json'])) {
                         <div style="height: 40vh; margin: 10px 0; display: flex; ">
                             <div class="chart half-chart">
                                 <label class="label-chart">Descarregado por dia</label>
-                                <canvas id="graficoVolumeDia" class="any-chart" style="padding: 30px 5px;"></canvas>
+                                <canvas id="graficoVolumeDia" height="22" width="50"></canvas>
                                 <div id="emptyGraficoVolumeDia" class="no-data" style="min-height: 3vh; height: auto;">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
                             <div class="chart half-chart" style="margin-left: 10px">
                                 <label class="label-chart">Volume por cliente</label>
-                                <canvas id="graficoVolumeCliente" class="any-chart" style="padding: 30px 5px;"></canvas>
+                                <canvas id="graficoVolumeCliente" height="22" width="50"></canvas>
                                 <div id="emptyGraficoVolumeCliente" class="no-data" style="min-height: 3vh; height: auto;">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
                         </div>
                             <div>
-                                <div class="chart full-chart" style="height: 40vh; display: grid;">
+                                <div class="chart full-chart" style="height: 40vh; display: grid; margin-bottom: 2%">
                                     <label class="label-chart">Descarregamento por dia e período</label>
-                                    <canvas id="graficoVolumeDiaPeriodo" class="any-chart" style="max-height: 95%;"></canvas>
+                                    <canvas id="graficoVolumeDiaPeriodo" height="11" width="50"></canvas>
                                     <div id="emptyGraficoVolumeDiaPeriodo" class="no-data" style="max-height: 95%;">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
