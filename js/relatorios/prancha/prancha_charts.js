@@ -349,7 +349,6 @@ async function gerarGraficoResumoGeral(dataDischarged) {
 
     const noDataGraficoResumoGeral = document.getElementById('emptyGraficoResumoGeral');
     const dataGraficoResumoGeral = document.getElementById('graficoResumoGeral');
-    console.log(reducedData)
 
     const ctx = dataGraficoResumoGeral.getContext('2d');
     var gradientStroke = ctx.createLinearGradient(500, 0, 300, 0);
@@ -578,6 +577,11 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         noDataGraficoVolumeDiaPeriodo.style.display = 'none';
         dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
 
+        const ctx = dataGraficoVolumeDiaPeriodo.getContext('2d');
+        var gradientStroke = ctx.createLinearGradient(500, 0, 300, 0);
+        gradientStroke.addColorStop(1, "rgba(128, 182, 244, 0.1)");
+        gradientStroke.addColorStop(0, "rgba(61, 68, 101, 0.8)");
+
         console.log(dataDischarged)
 
         const uniqueDatas = [...new Set(dataDischarged.map(item => item.data))];
@@ -586,13 +590,12 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
             type: 'bar',
             data: {
-                labels: uniqueDatas,
                 datasets: uniqueDatas.map(date => {
                     const data = dataDischarged.filter(d => d.data === date).map(d => d.volume);
                     return {
                         label: date,
                         data: data,
-                        backgroundColor: 'rgba(82, 183, 136, 0.5)',
+                        backgroundColor: gradientStroke,
                         borderColor: 'rgba(82, 183, 136, 0.8)',
                         borderWidth: 1,
                         xAxisID: 'xAxisPeriod', // Assign to the custom x-axis
@@ -603,15 +606,16 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
                 scales: {
                     xAxes: [
                         {
+                            id: 'xAxisDate', // Custom x-axis ID
+                            // labels: uniqueDatas,
+                            type: 'category',
+                            position: 'bottom',
+                        },
+                        {
                             id: 'xAxisPeriod', // Custom x-axis ID
                             type: 'category',
                             position: 'bottom',
                             labels: uniquePeriods,
-                        },
-                        {
-                            id: 'xAxisDate', // Custom x-axis ID
-                            type: 'category',
-                            position: 'bottom',
                         }
                     ],
                 }
