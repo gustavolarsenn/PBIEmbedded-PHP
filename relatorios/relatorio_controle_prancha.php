@@ -38,7 +38,9 @@ if (isset($_GET['json'])) {
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
 <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
 <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
     <div id="preloader">
         <div class="sk-three-bounce">
             <div class="sk-child sk-bounce1"></div>
@@ -48,7 +50,6 @@ if (isset($_GET['json'])) {
     </div>
 
     <div id="main-wrapper">
-
 
         <div class="nav-header">
             <a href="index.php" class="brand-logo">
@@ -281,9 +282,9 @@ if (isset($_GET['json'])) {
                 </section>
     </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+
 <script src="<?php echo $basePath; ?>/js/relatorios/MultiSelect.js"></script>
-<script type="module" src="<?php echo $basePath; ?>/js/relatorios/prancha/prancha_charts.js"></script>
+<script type="module" src="<?php echo $basePath; ?>/js/relatorios/prancha/prancha_charts.js" defer></script>
 <script src="<?php echo $basePath; ?>/js/relatorios/charts_functions.js"></script>
 
     <!-- Required vendors -->

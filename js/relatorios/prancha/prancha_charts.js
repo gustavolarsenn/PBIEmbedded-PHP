@@ -1,11 +1,16 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
+// const ChartDataLabels = await import("https://cdn.jsdelivr.net/npm/chart.js@3.7.1");
+// const Chart = await import("https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0");
 
 window.cleanFiltersData = cleanFiltersData;
 
-window.addEventListener("load", async function() {
-    // Call the generateFilters function here
+document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
+// window.addEventListener("load", async function() {
+//     // Call the generateFilters function here
+//     generateCharts();
+// });
 
 var graficoTotalDescarregado, graficoDescarregadoDia, graficoResumoGeral, graficoTempoParalisado, graficoDescarregadoDiaPeriodo;
 
@@ -214,7 +219,6 @@ async function gerarGraficoTotalDescarregado(dataDischarged, valor_manifestado) 
 
 async function gerarGraficoDescarregadoPorDia(dataDischarged) {
     // 4 - Volume descarregado por dia
-    console.log(dataDischarged)
     const dadosVolumeDia = dataDischarged.reduce((acc, d) => {
         acc[d.data] = acc[d.data] || { volume: 0 };
         acc[d.data].volume += d.volume;
@@ -264,6 +268,15 @@ async function gerarGraficoDescarregadoPorDia(dataDischarged) {
             labels: dadosVolumeDiaArray.map(d => d.data),
             datasets: [
                 {
+                    label: 'Meta',
+                    data: dadosMetaDiaArray.map(d => d.meta),
+                    backgroundColor: 'rgba(0, 0, 0, 0)',
+                    borderColor: 'rgba(61, 68, 101, 0.8)',
+                    borderWidth: 4,
+                    type: 'line',
+                    lineTension: 0,
+                },
+                {
                 label: 'Volume',
                 data: dadosVolumeDiaArray.map(d => d.volume),
                 backgroundColor: gradientFill,
@@ -279,15 +292,7 @@ async function gerarGraficoDescarregadoPorDia(dataDischarged) {
                 fill: true,
                 borderWidth: 1,
             },
-            {
-                label: 'Meta',
-                data: dadosMetaDiaArray.map(d => d.meta),
-                backgroundColor: 'rgba(0, 0, 0, 0)',
-                borderColor: 'rgba(61, 68, 101, 0.8)',
-                borderWidth: 4,
-                type: 'line',
-                lineTension: 0,
-            }
+
         ]
         },
         options: {
@@ -363,48 +368,29 @@ async function gerarGraficoResumoGeral(dataDischarged) {
         noDataGraficoResumoGeral.style.visibility = 'hidden';
         dataGraficoResumoGeral.style.visibility = 'visible';
         noDataGraficoResumoGeral.style.display = 'none';
+        const colors = {
+            'Chuva': 'rgba(144, 215, 255, 0.5)',
+            'Força Maior': 'rgba(191, 208, 224, 0.5)',
+            'Transporte': 'rgba(93, 253, 203, 0.5)',
+            'Duração': 'rgba(8, 76, 97, 0.5)',
+            'Horas operacionais': 'rgba(6, 214, 160, 0.5)',
+        },
 
         graficoResumoGeral = new Chart('graficoResumoGeral', {
             type: 'bar',
+            plugins: [ChartDataLabels],
             data: {
-                labels: ['Tempo'],
+                // labels: Object.keys(reducedData).filter(key => categories.includes(key)).map(key => key.replace('_', ' ')),
+                labels: ['Chuva', 'Força Maior', 'Transporte', 'Duração', ['Horas', 'operacionais']],
                 datasets: [
                     {
-                        label: 'Chuva',
-                        data: [reducedData.chuva],
-                        backgroundColor: 'rgba(144, 215, 255, 0.5)',
-                        borderWidth: 0.5,
-                        borderColor: 'rgba(61, 68, 101, 1)',
-                    },
-                    {
-                    label: 'Transporte',
-                    data: [reducedData.transporte],
-                    backgroundColor: 'rgba(93, 253, 203, 0.5)',
-                    borderWidth: 0.5,
-                    borderColor: 'rgba(61, 68, 101, 1)',
-                    },
-                    {
-                    label: 'Força maior',
-                    data: [reducedData.forca_maior],
-                    backgroundColor: 'rgba(191, 208, 224, 0.5)',
-                    borderWidth: 0.5,
-                    borderColor: 'rgba(61, 68, 101, 1)',
-                    },
-                    {
-                    label: 'Duração',
-                    data: [reducedData.duracao],
-                    backgroundColor: 'rgba(8, 76, 97, 0.5)',
-                    borderColor: "rgba(61, 68, 101, 1)",
-                    borderWidth: 1,
-                    },
-                    {
-                    label: 'Operacionais',
-                    data: [reducedData.horas_operacionais],
-                    backgroundColor: 'rgba(6, 214, 160, 0.5)',
-                    borderColor: "rgba(61, 68, 101, 1)",
-                    borderWidth: 1,
-                    },
-            ]
+                        label: 'Tempo',
+                        data: Object.keys(reducedData).filter(key => categories.includes(key)).map(key => reducedData[key]),
+                        backgroundColor: Object.keys(colors).map(key => colors[key]),
+                        borderColor: 'rgba(61, 68, 101, 0.8)',
+                        borderWidth: 1,
+                    }
+                ],
             },
             options: {
                 ...barOptions,
@@ -419,7 +405,7 @@ async function gerarGraficoResumoGeral(dataDischarged) {
                 responsive: true,
                 maintainAspectRatio: true,
                 legend: {
-                    display: true,
+                    display: false,
                 },
                 tooltips: {
                     callbacks: {
@@ -429,6 +415,34 @@ async function gerarGraficoResumoGeral(dataDischarged) {
                         }
                     }
                 },
+                // plugins: {
+                //     datalabels: {
+                //         display: true,
+                //         backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                //         borderRadius: 4,
+                //         color: 'white',
+                //         // color: (context) => {
+                //         //     const value = context.dataset.data[context.dataIndex];
+                //         //     // Example condition: change color based on the value
+                //         //     if (value >= 0) {
+                //         //         return '#73fa7a'; // Color for values greater than 1000
+                //         //     } else {
+                //         //         return '#fa7375'; // Color for values less than or equal to 500
+                //         //     }
+                //         // }, // Set the color of the label text
+                //         anchor: 'auto', // Position the label at the a (top) of the bar
+                //         align: 'end', // Align the label above the bar
+                //         offset: 15,
+                //         // formatter: (value, context) => {
+                //         //     return value
+                //         //     // return `R$${value.toLocaleString('pt-BR', {
+                //         //     //     minimumFractionDigits: 2,
+                //         //     //     maximumFractionDigits: 2,
+                //         //     //     useGrouping: true,
+                //         //     // }) || '0,00'}`; // You can format the label value here if needed
+                //         // }
+                //     },
+                // },
                 layout: {
                     padding: {
                         top: 15,
@@ -436,7 +450,7 @@ async function gerarGraficoResumoGeral(dataDischarged) {
                         left: 15,
                         right: 15
                     },
-                }
+                },
             },
         });
     }
@@ -447,8 +461,6 @@ async function gerarGraficoTempoParalisado(dataDischarged) {
     const categories = ['chuva', 'forca_maior', 'transporte', 'duracao', 'horas_operacionais'];
 
     const dates = [...new Set(dataDischarged.map(d => d.data))];
-
-    console.log(dates)
 
     const noDataGraficoResumoGeral = document.getElementById('emptyGraficoTempoParalisado');
     const dataGraficoResumoGeral = document.getElementById('graficoTempoParalisado');
@@ -544,34 +556,12 @@ async function gerarGraficoTempoParalisado(dataDischarged) {
 }
 
 async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
-    // 5 - Volume descarregado por dia e por período
-    // const dadosVolumeDiaPeriodo = dataDischarged.reduce((acc, d) => {
-    //     // Check if the date key exists, if not initialize it
-    //     if (!acc[d.data]) {
-    //         acc[d.data] = {};
-    //     }
-    //     // Check if the periodo key exists within the date, if not initialize it
-    //     if (!acc[d.data][d.periodo]) {
-    //         acc[d.data][d.periodo] = { volume: 0 };
-    //     }
-    //     // Accumulate volume
-    //     acc[d.data][d.periodo].volume += d.volume;
-    //     return acc;
-    // }, {});
-
-
-    // const dadosVolumeDiaPeriodoArray = Object.keys(dadosVolumeDiaPeriodo).map(data => ({
-    //     data: data,
-    //     volume: dadosVolumeDiaPeriodo[data].volume
-    // }));
-
     const noDataGraficoVolumeDiaPeriodo = document.getElementById('emptyGraficoDescarregadoDiaPeriodo');
     const dataGraficoVolumeDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
 
     dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
     noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
     noDataGraficoVolumeDiaPeriodo.style.display = 'block';
-    // if (dadosVolumeDiaPeriodoArray.length > 0) {
     if (dataDischarged.length > 0) {
         noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
         noDataGraficoVolumeDiaPeriodo.style.display = 'none';
@@ -582,157 +572,113 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         gradientStroke.addColorStop(1, "rgba(128, 182, 244, 0.1)");
         gradientStroke.addColorStop(0, "rgba(61, 68, 101, 0.8)");
 
-        console.log(dataDischarged)
-
-        const uniqueDatas = [...new Set(dataDischarged.map(item => item.data))];
-        const uniquePeriods = [...new Set(dataDischarged.map(item => item.periodo))];
+        const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data}`, `${item.periodo}`]);
+        const uniqueCombinedLabelsDisplay = [...new Set(combinedLabelsDisplay)];
 
         graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
             type: 'bar',
             data: {
-                datasets: uniqueDatas.map(date => {
-                    const data = dataDischarged.filter(d => d.data === date).map(d => d.volume);
-                    return {
-                        label: date,
-                        data: data,
-                        backgroundColor: gradientStroke,
-                        borderColor: 'rgba(82, 183, 136, 0.8)',
+                labels: uniqueCombinedLabelsDisplay,
+                datasets: [
+                    {
+                        label: 'Meta',
+                        data: dataDischarged.map(d => d.meta),
+                        backgroundColor: 'rgba(0, 0, 0, 0)',
+                        borderColor: 'rgba(61, 68, 101, 0.8)',
+                        borderWidth: 4,
+                        type: 'line',
+                        lineTension: 0,
+                    },
+                    {
+                        label: 'Volume',
+                        data: dataDischarged.map(d => d.volume),
+                        backgroundColor: 'rgba(144, 200, 255, 0.8)',
+                        borderColor: 'rgba(61, 68, 101, 0.8)',
                         borderWidth: 1,
-                        xAxisID: 'xAxisPeriod', // Assign to the custom x-axis
-                    };
-                })
+                    },
+                ]
             },
             options: {
                 scales: {
-                    xAxes: [
-                        {
-                            id: 'xAxisDate', // Custom x-axis ID
-                            // labels: uniqueDatas,
-                            type: 'category',
-                            position: 'bottom',
-                        },
-                        {
-                            id: 'xAxisPeriod', // Custom x-axis ID
-                            type: 'category',
-                            position: 'bottom',
-                            labels: uniquePeriods,
+                    xAxes: [{
+                        type: 'category',
+                        position: 'bottom',
+                        gridLines: {
+                            display: false
                         }
-                    ],
+                    }],
+                    yAxes: [{
+                        display: true,
+                        gridLines: {
+                            display: true
+                        }
+                    }]
                 }
             }
         })
+
+    //     // Combine date and period into a single label for each data point
+    //     const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data}`, `${item.periodo}`]);
+    //     const uniqueCombinedLabelsDisplay = [...new Set(combinedLabelsDisplay)];
+    //     const combinedLabels = dataDischarged.map(item => `${item.data} - ${item.periodo}`);
+    //     const uniqueCombinedLabels = [...new Set(combinedLabels)];
+
+    //     const uniqueDates = [...new Set(dataDischarged.map(d => d.data))];
+
+    //     graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
+    //         type: 'bar',
+    //         data: {
+    //             labels: uniqueCombinedLabelsDisplay, // Use combined labels for the x-axis
+    //             datasets: [
+    //                 dataDischarged.reduce((acc, d) => {
+    //                     // Check if the date key exists, if not initialize it
+    //                     if (!acc[d.data]) {
+    //                         acc[d.data] = {};
+    //                     }
+    //                     // Check if the periodo key exists within the date, if not initialize it
+    //                     if (!acc[d.data][d.periodo]) {
+    //                         acc[d.data][d.periodo] = { volume: 0 };
+    //                     }
+    //                     // Accumulate volume
+    //                     acc[d.data][d.periodo].volume += d.volume;
+    //                     return acc;
+    //                 }, {}),
+    //                 {
+    //                         label: 'Meta',
+    //                         data: dataDischarged.map(d => d.volume),
+    //                         backgroundColor: 'rgba(0, 0, 0, 0)',
+    //                         borderColor: 'rgba(61, 68, 101, 0.8)',
+    //                         borderWidth: 4,
+    //                         type: 'line',
+    //                         lineTension: 0,
+    //                 }
+    //             ].map((data, index) => {
+    //                 const backgroundColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+    //                 const borderColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.8)`;
+    //                 return {
+    //                     label: "Volume",
+    //                     data: uniqueCombinedLabels.map(label => {
+    //                         const [date, periodo] = label.split(' - ');
+    //                         return data[date][periodo] ? data[date][periodo].volume : 0;
+    //                     }),
+    //                     backgroundColor: backgroundColor,
+    //                     borderColor: borderColor,
+    //                     borderWidth: 1,
+    //                 }
+    //             }),
+                
+    //         },
+    //         options: {
+    //             scales: {
+    //                 xAxes: [{
+    //                     type: 'category',
+    //                     position: 'bottom',
+    //                 }],
+    //             }
+    //         }
+    //     })
     }
 }
-
-// async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
-//     // 5 - Volume descarregado por dia e por período
-//     const dadosVolumeDiaPeriodo = dataDischarged.reduce((acc, d) => {
-//         // Check if the date key exists, if not initialize it
-//         if (!acc[d.data]) {
-//             acc[d.data] = {};
-//         }
-//         // Check if the periodo key exists within the date, if not initialize it
-//         if (!acc[d.data][d.periodo]) {
-//             acc[d.data][d.periodo] = { volume: 0 };
-//         }
-//         // Accumulate volume
-//         acc[d.data][d.periodo].volume += d.volume;
-//         return acc;
-//     }, {});
-
-
-//     const dadosVolumeDiaPeriodoArray = Object.keys(dadosVolumeDiaPeriodo).map(data => ({
-//         data: data,
-//         volume: dadosVolumeDiaPeriodo[data].volume
-//     }));
-
-//     const noDataGraficoVolumeDiaPeriodo = document.getElementById('emptyGraficoDescarregadoDiaPeriodo');
-//     const dataGraficoVolumeDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
-
-//     dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-//     noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-//     noDataGraficoVolumeDiaPeriodo.style.display = 'block';
-//     if (dadosVolumeDiaPeriodoArray.length > 0) {
-//         noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-//         noDataGraficoVolumeDiaPeriodo.style.display = 'none';
-//         dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-
-//         const labels = Object.keys(dadosVolumeDiaPeriodo); // Dates for the x-axis
-
-// // Assuming you want a dataset for each period across all dates
-// const periods = new Set(); // To track unique periods
-// labels.forEach(date => {
-//     Object.keys(dadosVolumeDiaPeriodo[date]).forEach(period => {
-//         periods.add(period);
-//     });
-// });
-
-
-// console.log(periods)
-
-// let periodsArray = [];
-
-// const datasets = Array.from(periods).map(period => {
-//     console.log(period)
-//     periodsArray.push(period)
-//     const data = labels.map(date => {
-//         return dadosVolumeDiaPeriodo[date][period] ? dadosVolumeDiaPeriodo[date][period].volume : 0;
-//     });
-//     return {
-//         label: period,
-//         data: data,
-//         backgroundColor: 'rgba(82, 183, 136, 0.5)',
-//         borderColor: 'rgba(82, 183, 136, 0.8)',
-//         borderWidth: 1,
-//         xAxisId: 'xAxis2' // Uncomment and configure if using a second x-axis
-//     };
-// });
-
-// console.log(labels)
-
-// const chartConfig = {
-//     type: 'bar',
-//     data: {
-//         labels: labels, // Dates as labels
-//         datasets: datasets.map(dataset => ({
-//             ...dataset,
-//             // Conditionally assign datasets to an x-axis based on a new property or condition
-//             xAxisID: dataset.useSecondAxis ? 'xAxis2' : 'xAxis1',
-//         }))
-//     },
-//     options: {
-//         ...barOptions,
-//         tooltips: {},
-//         responsive: true,
-//         scales: {
-//             xAxes: [{
-//                 id: 'xAxis1',
-//                 type: 'category',
-//                 position: 'bottom',
-//             }, {
-//                 // Second x-axis configuration
-//                 id: 'xAxis2',
-//                 type: 'category',
-//                 position: 'bottom', // Position it at the top or wherever you prefer
-//                 // Additional configuration for the second x-axis
-//                 gridLines: {
-//                     display: false // Hide grid lines for the second x-axis or customize as needed
-//                 },
-//                 ticks: {
-//                     // Customization for the second x-axis ticks
-//                 }
-//             }],
-//             yAxes: []
-//         }
-//     }
-// };
-
-// // Note: Ensure datasets include a `useSecondAxis` property or similar to conditionally assign them to 'xAxis2'.
-
-// graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', chartConfig);
-//     }
-// }
-
 
 async function generateCharts() {
     const listaNavio = await getUniqueVessels();
@@ -828,12 +774,4 @@ async function generateCharts() {
     await gerarGraficoTempoParalisado(filteredDataDischarged);
 
     await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged);
-    // await gerarGraficoVolumePorCliente(filteredDataDischarged);
-    // await gerarGraficoDescarregadoPorao(filteredDataDischarged, filteredDataPlanned);
-    
-    // await gerarGraficoClienteArmazemDI(filteredDataDischarged, filteredDataPlanned);
-    
-
-    
-    // await gerarGraficoVolumeDiaPeriodo(filteredDataDischarged)
     }
