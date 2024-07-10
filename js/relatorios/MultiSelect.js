@@ -83,8 +83,18 @@ class MultiSelect {
             option.onclick = () => {
                 let selected = true;
                 if (!option.classList.contains('multi-select-selected')) {
+                    console.log(this.selectedValues.length + '/' + this.options.max)
                     if (this.options.max && this.selectedValues.length >= this.options.max) {
-                        return;
+                        const currentlySelected = this.selectedValues[0]
+                        const currentOptionElement = document.querySelector(`div[data-value="${currentlySelected}"]`) // Assuming options are marked with a data-value attribute
+                        currentOptionElement.classList.remove('multi-select-selected');
+                        this.data.forEach(item => {
+                            if (item.value !== option.dataset.value) {
+                                item.selected = false;
+                            }
+                        });
+                        option.classList.add('multi-select-selected');
+
                     }
                     option.classList.add('multi-select-selected');
                     if (this.options.listAll === true || this.options.listAll === 'true') {
@@ -117,9 +127,11 @@ class MultiSelect {
                 } else if (this.element.querySelector('.multi-select-header-placeholder')) {
                     this.element.querySelector('.multi-select-header-placeholder').remove();
                 }
-                if (this.options.max) {
-                    this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
-                }
+                // if (this.options.max) {
+                //     console.log(this.selectedValues.length + '/' + this.options.max)
+                //     console.log(this.element.querySelector('.multi-select-header-max'))
+                //     this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
+                // }
                 if (this.options.search === true || this.options.search === 'true') {
                     this.element.querySelector('.multi-select-search').value = '';
                 }

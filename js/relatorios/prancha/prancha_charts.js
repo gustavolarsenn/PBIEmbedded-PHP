@@ -172,11 +172,11 @@ async function generateFilters(campo, filterData, condition){
     let multiSelectOptions = {
         data: renamedFilteredData,
         placeholder: 'Todos',
+        max: null,
         multiple: true,
         search: true,
         selectAll: true,
         count: true,
-        keepOpen: true,
         listAll: false,
         onSelect: async function() {
             await generateCharts();
@@ -187,9 +187,9 @@ async function generateFilters(campo, filterData, condition){
     } 
 
     if (condition.includes(campo)) {
+        multiSelectOptions['max'] = 1;
         multiSelectOptions['multiple'] = false;
         multiSelectOptions['selectAll'] = false;
-        multiSelectOptions['listAll'] = false;
     } 
 
     new MultiSelect(`#lista-${campo}`, 
@@ -773,6 +773,8 @@ async function generateCharts() {
 
     const vesselData = await getVesselInfo(navioSelecionado);
 
+
+
     if (navioSelecionado !== jaFoiFiltradoNavio && count > 1) {
         filtroData = null;
         document.getElementById('data').value = ''
@@ -869,11 +871,10 @@ async function generateCharts() {
     infoPranchaAferida.innerText = pranchaAferidaValor.toFixed(2);
     infoMetaAlcancada.innerHTML = metaAlcancadaHTML;
 
-    filtroMotivoParalisacao.forEach(item => {
+    jaFiltradoParalisacao.forEach(item => { 
         if (item == "'undefined'") return;
         paralisacaoSelecionada.innerHTML += `<li class="listagem-paralisacao">- ${item.slice(1, -1)}</li>`;
     })
-
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
 
     if(totalVolumeDiaPeriodoLabels > 10){

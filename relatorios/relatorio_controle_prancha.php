@@ -195,7 +195,7 @@ if (isset($_GET['json'])) {
                         <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
                             <div class="chart chart-small-block" style="width: 30%; height: auto;">
                                 <label class="label-chart"></label>
-                                <h1 id="info-vessel" style="text-align: center"></h1>
+                                <h1 id="info-vessel" style="text-align: center;"></h1>
                                 <div style="display: flex; justify-content: space-evenly;">
                                     <div style="display: block; justify-content: space-evenly; width: 80%;">
                                         <div class="vessel-info">
@@ -226,7 +226,7 @@ if (isset($_GET['json'])) {
                                 </div>
                             </div>     
 
-                            <div style="width: 70%">
+                            <div style="width: 70%; height: auto;">
                                 <div style="display: flex; width: 100%">
                                     <div class="chart chart-small-block" style="width: 50%; height: 30vh; margin: 0 0 0 10px;">
                                         <label class="label-chart">Total descarregado / restante</label>
