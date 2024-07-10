@@ -184,7 +184,7 @@ if (isset($_GET['json'])) {
                         <select id='lista-periodo' multiple data-multi-select>
                         </select>
                     </div>
-                    <div id='clean-filters' class="input-label" style="width: 5%" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'relatorio_no', 'motivo_paralisacao']); cleanFiltersData();">
+                    <div id='clean-filters' class="input-label" style="width: 5%" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'relatorio_no']); cleanFiltersData();">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto 10px;">
                             <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
                         </svg>
@@ -193,102 +193,80 @@ if (isset($_GET['json'])) {
                 <section>
 
                         <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
-                            <div class="chart chart-small-block" style="width: 30%; height: auto;">
-                                <label class="label-chart"></label>
-                                <h1 id="info-vessel" style="text-align: center"></h1>
-                                <div style="display: flex; justify-content: space-evenly;">
-                                    <div style="display: block; justify-content: space-evenly; width: 80%;">
-                                        <div class="vessel-info">
-                                            <h4>Berço: </h4>
-                                            <label id="info-berth"></label>
+                                <div class="chart chart-small-block" style="width: 60%; height: 30vh;">
+                                    <label class="label-chart"></label>
+                                    <h1 id="info-vessel" style="text-align: center"></h1>
+                                  
+                                    <div style="display: flex; justify-content: space-evenly;">
+                                        <div style="display: block; justify-content: space-evenly; width: 50%;">
+                                            <div class="vessel-info">
+                                                <h4>Berço: </h4>
+                                                <label id="info-berth"></label>
+                                            </div>
+                                            <div class="vessel-info">
+                                                <h4>Produto: </h4>
+                                                <label id="info-product"></label>
+                                            </div>
+                                            <div class="vessel-info" style="border: none !important">
+                                                <h4>Modalidade: </h4>
+                                                <label id="info-modality"></label>
+                                            </div>
                                         </div>
-                                        <div class="vessel-info">
-                                            <h4>Produto: </h4>
-                                            <label id="info-product"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Modalidade: </h4>
-                                            <label id="info-modality"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Manifestado: </h4>
-                                            <label id="info-volume"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Data: </h4>
-                                            <label id="info-date"></label>
-                                        </div>
-                                        <div class="vessel-info" style="border: none !important">
-                                            <h4>Prancha mínima: </h4>
-                                            <label id="info-minimum-discharge"></label>
+                                        <div style="display: block; justify-content: space-evenly; width: 50%;">
+                                            <div class="vessel-info">
+                                                <h4>Manifestado: </h4>
+                                                <label id="info-volume"></label>
+                                            </div>
+                                            <div class="vessel-info">
+                                                <h4>Data: </h4>
+                                                <label id="info-date"></label>
+                                            </div>
+                                            <div class="vessel-info" style="border: none !important">
+                                                <h4>Prancha mínima: </h4>
+                                                <label id="info-minimum-discharge"></label>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>     
+                                    <!-- <canvas id="graficoInfos" class='any-chart' ></canvas> -->
 
-                            <div style="width: 70%">
-                                <div style="display: flex; width: 100%">
-                                    <div class="chart chart-small-block" style="width: 50%; height: 30vh; margin: 0 0 0 10px;">
-                                        <label class="label-chart">Total descarregado / restante</label>
-                                        <div style="display: flex">
-                                                <div style="width: 50%; height: 100%">
-                                                    <canvas id="graficoTotalDescarregado" height="30" width="40"></canvas>
-                                                    <div id="emptyGraficoTotalDescarregado" class="no-data">
-                                                        <p>Nenhum valor encontrado!</p>
-                                                    </div>
-                                                </div>
-                                                <div style="display: block; justify-content: space-evenly; width: 50%; margin: auto; box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);">
-                                                    <div class="vessel-discharging-info" style="border-bottom: none; display: grid;">
-                                                        <h4>Descarregado: </h4>
-                                                        <label id="info-descarregado"></label>
-                                                    </div>
-                                                    <div class="vessel-discharging-info" style="display: grid;">
-                                                        <h4>Restante: </h4>
-                                                        <label id="info-restante"></label>
-                                                    </div>
-                                                </div>
-                                        </div>
-                                    </div>  
-
-                                    <div class="chart chart-small-block" style="width: 50%; height: 30vh;  margin: 0 0 0 10px;">
-                                        <div style="display: flex">
-                                            <div id="prancha-aferida-info" style="width: 60%; height: 100%; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); display: grid;">
-                                                <div style="margin: auto; height: 30%; width: fit-content;">
-                                                    <h4>Prancha Aferida</h4>
-                                                    <label id="prancha-aferida" class="big-numbers"></label>
-                                                </div>
-                                                <div id="meta-alcancada" style="background-color: rgba(144, 200, 255, 0.5); text-align: center; padding: 10px; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); height: fit-content; border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(0, 0, 0, 0.2);">
-                                                    <h4>Meta Alcançada</h4>
-                                                    <label id="meta-alcancada"></label>
-                                                </div>
-                                            </div>
-
-                                            <div style="width: 40%; height: 100%; ">
-                                                <div class="input-label" style="width: 90%; margin: 5% auto;">
-                                                    <select id='lista-motivo_paralisacao' data-multi-select>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <ul id="paralisacao-selecionada">
-                                                    </ul>                                                
-                                                </div>
-                                            </div>
-                                            <!-- <div id="emptyGraficoPranchaAferida" class="no-data">
-                                                <p>Nenhum valor encontrado!</p>
-                                            </div> -->
-                                        </div>
-                                        </div>
+                                </div>       
+                                <div class="chart chart-small-block" style="width: 40%; height: 30vh;  margin: 0 0 0 10px;">
+                                    <label class="label-chart">Prancha aferida</label>
+                                    <!-- <canvas id="graficoPranchaAferida" class='any-chart'></canvas> -->
+                                    <div id="emptyGraficoPranchaAferida" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
                                 </div> 
-                                <div style="min-width: 100%; display: flex; height: 100%; margin: 10px 0px 0px 0px;">
-                                    <div class="chart chart-small-block" style="width: 100%; margin: 0 0 0 10px; height: 30vh;">
-                                        <label class="label-chart">Descarregado por dia</label>
-                                        <canvas id="graficoDescarregadoDia" height="15" width="65"></canvas>
-                                        <div id="emptyGraficoDescarregadoDia" class="no-data">
-                                            <p>Nenhum valor encontrado!</p>
-                                        </div>
+                        </div>
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
+                                <div class="chart chart-small-block" style="width: 40%; height: 30vh;">
+                                    <label class="label-chart">Total descarregado / restante</label>
+                                    <div style="display: flex">
+                                            <div style="width: 50%; height: 100%">
+                                                <canvas id="graficoTotalDescarregado" height="25" width="40"></canvas>
+                                                <div id="emptyGraficoTotalDescarregado" class="no-data">
+                                                    <p>Nenhum valor encontrado!</p>
+                                                </div>
+                                            </div>
+                                            <div style="display: block; justify-content: space-evenly; width: 50%; margin: auto; box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);">
+                                                <div class="vessel-discharging-info" style="border-bottom: none; display: grid;">
+                                                    <h4>Descarregado: </h4>
+                                                    <label id="info-descarregado"></label>
+                                                </div>
+                                                <div class="vessel-discharging-info" style="display: grid;">
+                                                    <h4>Restante: </h4>
+                                                    <label id="info-restante"></label>
+                                                </div>
+                                            </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="chart chart-small-block" style="width: 60%; margin: 0 0 0 10px; height: 30vh;">
+                                    <label class="label-chart">Descarregado por dia</label>
+                                    <canvas id="graficoDescarregadoDia" height="15" width="60"></canvas>
+                                    <div id="emptyGraficoDescarregadoDia" class="no-data">
+                                        <p>Nenhum valor encontrado!</p>
+                                    </div>
+                                </div>
                         </div>
                         <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
                                 <div class="chart chart-small-block" style="width: 40%; height: 30vh;">
@@ -306,10 +284,10 @@ if (isset($_GET['json'])) {
                                     </div>
                                 </div>
                         </div>
-                        <div class="chart" style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 100px 0px; overflow-x:scroll;">
-                            <div id='graficoDescarregadoDiaPeriodoContainer' class="chart chart-small-block" style="height: 40vh; min-width: 100%;">
+                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 100px 0px;">
+                                <div class="chart chart-small-block" style="width: 100%; height: 40vh;">
                                     <label class="label-chart">Total descarregado por dia e período, MT</label>
-                                    <canvas id="graficoDescarregadoDiaPeriodo" height="20" width='100'></canvas>
+                                    <canvas id="graficoDescarregadoDiaPeriodo" height="20" width="100"></canvas>
                                     <div id="emptyGraficoDescarregadoDiaPeriodo" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>

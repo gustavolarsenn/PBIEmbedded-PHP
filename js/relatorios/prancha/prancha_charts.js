@@ -1,22 +1,50 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
-// const ChartDataLabels = await import("https://cdn.jsdelivr.net/npm/chart.js@3.7.1");
-// const Chart = await import("https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0");
 
 window.cleanFiltersData = cleanFiltersData;
 
 document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
-// window.addEventListener("load", async function() {
-//     // Call the generateFilters function here
-//     generateCharts();
-// });
+
+var colorPalette = {
+    'sideBarColor': 'rgba(61, 68, 101, 0.6)', // Cor do sidebar (app)
+    'pbiGreenMidHighOpacity': 'rgba(55, 167, 148, 0.65)', // Fundo verde (PBI Port Statistics)
+    'pbiGreenMidLowOpacity': 'rgba(55, 167, 148, 0.5)', // Fundo verde (PBI Port Statistics)
+    'pbiGreenFull': 'rgba(55, 167, 148, 1)', // Borda verde (PBI Port Statistics)
+    'softBlue': 'rgba(54, 162, 235, 0.05)', // Donut de resto
+    'coolBlue': 'rgba(144, 200, 255, 0.8)'
+}
+
+const pbiThemeColors = ["rgba(50, 87, 168, 0.65)","rgba(55, 167, 148, 0.65) ","rgba(139, 61, 136, 0.65)",
+    "rgba(221, 107, 127, 0.65)","rgba(107, 145, 201, 0.65)","rgba(245, 200, 105, 0.65)","rgba(119, 196, 168, 0.65)",
+    "rgba(222, 166, 207, 0.65)","rgba(186, 74, 197, 0.65)",
+    "rgba(197, 74, 83, 0.65)","rgba(254, 226, 102, 0.65)","rgba(62, 155, 128, 0.65)",
+    "rgba(197, 74, 145, 0.65)","rgba(37, 69, 181, 0.65)","rgba(128, 22, 137, 0.65)",
+    "rgba(137, 22, 30, 0.65)","rgba(22, 31, 137, 0.65)","rgba(4, 114, 87, 0.65)","rgba(137, 22, 88, 0.65)","rgba(24, 45, 121, 0.65)","rgba(15, 21, 92, 0.65)"]
+
+const pbiThemeColorsBorder = ["rgba(50, 87, 168, 1)","rgba(55, 167, 148, 1) ","rgba(139, 61, 136, 1)",
+    "rgba(221, 107, 127, 1)","rgba(107, 145, 201, 1)","rgba(245, 200, 105, 1)","rgba(119, 196, 168, 1)",
+    "rgba(222, 166, 207, 1)","rgba(186, 74, 197, 1)",
+    "rgba(197, 74, 83, 1)","rgba(254, 226, 102, 1)","rgba(62, 155, 128, 1)",
+    "rgba(197, 74, 145, 1)","rgba(37, 69, 181, 1)","rgba(128, 22, 137, 1)",
+    "rgba(137, 22, 30, 1)","rgba(22, 31, 137, 1)","rgba(4, 114, 87, 1)","rgba(137, 22, 88, 1)","rgba(24, 45, 121, 1)","rgba(15, 21, 92, 1)"]
+
+// Step 1: Define a function to determine the color based on the date
+const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffle the colors array
+const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 
 var graficoTotalDescarregado, graficoDescarregadoDia, graficoResumoGeral, graficoTempoParalisado, graficoDescarregadoDiaPeriodo;
 
 var graficoResumoGeral;
 
 var count = 0;
+
+let filtrosParalisacao = {
+    'chuva': 'Chuva',
+    'forca_maior': 'Força Maior',
+    'transporte': 'Transporte',
+    'outros': 'Outros'
+};
 
 const barOptions = {
     scales: {
@@ -42,37 +70,15 @@ const barOptions = {
     responsive: true,
 }
 
-const horizontalBarOptions = {
-    scales: {
-        xAxes: [{
-            ticks: {
-                beginAtZero: true
-            },
-            gridLines: {
-                display: false,
-                drawBorder: false
-            },
-            display: false,
-            stacked: true
-        }],
-        yAxes: [{
-            gridLines: {
-                display: false
-            },
-            stacked: true
-        }]
-    },
-    legend: {
-        display: false
-    },
-    responsive: true,
-}
 
 let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 secondBarChartOptions.legend.display = true;
 
 var vesselName = document.getElementById('vessel-name');
+
+var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
+var tagGraficoDiaPeriodoContainer = document.getElementById('graficoDescarregadoDiaPeriodoContainer');
 
 var infoVesselTag = document.getElementById('info-vessel');
 var infoBerthTag = document.getElementById('info-berth');
@@ -82,11 +88,62 @@ var infoVolumeTag = document.getElementById('info-volume');
 var infoDateTag = document.getElementById('info-date');
 var infoMinimumDischargeTag = document.getElementById('info-minimum-discharge');
 
+var infoPranchaAferida = document.getElementById('prancha-aferida');
+var infoMetaAlcancada = document.getElementById('meta-alcancada');
+
+var infoDescarregado = document.getElementById('info-descarregado');
+var infoRestante = document.getElementById('info-restante');
+var paralisacaoSelecionada = document.getElementById('paralisacao-selecionada');
+
 var jaFoiFiltradoNavio = '';
 var jaFiltradoRelatorio = [];
 var jaFiltradoPeriodo = [];
+var jaFiltradoParalisacao = [];
 
 var count = 0;
+
+function getColorForDate(date, colorTheme) {
+    // Assuming `date` is a Date object. Adjust the logic if it's a string or another format.
+
+    const dateDate = new Date(date);
+    const dayOfWeek = dateDate.getDate(); // getDay() returns 0 for Sunday, 1 for Monday, etc.
+
+    // Let's say weekends are red, weekdays are green
+    return colorTheme[dayOfWeek % pbiThemeColors.length];
+}
+
+const convertSecondsToTime = (seconds) => {
+     // Convert total time from seconds to hh:mm:ss format
+     const hours = Math.floor(seconds / 3600);
+     const minutes = Math.floor((seconds % 3600) / 60);
+ 
+     // Format the time string, ensuring two digits for hours, minutes, and seconds
+     const value_time = [hours, minutes]
+         .map(val => val < 10 ? `0${val}` : val)
+         .join('h ');
+    return value_time + 'm';
+}
+
+const paralisacoesSoma = (filteredValues, filteredData, possibleFilters) => {
+    const filteredColumnsOnly = filteredData.map(item => {
+        const filteredKeys = filteredValues.map(item => Object.keys(possibleFilters).find(key => possibleFilters[key] === item.slice(1, -1)))
+        return Object.keys(item).filter(key => filteredKeys.includes(key)).reduce((acc, key) => {
+            acc[key] = item[key];
+            return acc;
+        }, {});
+    });
+    const somaTempoParalisado = filteredColumnsOnly.reduce((acc, d) => {
+        acc.total += Number(d.chuva) || 0;
+        acc.total += Number(d.forca_maior) || 0;
+        acc.total += Number(d.transporte) || 0;
+        acc.total += Number(d.outros) || 0;
+    
+        return acc;
+    }, { total: 0, chuva: 0, forca_maior: 0, transporte: 0, outros: 0 });
+
+    return somaTempoParalisado.total
+} 
+
 
 const dataField = document.getElementById('data');
 
@@ -142,6 +199,7 @@ async function generateFilters(campo, filterData, condition){
 
 async function updateFilters(campo, filterData, alreadySelected){
     if (alreadySelected.length < 1) {
+    paralisacaoSelecionada.innerText = '';
     const listaElement = document.getElementById(`lista-${campo}`);
     const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
     
@@ -161,59 +219,94 @@ async function updateFilters(campo, filterData, alreadySelected){
 }
 
 function cleanFiltersData(){
-    [jaFiltradoPeriodo, jaFiltradoRelatorio].forEach(filtro => {
+    [jaFiltradoPeriodo, jaFiltradoRelatorio, jaFiltradoParalisacao].forEach(filtro => {
         filtro = [];
     });
     
     count = 0;
     jaFoiFiltradoNavio = '';
+    paralisacaoSelecionada.innerHTML = '';
 
     generateCharts();
 }
 
-async function gerarGraficoTotalDescarregado(dataDischarged, valor_manifestado) {
+async function gerarGraficoTotalDescarregado(valor_descarregado, valor_manifestado) {
     // 1 - Total descarregado e restante
-    const dadosDescarregadoResto = dataDischarged.reduce((acc, d) => {
-        acc.volume += d.volume;
-        return acc;
-    }, { volume: 0 });
-
     const noDataGraficoDescarregadoResto = document.getElementById('emptyGraficoTotalDescarregado');
     const dataGraficoDescarregadoResto = document.getElementById('graficoTotalDescarregado');
+
+    infoDescarregado.innerText = valor_descarregado.toFixed(2);
+    infoRestante.innerText = (valor_manifestado - valor_descarregado).toFixed(2);
 
     dataGraficoDescarregadoResto.style.visibility = 'hidden';
     noDataGraficoDescarregadoResto.style.visibility = 'visible';
     noDataGraficoDescarregadoResto.style.display = 'flex';
-    if (dadosDescarregadoResto.volume !== null) {
+    if (valor_descarregado !== null) {
         noDataGraficoDescarregadoResto.style.visibility = 'hidden';
         dataGraficoDescarregadoResto.style.visibility = 'visible';
         noDataGraficoDescarregadoResto.style.display = 'none';
 
-        graficoTotalDescarregado = new Chart('graficoTotalDescarregado', {
-        type: 'doughnut',
-        data: {
+
+        const totalDescarregadoData = {
             labels: ['Realizado', 'Restante'],
             datasets: [{
-                data: [dadosDescarregadoResto.volume, valor_manifestado - dadosDescarregadoResto.volume],
+                data: [valor_descarregado, valor_manifestado - valor_descarregado],
                 backgroundColor: [
-                    'rgba(82, 183, 136, 0.5)',
-                    'rgba(54, 162, 235, 0.05)'
+                    colorPalette['pbiGreenMidHighOpacity'],
+                    colorPalette['softBlue']
                 ],
                 borderColor: [
-                    'rgba(82, 183, 136, 0.6)'
+                    colorPalette['pbiGreenFull'],
                 ],
             }]
-        },
-        options: {
+        }
+
+        const doughnutLabel = {
+            id: 'doughnutLabel',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+                const {ctx, data, chartArea} = chart;
+        
+                // Calculate the center of the chart
+                const centerX = (chartArea.left + chartArea.right) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 2;
+        
+                const totalDescarregado = data.datasets[0].data[0];
+                const totalRestante = data.datasets[0].data[1];
+                const totalManifestado = totalDescarregado + totalRestante;
+
+                const percentDescarregado = ((totalDescarregado / totalManifestado) * 100).toFixed(2);
+                // // Calculate the total value of all data points
+                // const totalValue = data.datasets[0].data.reduce((acc, value) => acc + value, 0);
+        
+                // Set the font properties
+                ctx.font = 'bold 1.5rem Arial';
+                ctx.fillStyle = 'rgba(61, 68, 101, 0.8)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle'; // Align vertically in the center
+        
+                // Draw the text in the center of the chart
+                ctx.fillText(percentDescarregado + '%', centerX, centerY);
+            }
+        };
+
+        const totalDescarregadoOptions = {
+            plugins: {
+                doughnutLabel: doughnutLabel
+            },
             legend: {
                 display: false
             },
-            cutoutPercentage: 80,
+            cutoutPercentage: 75,
             responsive: true,
             maintainAspectRatio: true,
         }
-    });
 
+        graficoTotalDescarregado = new Chart('graficoTotalDescarregado', {
+        type: 'doughnut',
+        data: totalDescarregadoData,
+        options: totalDescarregadoOptions,
+        plugins: [doughnutLabel],
+    });
     }
 }
 
@@ -254,13 +347,9 @@ async function gerarGraficoDescarregadoPorDia(dataDischarged) {
         
     
     const ctx = dataGraficoVolumeDia.getContext('2d');
-    var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
-    gradientStroke.addColorStop(1, "rgba(128, 182, 244, 0.1)");
-    gradientStroke.addColorStop(0, "rgba(61, 68, 101, 0.8)");
 
-    var gradientFill = ctx.createLinearGradient(500, 0, 300, 0);
-    gradientFill.addColorStop(1, "rgba(128, 182, 244, 0.3)");
-    gradientFill.addColorStop(0, "rgba(61, 68, 101, 0.3)");
+    const volumePorDiaColors = dadosVolumeDiaArray.map(d => getColorForDate(d.data, shuffledColors));
+    const volumePorDiaColorsBorder = dadosVolumeDiaArray.map(d => getColorForDate(d.data, shuffledColorsBorder));
 
     graficoDescarregadoDia = new Chart('graficoDescarregadoDia', {
         type: 'bar',
@@ -279,12 +368,8 @@ async function gerarGraficoDescarregadoPorDia(dataDischarged) {
                 {
                 label: 'Volume',
                 data: dadosVolumeDiaArray.map(d => d.volume),
-                backgroundColor: gradientFill,
-                borderColor: "rgba(61, 68, 101, 1)",
-                pointBorderColor: gradientStroke,
-                pointBackgroundColor: gradientStroke,
-                pointHoverBackgroundColor: gradientStroke,
-                pointHoverBorderColor: gradientStroke,
+                backgroundColor: volumePorDiaColors,
+                borderColor: volumePorDiaColorsBorder,
                 pointBorderWidth: 10,
                 pointHoverRadius: 10,
                 pointHoverBorderWidth: 1,
@@ -301,11 +386,7 @@ async function gerarGraficoDescarregadoPorDia(dataDischarged) {
                     ticks: {
                         beginAtZero: true
                     },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    display: false
+                    display: true
                 }],
                 xAxes: [{
                     gridLines: {
@@ -410,39 +491,27 @@ async function gerarGraficoResumoGeral(dataDischarged) {
                 tooltips: {
                     callbacks: {
                         label: function(tooltipItem, data) {
-                            // return `${data.datasets[tooltipItem.datasetIndex].label}: ${tooltipItem.yLabel}`;
-                            return `${data.datasets[tooltipItem.datasetIndex].label}: ${reducedData[`${categories[tooltipItem.index]}_time`]}`;
+                            const value_time = convertSecondsToTime(tooltipItem.yLabel);
+
+                            return value_time;
                         }
                     }
                 },
-                // plugins: {
-                //     datalabels: {
-                //         display: true,
-                //         backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                //         borderRadius: 4,
-                //         color: 'white',
-                //         // color: (context) => {
-                //         //     const value = context.dataset.data[context.dataIndex];
-                //         //     // Example condition: change color based on the value
-                //         //     if (value >= 0) {
-                //         //         return '#73fa7a'; // Color for values greater than 1000
-                //         //     } else {
-                //         //         return '#fa7375'; // Color for values less than or equal to 500
-                //         //     }
-                //         // }, // Set the color of the label text
-                //         anchor: 'auto', // Position the label at the a (top) of the bar
-                //         align: 'end', // Align the label above the bar
-                //         offset: 15,
-                //         // formatter: (value, context) => {
-                //         //     return value
-                //         //     // return `R$${value.toLocaleString('pt-BR', {
-                //         //     //     minimumFractionDigits: 2,
-                //         //     //     maximumFractionDigits: 2,
-                //         //     //     useGrouping: true,
-                //         //     // }) || '0,00'}`; // You can format the label value here if needed
-                //         // }
-                //     },
-                // },
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        borderRadius: 5,
+                        padding: 4,
+                        color: 'black',
+                        anchor: 'start',
+                        align: 'top',
+                        offset: 0,
+                        formatter: (value, context) => {
+                            const value_time = convertSecondsToTime(value);
+                        return value_time;
+                        }
+                    },
+                },
                 layout: {
                     padding: {
                         top: 15,
@@ -518,6 +587,7 @@ async function gerarGraficoTempoParalisado(dataDischarged) {
         // Create the chart
         graficoTempoParalisado = new Chart('graficoTempoParalisado', {
             type: 'bar',
+            plugins: [ChartDataLabels],
             data: {
                 labels: dates,
                 datasets: datasets,
@@ -531,7 +601,7 @@ async function gerarGraficoTempoParalisado(dataDischarged) {
                     xAxes: [{
                         stacked: true,
                         gridLines: {
-                            display: false
+                            display: true
                         },
                         barPercentage: 0.75,
                     }],
@@ -539,6 +609,58 @@ async function gerarGraficoTempoParalisado(dataDischarged) {
                         stacked: true,
                         display: false,
                     }],
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const value_time = convertSecondsToTime(tooltipItem.yLabel);
+                            return value_time;
+                        }
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        borderRadius: 5,
+                        padding: 4,
+                        color: 'black',
+                        anchor: 'start',
+                        align: 'top',
+                        offset: 0,
+                        formatter: (value, context) => {
+                            // Identify if the current dataset is the last one in its stack
+                            const datasets = context.chart.data.datasets;
+                            const currentStack = context.dataset.stack;
+                            const currentIndex = context.dataIndex;
+                            const currentDatasetIndex = datasets.indexOf(context.dataset);
+                            let isLastDatasetInStack = true; // Assume it is the last dataset initially
+                        
+                            // Check if any subsequent dataset belongs to the same stack and has data for the current index
+                            for (let i = currentDatasetIndex + 1; i < datasets.length; i++) {
+                                if (datasets[i].stack === currentStack && datasets[i].data[currentIndex] != null) {
+                                    isLastDatasetInStack = false; // Found a dataset in the same stack that comes after the current one
+                                    break;
+                                }
+                            }
+                        
+                            // If it's the last dataset in the stack, calculate and display the sum
+                            if (isLastDatasetInStack) {
+                                const sum = datasets.reduce((acc, dataset) => {
+                                    if (dataset.stack === currentStack) {
+                                        const datasetValue = dataset.data[currentIndex] || 0;
+                                        return acc + datasetValue;
+                                    }
+                                    return acc;
+                                }, 0);
+                        
+                                if (sum > 0) {
+                                    const value_time = convertSecondsToTime(sum); // Assuming convertSecondsToTime is a function you've defined
+                                    return value_time;
+                                }
+                            }
+                            return ''; // For datasets that are not the last in the stack, don't display a label
+                        }
+                    },
                 },
                 responsive: true,
                 maintainAspectRatio: true,
@@ -567,116 +689,59 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         noDataGraficoVolumeDiaPeriodo.style.display = 'none';
         dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
 
-        const ctx = dataGraficoVolumeDiaPeriodo.getContext('2d');
-        var gradientStroke = ctx.createLinearGradient(500, 0, 300, 0);
-        gradientStroke.addColorStop(1, "rgba(128, 182, 244, 0.1)");
-        gradientStroke.addColorStop(0, "rgba(61, 68, 101, 0.8)");
-
         const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data}`, `${item.periodo}`]);
         const uniqueCombinedLabelsDisplay = [...new Set(combinedLabelsDisplay)];
+        
+// Step 2: Apply the function to your data to generate an array of colors
+// Assuming `dataDischarged` contains objects with a `date` property that is a Date object
+const barColors = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColors));
+const barColorsBorder = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColorsBorder));
 
-        graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
-            type: 'bar',
-            data: {
-                labels: uniqueCombinedLabelsDisplay,
-                datasets: [
-                    {
-                        label: 'Meta',
-                        data: dataDischarged.map(d => d.meta),
-                        backgroundColor: 'rgba(0, 0, 0, 0)',
-                        borderColor: 'rgba(61, 68, 101, 0.8)',
-                        borderWidth: 4,
-                        type: 'line',
-                        lineTension: 0,
-                    },
-                    {
-                        label: 'Volume',
-                        data: dataDischarged.map(d => d.volume),
-                        backgroundColor: 'rgba(144, 200, 255, 0.8)',
-                        borderColor: 'rgba(61, 68, 101, 0.8)',
-                        borderWidth: 1,
-                    },
-                ]
+// Step 3: Assign the generated colors to `backgroundColor` in your dataset
+graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
+    type: 'bar',
+    data: {
+        labels: uniqueCombinedLabelsDisplay,
+        datasets: [
+            {
+                label: 'Meta',
+                data: dataDischarged.map(d => d.meta),
+                backgroundColor: 'rgba(0, 0, 0, 0)',
+                borderColor: 'rgba(61, 68, 101, 0.8)',
+                borderWidth: 4,
+                type: 'line',
+                lineTension: 0,
             },
-            options: {
-                scales: {
-                    xAxes: [{
-                        type: 'category',
-                        position: 'bottom',
-                        gridLines: {
-                            display: false
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
-                        gridLines: {
-                            display: true
-                        }
-                    }]
+            {
+                label: 'Volume',
+                data: dataDischarged.map(d => d.volume),
+                backgroundColor: barColors, // Use the generated array of colors
+                borderColor: barColorsBorder,
+                borderWidth: 1,
+            },
+        ]
+    },
+    options: {
+        legend: {
+            display: false
+        },
+        scales: {
+            xAxes: [{
+                position: 'bottom',
+                gridLines: {
+                    display: false
                 }
-            }
-        })
-
-    //     // Combine date and period into a single label for each data point
-    //     const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data}`, `${item.periodo}`]);
-    //     const uniqueCombinedLabelsDisplay = [...new Set(combinedLabelsDisplay)];
-    //     const combinedLabels = dataDischarged.map(item => `${item.data} - ${item.periodo}`);
-    //     const uniqueCombinedLabels = [...new Set(combinedLabels)];
-
-    //     const uniqueDates = [...new Set(dataDischarged.map(d => d.data))];
-
-    //     graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
-    //         type: 'bar',
-    //         data: {
-    //             labels: uniqueCombinedLabelsDisplay, // Use combined labels for the x-axis
-    //             datasets: [
-    //                 dataDischarged.reduce((acc, d) => {
-    //                     // Check if the date key exists, if not initialize it
-    //                     if (!acc[d.data]) {
-    //                         acc[d.data] = {};
-    //                     }
-    //                     // Check if the periodo key exists within the date, if not initialize it
-    //                     if (!acc[d.data][d.periodo]) {
-    //                         acc[d.data][d.periodo] = { volume: 0 };
-    //                     }
-    //                     // Accumulate volume
-    //                     acc[d.data][d.periodo].volume += d.volume;
-    //                     return acc;
-    //                 }, {}),
-    //                 {
-    //                         label: 'Meta',
-    //                         data: dataDischarged.map(d => d.volume),
-    //                         backgroundColor: 'rgba(0, 0, 0, 0)',
-    //                         borderColor: 'rgba(61, 68, 101, 0.8)',
-    //                         borderWidth: 4,
-    //                         type: 'line',
-    //                         lineTension: 0,
-    //                 }
-    //             ].map((data, index) => {
-    //                 const backgroundColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
-    //                 const borderColor = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.8)`;
-    //                 return {
-    //                     label: "Volume",
-    //                     data: uniqueCombinedLabels.map(label => {
-    //                         const [date, periodo] = label.split(' - ');
-    //                         return data[date][periodo] ? data[date][periodo].volume : 0;
-    //                     }),
-    //                     backgroundColor: backgroundColor,
-    //                     borderColor: borderColor,
-    //                     borderWidth: 1,
-    //                 }
-    //             }),
-                
-    //         },
-    //         options: {
-    //             scales: {
-    //                 xAxes: [{
-    //                     type: 'category',
-    //                     position: 'bottom',
-    //                 }],
-    //             }
-    //         }
-    //     })
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true
+                }
+            }]
+        },
+        maintainAspectRatio: true,
+    }
+});
     }
 }
 
@@ -694,14 +759,15 @@ async function generateCharts() {
     const filtroNavio = Array.from(document.getElementById('lista-navio').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroRelatorio = Array.from(document.getElementById('lista-relatorio_no').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroMotivoParalisacao = Array.from(document.getElementById('lista-motivo_paralisacao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
 
     const filtroNavioLimpo = filtroNavio.map(item => item.replace(/^'(.*)'$/, '$1'));
 
     jaFiltradoPeriodo = filtroPeriodo;
     jaFiltradoRelatorio = filtroRelatorio;
+    jaFiltradoParalisacao = filtroMotivoParalisacao;
     
     const navioSelecionado = filtroNavioLimpo.length > 0 ? filtroNavioLimpo[0] : listaNavio[0].navio;
-
 
     const dataDischarged = await getVesselData(navioSelecionado);
 
@@ -712,6 +778,8 @@ async function generateCharts() {
         document.getElementById('data').value = ''
         jaFiltradoPeriodo = [];
         jaFiltradoRelatorio = [];
+        jaFiltradoParalisacao = [];
+        paralisacaoSelecionada.innerHTML = '';
     }
 
     infoVesselTag.innerText = vesselData[0].navio;
@@ -746,7 +814,7 @@ async function generateCharts() {
 
     const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
     const listaRelatorio = [...new Set(filteredDataDischarged.map(d => d.relatorio_no))].sort();
-
+    
     if (graficoTotalDescarregado) graficoTotalDescarregado.destroy();
     if (graficoDescarregadoDia) graficoDescarregadoDia.destroy();
     if (graficoResumoGeral) graficoResumoGeral.destroy();
@@ -757,7 +825,9 @@ async function generateCharts() {
         if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio']);
         generateFilters('periodo', listaPeriodo, ['navio']);
         generateFilters('relatorio_no', listaRelatorio, ['navio']);
+        generateFilters('motivo_paralisacao', Object.values(filtrosParalisacao), ['navio']);
     } else {
+        // updateFilters('motivo_paralisacao', Object.values(filtrosParalisacao), jaFiltradoParalisacao);
         updateFilters('periodo', listaPeriodo, jaFiltradoPeriodo);
         updateFilters('relatorio_no', listaRelatorio, jaFiltradoRelatorio);
     }
@@ -765,7 +835,23 @@ async function generateCharts() {
     jaFoiFiltradoNavio = navioSelecionado;
     count++;
 
-    await gerarGraficoTotalDescarregado(filteredDataDischarged, vesselData[0].volume_manifestado);
+    const dadosDescarregado = filteredDataDischarged.reduce((acc, d) => {
+        acc.volume += d.volume;
+        
+        return acc;
+    }, { volume: 0});
+
+    const somaTempoParalisado = paralisacoesSoma(jaFiltradoParalisacao, formattedDataDischarged, filtrosParalisacao);
+
+    const duracaoTotal = formattedDataDischarged.reduce((acc, d) => acc + d.duracao, 0);
+
+    const dadosDescarregadoBruto = formattedDataDischarged.reduce((acc, d) => {
+        acc.volume += d.volume;
+        
+        return acc;
+    }, { volume: 0});
+
+    await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
 
     await gerarGraficoDescarregadoPorDia(filteredDataDischarged)
 
@@ -774,4 +860,31 @@ async function generateCharts() {
     await gerarGraficoTempoParalisado(filteredDataDischarged);
 
     await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged);
+
+    const pranchaAferidaValor = ((dadosDescarregadoBruto.volume / ((duracaoTotal - somaTempoParalisado) / 60 / 60)) * 24)
+    const metaAlcancadaDelta = pranchaAferidaValor - vesselData[0].prancha_minima;
+
+    const metaAlcancadaHTML = metaAlcancadaDelta > 0 ? `<span class="text-target">Meta alcançada: <label class="target-success">+${metaAlcancadaDelta.toFixed(2)}</label></span>` : `<span class="text-target">Meta não alcançada: <label class="target-fail">${metaAlcancadaDelta.toFixed(2)}</label></span>`;
+
+    infoPranchaAferida.innerText = pranchaAferidaValor.toFixed(2);
+    infoMetaAlcancada.innerHTML = metaAlcancadaHTML;
+
+    filtroMotivoParalisacao.forEach(item => {
+        if (item == "'undefined'") return;
+        paralisacaoSelecionada.innerHTML += `<li class="listagem-paralisacao">- ${item.slice(1, -1)}</li>`;
+    })
+
+    const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
+
+    if(totalVolumeDiaPeriodoLabels > 10){
+            tagGraficoDiaPeriodoContainer.style.minWidth = null;
+            tagGraficoDiaPeriodo.style.maxHeight = '100%';
+            tagGraficoDiaPeriodo.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 30) +'px';
+            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = false;
+        } else {
+            tagGraficoDiaPeriodoContainer.style.minWidth = '100%';
+            tagGraficoDiaPeriodo.style.width = ''
+            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
+    }
+    console.log(jaFiltradoParalisacao)
     }
