@@ -83,7 +83,6 @@ class MultiSelect {
             option.onclick = () => {
                 let selected = true;
                 if (!option.classList.contains('multi-select-selected')) {
-                    console.log(this.selectedValues.length + '/' + this.options.max)
                     if (this.options.max && this.selectedValues.length >= this.options.max) {
                         const currentlySelected = this.selectedValues[0]
                         const currentOptionElement = document.querySelector(`div[data-value="${currentlySelected}"]`) // Assuming options are marked with a data-value attribute
@@ -128,8 +127,6 @@ class MultiSelect {
                     this.element.querySelector('.multi-select-header-placeholder').remove();
                 }
                 // if (this.options.max) {
-                //     console.log(this.selectedValues.length + '/' + this.options.max)
-                //     console.log(this.element.querySelector('.multi-select-header-max'))
                 //     this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
                 // }
                 if (this.options.search === true || this.options.search === 'true') {

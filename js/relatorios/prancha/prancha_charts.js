@@ -78,9 +78,10 @@ secondBarChartOptions.legend.display = true;
 var vesselName = document.getElementById('vessel-name');
 
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
-var tagGraficoDiaPeriodoContainer = document.getElementById('graficoDescarregadoDiaPeriodoContainer');
+var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-periodo-container');
+var tagGraficoDiaPeriodoContainerGrafico = document.getElementById('descarregado-dia-periodo-grafico');
 
-var infoVesselTag = document.getElementById('info-vessel');
+var infoVesselTag = document.getElementById('info-navio-titulo');
 var infoBerthTag = document.getElementById('info-berth');
 var infoProductTag = document.getElementById('info-product');
 var infoModalityTag = document.getElementById('info-modality');
@@ -250,7 +251,7 @@ async function gerarGraficoTotalDescarregado(valor_descarregado, valor_manifesta
         const totalDescarregadoData = {
             labels: ['Realizado', 'Restante'],
             datasets: [{
-                data: [valor_descarregado, valor_manifestado - valor_descarregado],
+                data: [valor_descarregado, (valor_manifestado - valor_descarregado) < 0 ? 0 : (valor_manifestado - valor_descarregado)],
                 backgroundColor: [
                     colorPalette['pbiGreenMidHighOpacity'],
                     colorPalette['softBlue']
@@ -269,18 +270,15 @@ async function gerarGraficoTotalDescarregado(valor_descarregado, valor_manifesta
                 // Calculate the center of the chart
                 const centerX = (chartArea.left + chartArea.right) / 2;
                 const centerY = (chartArea.top + chartArea.bottom) / 2;
-        
+                
                 const totalDescarregado = data.datasets[0].data[0];
-                const totalRestante = data.datasets[0].data[1];
-                const totalManifestado = totalDescarregado + totalRestante;
+                const totalManifestado = valor_manifestado;
 
                 const percentDescarregado = ((totalDescarregado / totalManifestado) * 100).toFixed(2);
-                // // Calculate the total value of all data points
-                // const totalValue = data.datasets[0].data.reduce((acc, value) => acc + value, 0);
         
                 // Set the font properties
-                ctx.font = 'bold 1.5rem Arial';
-                ctx.fillStyle = 'rgba(61, 68, 101, 0.8)';
+                ctx.font = 'bold 1.65vw Arial';
+                ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle'; // Align vertically in the center
         
@@ -843,15 +841,9 @@ async function generateCharts() {
         return acc;
     }, { volume: 0});
 
-    const somaTempoParalisado = paralisacoesSoma(jaFiltradoParalisacao, formattedDataDischarged, filtrosParalisacao);
+    const somaTempoParalisado = paralisacoesSoma(jaFiltradoParalisacao, filteredDataDischarged, filtrosParalisacao);
 
-    const duracaoTotal = formattedDataDischarged.reduce((acc, d) => acc + d.duracao, 0);
-
-    const dadosDescarregadoBruto = formattedDataDischarged.reduce((acc, d) => {
-        acc.volume += d.volume;
-        
-        return acc;
-    }, { volume: 0});
+    const duracaoTotal = filteredDataDischarged.reduce((acc, d) => acc + d.duracao, 0);
 
     await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
 
@@ -863,7 +855,7 @@ async function generateCharts() {
 
     await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged);
 
-    const pranchaAferidaValor = ((dadosDescarregadoBruto.volume / ((duracaoTotal - somaTempoParalisado) / 60 / 60)) * 24)
+    const pranchaAferidaValor = ((dadosDescarregado.volume / ((duracaoTotal - somaTempoParalisado) / 60 / 60)) * 24)
     const metaAlcancadaDelta = pranchaAferidaValor - vesselData[0].prancha_minima;
 
     const metaAlcancadaHTML = metaAlcancadaDelta > 0 ? `<span class="text-target">Meta alcançada: <label class="target-success">+${metaAlcancadaDelta.toFixed(2)}</label></span>` : `<span class="text-target">Meta não alcançada: <label class="target-fail">${metaAlcancadaDelta.toFixed(2)}</label></span>`;
@@ -878,14 +870,15 @@ async function generateCharts() {
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
 
     if(totalVolumeDiaPeriodoLabels > 10){
-            tagGraficoDiaPeriodoContainer.style.minWidth = null;
+            tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
             tagGraficoDiaPeriodo.style.maxHeight = '100%';
             tagGraficoDiaPeriodo.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 30) +'px';
-            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = false;
+            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
+            tagGraficoDiaPeriodoContainer.style.overflowX = 'scroll';
         } else {
-            tagGraficoDiaPeriodoContainer.style.minWidth = '100%';
+            tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
             tagGraficoDiaPeriodo.style.width = ''
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
+            tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
     }
-    console.log(jaFiltradoParalisacao)
     }

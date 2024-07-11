@@ -192,57 +192,55 @@ if (isset($_GET['json'])) {
                 </div>
                 <section>
 
-                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
-                            <div class="chart chart-small-block" style="width: 30%; height: auto;">
-                                <label class="label-chart"></label>
-                                <h1 id="info-vessel" style="text-align: center;"></h1>
-                                <div style="display: flex; justify-content: space-evenly;">
-                                    <div style="display: block; justify-content: space-evenly; width: 80%;">
-                                        <div class="vessel-info">
-                                            <h4>Berço: </h4>
-                                            <label id="info-berth"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Produto: </h4>
-                                            <label id="info-product"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Modalidade: </h4>
-                                            <label id="info-modality"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Manifestado: </h4>
-                                            <label id="info-volume"></label>
-                                        </div>
-                                        <div class="vessel-info">
-                                            <h4>Data: </h4>
-                                            <label id="info-date"></label>
-                                        </div>
-                                        <div class="vessel-info" style="border: none !important">
-                                            <h4>Prancha mínima: </h4>
-                                            <label id="info-minimum-discharge"></label>
-                                        </div>
+                        <div class="chart-container">
+                            <div id="info-navio-container" class="chart chart-small-block">
+                                <!-- <label class="label-chart"></label> -->
+                                <h1 id="info-navio-titulo"></h1>
+                                <div id="info-navio">
+                                    <div class="info-navio-row">
+                                        <h4>Berço: </h4>
+                                        <label id="info-berth"></label>
+                                    </div>
+                                    <div class="info-navio-row">
+                                        <h4>Produto: </h4>
+                                        <label id="info-product"></label>
+                                    </div>
+                                    <div class="info-navio-row">
+                                        <h4>Modalidade: </h4>
+                                        <label id="info-modality"></label>
+                                    </div>
+                                    <div class="info-navio-row">
+                                        <h4>Manifestado: </h4>
+                                        <label id="info-volume"></label>
+                                    </div>
+                                    <div class="info-navio-row">
+                                        <h4>Data: </h4>
+                                        <label id="info-date"></label>
+                                    </div>
+                                    <div class="info-navio-row" style="border: none !important">
+                                        <h4>Prancha mínima: </h4>
+                                        <label id="info-minimum-discharge"></label>
                                     </div>
                                 </div>
                             </div>     
 
-                            <div style="width: 70%; height: auto;">
-                                <div style="display: flex; width: 100%">
-                                    <div class="chart chart-small-block" style="width: 50%; height: 30vh; margin: 0 0 0 10px;">
+                            <div id="descarregado-total-dia-prancha-aferida-container">
+                                <div id="descarregado-total-prancha-aferida-container">
+                                    <div id="descarregado-total-container" class="chart chart-small-block">
                                         <label class="label-chart">Total descarregado / restante</label>
-                                        <div style="display: flex">
-                                                <div style="width: 50%; height: 100%">
+                                        <div id="descarregado-total">
+                                                <div id="descarregado-total-grafico-container">
                                                     <canvas id="graficoTotalDescarregado" height="30" width="40"></canvas>
                                                     <div id="emptyGraficoTotalDescarregado" class="no-data">
                                                         <p>Nenhum valor encontrado!</p>
                                                     </div>
                                                 </div>
-                                                <div style="display: block; justify-content: space-evenly; width: 50%; margin: auto; box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5);">
-                                                    <div class="vessel-discharging-info" style="border-bottom: none; display: grid;">
+                                                <div>
+                                                    <div class="vessel-discharging-info">
                                                         <h4>Descarregado: </h4>
                                                         <label id="info-descarregado"></label>
                                                     </div>
-                                                    <div class="vessel-discharging-info" style="display: grid;">
+                                                    <div class="vessel-discharging-info">
                                                         <h4>Restante: </h4>
                                                         <label id="info-restante"></label>
                                                     </div>
@@ -250,21 +248,20 @@ if (isset($_GET['json'])) {
                                         </div>
                                     </div>  
 
-                                    <div class="chart chart-small-block" style="width: 50%; height: 30vh;  margin: 0 0 0 10px;">
-                                        <div style="display: flex">
-                                            <div id="prancha-aferida-info" style="width: 60%; height: 100%; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); display: grid;">
-                                                <div style="margin: auto; height: 30%; width: fit-content;">
-                                                    <h4>Prancha Aferida</h4>
-                                                    <label id="prancha-aferida" class="big-numbers"></label>
+                                    <div id="prancha-aferida-container" class="chart chart-small-block">
+                                            <div id="prancha-aferida-info">
+                                                <div id="prancha-aferida-big-numbers">
+                                                        <div>
+                                                            <h4>Prancha Aferida</h4>
+                                                            <label id="prancha-aferida" class="big-numbers"></label>
+                                                        </div>
                                                 </div>
-                                                <div id="meta-alcancada" style="background-color: rgba(144, 200, 255, 0.5); text-align: center; padding: 10px; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); height: fit-content; border-bottom: 1px solid rgba(0, 0, 0, 0.2); border-top: 1px solid rgba(0, 0, 0, 0.2);">
-                                                    <h4>Meta Alcançada</h4>
-                                                    <label id="meta-alcancada"></label>
+                                                <div id="meta-alcancada" class="target-stripe">
                                                 </div>
                                             </div>
 
-                                            <div style="width: 40%; height: 100%; ">
-                                                <div class="input-label" style="width: 90%; margin: 5% auto;">
+                                            <div id="prancha-aferida-lista-paralisacao-container">
+                                                <div class="input-label">
                                                     <select id='lista-motivo_paralisacao' data-multi-select>
                                                     </select>
                                                 </div>
@@ -273,16 +270,12 @@ if (isset($_GET['json'])) {
                                                     </ul>                                                
                                                 </div>
                                             </div>
-                                            <!-- <div id="emptyGraficoPranchaAferida" class="no-data">
-                                                <p>Nenhum valor encontrado!</p>
-                                            </div> -->
-                                        </div>
                                         </div>
                                 </div> 
-                                <div style="min-width: 100%; display: flex; height: 100%; margin: 10px 0px 0px 0px;">
-                                    <div class="chart chart-small-block" style="width: 100%; margin: 0 0 0 10px; height: 30vh;">
+                                <div id="descarregado-dia-container">
+                                    <div id="descarregado-dia-grafico" class="chart chart-small-block">
                                         <label class="label-chart">Descarregado por dia</label>
-                                        <canvas id="graficoDescarregadoDia" height="15" width="65"></canvas>
+                                        <canvas id="graficoDescarregadoDia" height="10" width="65"></canvas>
                                         <div id="emptyGraficoDescarregadoDia" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>
@@ -290,15 +283,15 @@ if (isset($_GET['json'])) {
                                 </div>
                             </div>
                         </div>
-                        <div style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 10px 0px;">
-                                <div class="chart chart-small-block" style="width: 40%; height: 30vh;">
+                        <div id="resumo-geral-tempo-paralisado-container">
+                                <div id="resumo-geral-grafico" class="chart chart-small-block">
                                     <label class="label-chart">Resumo geral</label>
                                     <canvas id="graficoResumoGeral" height="45" width="100"></canvas>
                                     <div id="emptyGraficoResumoGeral" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
-                                <div class="chart chart-small-block" style="width: 60%; margin: 0 0 0 10px; height: 30vh;">
+                                <div class="chart chart-small-block" id="tempo-paralisado-grafico">
                                     <label class="label-chart">Tempo paralisado</label>
                                     <canvas id="graficoTempoParalisado" height="30" width="100"></canvas>
                                     <div id="emptyGraficoTempoParalisado" class="no-data">
@@ -306,14 +299,16 @@ if (isset($_GET['json'])) {
                                     </div>
                                 </div>
                         </div>
-                        <div class="chart" style="min-width: 100%; display: flex; height: 100%; margin: 0px 0px 100px 0px; overflow-x:scroll;">
-                            <div id='graficoDescarregadoDiaPeriodoContainer' class="chart chart-small-block" style="height: 40vh; min-width: 100%;">
-                                    <label class="label-chart">Total descarregado por dia e período, MT</label>
-                                    <canvas id="graficoDescarregadoDiaPeriodo" height="20" width='100'></canvas>
-                                    <div id="emptyGraficoDescarregadoDiaPeriodo" class="no-data">
-                                        <p>Nenhum valor encontrado!</p>
+                        <div class="chart" style="margin-bottom: 30%">
+                            <label class="label-chart">Total descarregado por dia e período, MT</label>
+                            <div id="descarregado-dia-periodo-container" class="chart">
+                                <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block">
+                                        <canvas id="graficoDescarregadoDiaPeriodo" height="20" width='100'></canvas>
+                                        <div id="emptyGraficoDescarregadoDiaPeriodo" class="no-data">
+                                            <p>Nenhum valor encontrado!</p>
+                                        </div>
                                     </div>
-                                </div>
+                            </div>
                         </div>
                 </section>
     </div>

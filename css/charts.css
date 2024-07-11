@@ -80,8 +80,10 @@ body{
 
 .chart-small-block{
     /* width: 100%;  */
-    max-height: 49%;
-    min-height: 49%;
+    /* max-height: 49%;
+    min-height: 49%; */
+    max-height: 100%;
+    /* min-height: 49%; */
 }
 
 .half-chart{
