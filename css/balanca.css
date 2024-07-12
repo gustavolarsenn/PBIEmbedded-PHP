@@ -13,21 +13,20 @@
         /* CONTAINER que engloba: Total descarregado e descarregado por porão */
         #descarregado-total-porao-container{
             width: 30%; 
-            height: 60vh;
+            height: 100%
         }
             
             #descarregado-total-grafico{
                 margin-bottom: 10px;
-                height: 30vh;
+                height: 50%;
             }
             #descarregado-porao-grafico{
-                height: 30vh;
+                height: 50%;
             }
 
         /* Volume por Cliente e DI */
         #volume-cliente-di-grafico{
             width: 70%;
-            height: 60vh;
             margin-left: 10px;
         }
     

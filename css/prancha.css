@@ -79,144 +79,145 @@ prancha aferida e descarregado por dia */
     margin: 0px 0px 10px 0px;
 }
 
-/* INFORMAÇÕES NAVIO */
-#info-navio-container{
-    width: 30%; 
-    height: auto;
-    text-align: center;
-}
+    /* INFORMAÇÕES NAVIO */
+    #info-navio-container{
+        width: 30%; 
+        height: auto;
+        text-align: center;
+    }
 
-#info-navio-titulo{
-    font-size: 3vw;
-    text-decoration: underline;
-    padding: 20px;
-    margin: 0;
-    height: 1%;
-}
+        #info-navio-titulo{
+            font-size: 3vw;
+            text-decoration: underline;
+            padding: 20px;
+            margin: 0;
+            height: 1%;
+        }
 
-/* INFORMAÇÕES NAVIO */
-#info-navio{
-    display: flex; 
-    flex-direction: column;
-    justify-content: space-evenly;
-    width: 90%;
-    margin: 0 auto;
-}
+        /* INFORMAÇÕES NAVIO */
+        #info-navio{
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-evenly;
+            width: 90%;
+            margin: 0 auto;
+        }
 
-/* CONTAINER que engloba: Total descarregado, 
-prancha aferida e descarregado por dia*/
-#descarregado-total-dia-prancha-aferida-container{
-    width: 70%; 
-    height: auto;
-    /* height: 100vh; */
-}
+    /* CONTAINER que engloba: Total descarregado, 
+    prancha aferida e descarregado por dia*/
+    #descarregado-total-dia-prancha-aferida-container{
+        width: 70%; 
+        height: auto;
+        /* height: 100vh; */
+    }
 
-#descarregado-total-prancha-aferida-container{
-    display: flex; 
-    width: 100%;
-    height: 50%;
-}
+        #descarregado-total-prancha-aferida-container{
+            display: flex; 
+            width: 100%;
+            height: 50%;
+        }
 
-#descarregado-total-container{
-    width: 50%; 
-    height: 100%; 
-    margin: 0 0 0 10px;
-}
-#descarregado-total{
-    display: flex;
-}
+            #descarregado-total-container{
+                width: 50%; 
+                height: 100%; 
+                margin: 0 0 0 10px;
+            }
 
-#descarregado-total-grafico-container{
-    width: 50%;
-    height: 100%
-}
+                #descarregado-total{
+                    display: flex;
+                }
+
+                #descarregado-total-grafico-container{
+                    width: 50%;
+                    height: 100%
+                }
 
 
-/* PRANCHA AFERIDA*/
-#prancha-aferida-container{
-    width: 50%; 
-    margin: 0 0 0 10px;
-    display: flex;
-}
+            /* PRANCHA AFERIDA*/
+            #prancha-aferida-container{
+                width: 50%; 
+                margin: 0 0 0 10px;
+                display: flex;
+            }
 
-#prancha-aferida-info{
-    width: 60%; 
-    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-}
+                #prancha-aferida-info{
+                    width: 60%; 
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+                }
 
-#prancha-aferida-big-numbers{
-    height: 65%; 
-    margin: auto auto; 
-    width: fit-content;  
-    display: flex; 
-    flex-direction: column
-}
+                #prancha-aferida-big-numbers{
+                    height: 65%; 
+                    margin: auto auto; 
+                    width: fit-content;  
+                    display: flex; 
+                    flex-direction: column
+                }
 
-#prancha-aferida-big-numbers div{
-    margin: auto;
-}
+                #prancha-aferida-big-numbers div{
+                    margin: auto;
+                }
 
-#prancha-aferida-lista-paralisacao-container{
-    width: 40%; 
-    height: 100%; 
-}
+                #prancha-aferida-lista-paralisacao-container{
+                    width: 40%; 
+                    height: 100%; 
+                }
 
-#prancha-aferida-lista-paralisacao-container .input-label{
-    width: 90%; 
-    margin: 5% auto;
-}
+                #prancha-aferida-lista-paralisacao-container .input-label{
+                    width: 90%; 
+                    margin: 5% auto;
+                }
 
-/* DESCARREGADO POR DIA */
-#graficoDescarregadoDia{
-    display: flex;
-    visibility: visible;
-    max-height: 100%;
-}
-#graficoDescarregadoDiaSideBar{
-    display: none;
-    visibility: hidden;
-    max-height: 0;
-}
+        /* DESCARREGADO POR DIA */
+        #graficoDescarregadoDia{
+            display: flex;
+            visibility: visible;
+            max-height: 100%;
+        }
+        #graficoDescarregadoDiaSideBar{
+            display: none;
+            visibility: hidden;
+            max-height: 0;
+        }
 
-#descarregado-dia-container{
-    min-width: 100%; 
-    display: flex; 
-    height: 47.76%; 
-    margin: 10px 0px 0px 0px;
-}
+            #descarregado-dia-container{
+                min-width: 100%; 
+                display: flex; 
+                height: 47.76%; 
+                margin: 10px 0px 0px 0px;
+            }
 
-#descarregado-dia-grafico{
-    width: 100%; 
-    margin: 0 0 0 10px; 
-    /* height: 50%; */
-    /* height: auto; */
-}
+            #descarregado-dia-grafico{
+                width: 100%; 
+                margin: 0 0 0 10px; 
+                /* height: 50%; */
+                /* height: auto; */
+            }
 
-/* CONTAINER que engloba: resumo geral e tempo paralisado */
-#resumo-geral-tempo-paralisado-container{
-    min-width: 100%; 
-    display: flex; 
-    height: 100%; 
-    margin: 0px 0px 10px 0px;
-}
+    /* CONTAINER que engloba: resumo geral e tempo paralisado */
+    #resumo-geral-tempo-paralisado-container{
+        min-width: 100%; 
+        display: flex; 
+        height: 100%; 
+        margin: 0px 0px 10px 0px;
+    }
 
-#resumo-geral-grafico{
-    width: 40%; 
-    height: 100%;
-}
+        #resumo-geral-grafico{
+            width: 40%; 
+            height: 100%;
+        }
 
-#tempo-paralisado-grafico{
-    width: 60%; 
-    margin: 0 0 0 10px; 
-    height: 90%;
-}
+    #tempo-paralisado-grafico{
+        width: 60%; 
+        margin: 0 0 0 10px; 
+        height: 90%;
+    }
 
-/* DESCARREGADO POR DIA E PERIODO */
-#descarregado-dia-periodo-container{
-    box-shadow: none;
-    min-width: 100%; 
-    display: flexbox; 
-    height: 100%; 
-    margin: 0px 0px 10px 0px; 
-    overflow-x: scroll;
-}
+    /* DESCARREGADO POR DIA E PERIODO */
+    #descarregado-dia-periodo-container{
+        box-shadow: none;
+        min-width: 100%; 
+        display: flexbox; 
+        height: 100%; 
+        margin: 0px 0px 10px 0px; 
+        overflow-x: scroll;
+    }

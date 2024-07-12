@@ -1,4 +1,5 @@
 import { getVesselData, getUniqueVessels } from './balanca_data.js';
+import { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, colorPalette, pbiThemeColors, pbiThemeColorsBorder  } from '../charts_utils.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -61,6 +62,32 @@ const horizontalBarOptions = {
     responsive: true,
 }
 
+const doughnutLabel = {
+    id: 'doughnutLabel',
+    beforeDatasetsDraw(chart, args, pluginOptions) {
+        const {ctx, data, chartArea} = chart;
+
+        // Calculate the center of the chart
+        const centerX = (chartArea.left + chartArea.right) / 2;
+        const centerY = (chartArea.top + chartArea.bottom) / 2;
+        
+        const totalDescarregado = data.datasets[0].data[0];
+        const totalRestante = data.datasets[0].data[1];
+        const totalManifestado = totalDescarregado + totalRestante;
+
+        const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
+
+        // Set the font properties
+        ctx.font = 'bold 1.5vw Arial';
+        ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle'; // Align vertically in the center
+
+        // Draw the text in the center of the chart
+        ctx.fillText(percentDescarregado + '%', centerX, centerY);
+    }
+};
+
 let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 secondBarChartOptions.legend.display = true;
@@ -83,14 +110,6 @@ const dataField = document.getElementById('data');
 dataField.addEventListener('change', async function() {
     await generateCharts();
 });
-
-function renameKeys(obj, keyMap) {
-    return Object.keys(obj).reduce((acc, key) => {
-        const newKey = keyMap[key] || key; // Use new key name if it exists in the mapping, otherwise use the original key
-        acc[newKey] = obj[key]; // Assign the value to the new key in the accumulator object
-        return acc;
-    }, {}); // Initial value for the accumulator is an empty object
-}
 
 async function generateFilters(campo, filterData, condition){
     const keyMapping = {
@@ -190,14 +209,15 @@ async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
             datasets: [{
                 data: [dadosDescarregadoResto.peso, dadosPlanejado.planejado - dadosDescarregadoResto.peso],
                 backgroundColor: [
-                    'rgba(82, 183, 136, 0.5)',
+                    colorPalette['pbiGreenMidHighOpacity'],
                     'rgba(54, 162, 235, 0.05)'
                 ],
                 borderColor: [
-                    'rgba(82, 183, 136, 0.6)'
+                    colorPalette['softBlue'],
                 ],
             }]
         },
+        plugins: [doughnutLabel],
         options: {
             legend: {
                 display: false
@@ -208,6 +228,15 @@ async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
                     bottom: 10,
                     left: 10,
                     right: 10
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+    
+                        return valor_formatado;
+                    }
                 }
             },
             cutoutPercentage: 80,
@@ -316,15 +345,18 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
         const [cliente, armazem, di] = key.split(' - ');
         return { cliente, armazem, di, ...value };
     });
-
+    
     const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
     const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
-
+    
     dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
     noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
-
+    
     const mergedDadosArrayFiltered = mergedDadosArray.filter(row => "peso" in row);
 
+    const barColors = Object.values(assignColorsToList(mergedDadosArrayFiltered.map(d => d.cliente), pbiThemeColors));
+    const barColorsBorder = Object.values(assignColorsToList(mergedDadosArrayFiltered.map(d => d.cliente), pbiThemeColorsBorder));
+    
     if (mergedDadosArrayFiltered.length > 0) {
         noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
         dataGraficoRealizadoClienteDI.style.visibility = 'visible';
@@ -336,8 +368,8 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
             datasets: [{
                 label: 'Realizado',
                 data: mergedDadosArrayFiltered.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(82, 183, 136, 0.5)',
-                borderColor: 'rgba(82, 183, 136, 0.65)',
+                backgroundColor: barColors.map(d => d.color),
+                borderColor: barColorsBorder.map(d => d.color),
                 borderWidth: 1
             },
             {

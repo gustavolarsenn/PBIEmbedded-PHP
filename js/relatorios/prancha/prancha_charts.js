@@ -1,7 +1,5 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
-import { floatParaFloatFormatado, getColorForDate, convertSecondsToTime, 
-    paralisacoesSoma, generateFilters, updateFilters, cleanFiltersData, 
-    colorPalette, pbiThemeColors, pbiThemeColorsBorder } from './prancha_utils.js';
+import { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, colorPalette, pbiThemeColors, pbiThemeColorsBorder } from './../charts_utils.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -67,7 +65,6 @@ botaoHamrburger.addEventListener('click', function() {
     }
 })
 
-
 // Step 1: Define a function to determine the color based on the date
 const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()); // Shuffle the colors array
@@ -107,6 +104,76 @@ const barOptions = {
     responsive: true,
 }
 
+async function generateFilters(campo, filterData, condition){
+    const keyMapping = {
+        0: 'value',
+        [campo]: 'text',
+    };
+
+    let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
+    const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
+
+    let multiSelectOptions = {
+        data: renamedFilteredData,
+        placeholder: 'Todos',
+        max: null,
+        multiple: true,
+        search: true,
+        selectAll: true,
+        count: true,
+        listAll: false,
+        onSelect: async function() {
+            await generateCharts();
+        },
+        onUnselect: async function() {
+            await generateCharts();
+        }
+    } 
+
+    if (condition.includes(campo)) {
+        multiSelectOptions['max'] = 1;
+        multiSelectOptions['multiple'] = false;
+        multiSelectOptions['selectAll'] = false;
+    } 
+
+    new MultiSelect(`#lista-${campo}`, 
+        multiSelectOptions,
+    );
+}
+
+async function updateFilters(campo, filterData, alreadySelected){
+    if (alreadySelected.length < 1) {
+    paralisacaoSelecionada.innerText = '';
+    const listaElement = document.getElementById(`lista-${campo}`);
+    const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
+
+        allOptions.forEach(option => {
+            const value = option.getAttribute('data-value');
+            const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
+
+            if (!filterData.map(String).includes(value) && !isSelected) {
+                // If the option is not in filterData and not already selected, hide it
+                option.style.display = 'none';
+            } else {
+                // Otherwise, ensure it's visible
+                option.style.display = 'flex';
+            }
+        });
+    }
+}
+
+
+function cleanFiltersData(){
+    [jaFiltradoPeriodo, jaFiltradoRelatorio, jaFiltradoParalisacao].forEach(filtro => {
+        filtro = [];
+    });
+    
+    count = 0;
+    jaFoiFiltradoNavio = '';
+    paralisacaoSelecionada.innerHTML = '';
+
+    generateCharts();
+}
 
 let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
@@ -687,8 +754,6 @@ async function generateCharts() {
     const dataDischarged = await getVesselData(navioSelecionado);
 
     const vesselData = await getVesselInfo(navioSelecionado);
-
-
 
     if (navioSelecionado !== jaFoiFiltradoNavio && count > 1) {
         filtroData = null;
