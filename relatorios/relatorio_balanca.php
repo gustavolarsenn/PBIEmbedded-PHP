@@ -27,6 +27,7 @@ if (isset($_GET['json'])) {
     <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/css/charts.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/balanca.css">
 
     <link href="<?php echo $basePath; ?>/css/MultiSelect.css" rel="stylesheet" type="text/css">
 </head>
@@ -161,7 +162,7 @@ if (isset($_GET['json'])) {
 
         <div class="content-body">
             <div class="container-fluid">
-                <h1 id="vessel-name" style="text-align: center; padding: 10px;"></h1>
+                <h1 id="nome-navio"></h1>
                 <div class="filter-container">
                     <div class="input-label">
                         <label>Navio</label>
@@ -209,16 +210,16 @@ if (isset($_GET['json'])) {
                     </div>
                 </div>
                 <section>
-                        <div style="min-width: 100%; display: flex; margin: 10px 0;">
-                            <div style="width: 30%; height: 60vh;">
-                                <div class="chart chart-small-block" style="margin-bottom: 10px; height: 30vh;">
+                        <div id='descarregado-total-porao-cliente-di-container'>
+                            <div id='descarregado-total-porao-container'>
+                                <div id='descarregado-total-grafico' class="chart chart-small-block">
                                     <label class="label-chart">Total descarregado / Restante</label>
                                     <canvas id="graficoDescarregadoResto" height="25" width="50"></canvas>
                                     <div id="emptyGraficoDescarregadoResto" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
-                                <div class="chart chart-small-block" style="height: 30vh;">
+                                <div id='descarregado-porao-grafico' class="chart chart-small-block">
                                     <label class="label-chart">Descarregamento por porão</label>
                                     <canvas id="graficoRealizadoPorao" height="25" width="50"></canvas>
                                     <div id="emptyGraficoRealizadoPorao" class="no-data">
@@ -226,38 +227,36 @@ if (isset($_GET['json'])) {
                                     </div>
                                 </div>
                             </div>
-                                <div class="chart" style="width: 70%; height: 60vh; margin-left: 10px;">
+                                <div id="volume-cliente-di-grafico" class="chart">
                                     <label class="label-chart">Volume por cliente e DI</label>
                                     <canvas id="graficoRealizadoClienteDI" height="27" width="55"></canvas>
-                                    <div id="emptyGraficoRealizadoClienteDI" class="no-data" style="min-height: 7vh; height: 10vh;">
+                                    <div id="emptyGraficoRealizadoClienteDI" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
                                     </div>
                                 </div>
                         </div>
-
-                        <div style="height: 40vh; margin: 10px 0; display: flex; ">
-                            <div class="chart half-chart">
+                        <div id="descarregado-dia-volume-cliente-container">
+                            <div id="descarregado-dia-grafico" class="chart half-chart">
                                 <label class="label-chart">Descarregado por dia</label>
                                 <canvas id="graficoVolumeDia" height="22" width="50"></canvas>
-                                <div id="emptyGraficoVolumeDia" class="no-data" style="min-height: 3vh; height: auto;">
+                                <div id="emptyGraficoVolumeDia" class="no-data">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
-                            <div class="chart half-chart" style="margin-left: 10px">
+                            <div id='volume-cliente-grafico' class="chart half-chart">
                                 <label class="label-chart">Volume por cliente</label>
                                 <canvas id="graficoVolumeCliente" height="22" width="50"></canvas>
-                                <div id="emptyGraficoVolumeCliente" class="no-data" style="min-height: 3vh; height: auto;">
+                                <div id="emptyGraficoVolumeCliente" class="no-data">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
                         </div>
-                            <div>
-                                <div class="chart full-chart" style="height: 40vh; display: grid; margin-bottom: 2%">
-                                    <label class="label-chart">Descarregamento por dia e período</label>
-                                    <canvas id="graficoVolumeDiaPeriodo" height="11" width="50"></canvas>
-                                    <div id="emptyGraficoVolumeDiaPeriodo" class="no-data" style="max-height: 95%;">
-                                        <p>Nenhum valor encontrado!</p>
-                                    </div>
+                            <div id='descarregado-dia-periodo-grafico'class="chart full-chart">
+                                <label class="label-chart">Descarregamento por dia e período</label>
+                                <canvas id="graficoVolumeDiaPeriodo" height="11" width="50"></canvas>
+                                <div id="emptyGraficoVolumeDiaPeriodo" class="no-data">
+                                    <p>Nenhum valor encontrado!</p>
+                                </div>
                             </div>
                 </section>
     </div>

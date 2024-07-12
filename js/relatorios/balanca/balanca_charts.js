@@ -65,7 +65,7 @@ let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
 secondBarChartOptions.legend.display = true;
 
-var vesselName = document.getElementById('vessel-name');
+var vesselName = document.getElementById('nome-navio');
 
 var jaFoiFiltradoNavio = '';
 var jaFiltradoPeriodo = [];
@@ -104,6 +104,7 @@ async function generateFilters(campo, filterData, condition){
     let multiSelectOptions = {
         data: renamedFilteredData,
         placeholder: 'Todos',
+        max: null,
         multiple: true,
         search: true,
         selectAll: true,
@@ -119,7 +120,7 @@ async function generateFilters(campo, filterData, condition){
     } 
 
     if (condition.includes(campo)) {
-        multiSelectOptions['multiple'] = false;
+        multiSelectOptions['max'] = 1;
         multiSelectOptions['selectAll'] = false;
         multiSelectOptions['listAll'] = false;
     } 

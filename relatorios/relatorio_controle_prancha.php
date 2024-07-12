@@ -194,7 +194,6 @@ if (isset($_GET['json'])) {
 
                         <div class="chart-container">
                             <div id="info-navio-container" class="chart chart-small-block">
-                                <!-- <label class="label-chart"></label> -->
                                 <h1 id="info-navio-titulo"></h1>
                                 <div id="info-navio">
                                     <div class="info-navio-row">
@@ -230,7 +229,7 @@ if (isset($_GET['json'])) {
                                         <label class="label-chart">Total descarregado / restante</label>
                                         <div id="descarregado-total">
                                                 <div id="descarregado-total-grafico-container">
-                                                    <canvas id="graficoTotalDescarregado" height="30" width="40"></canvas>
+                                                    <canvas id="graficoTotalDescarregado" height="27" width="40"></canvas>
                                                     <div id="emptyGraficoTotalDescarregado" class="no-data">
                                                         <p>Nenhum valor encontrado!</p>
                                                     </div>
@@ -275,13 +274,14 @@ if (isset($_GET['json'])) {
                                 <div id="descarregado-dia-container">
                                     <div id="descarregado-dia-grafico" class="chart chart-small-block">
                                         <label class="label-chart">Descarregado por dia</label>
-                                        <canvas id="graficoDescarregadoDia" height="10" width="65"></canvas>
+                                        <canvas id="graficoDescarregadoDia" height="11" width="65"></canvas>
+                                        <canvas id="graficoDescarregadoDiaSideBar" height="14" width="65"></canvas>
                                         <div id="emptyGraficoDescarregadoDia" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> 
                         </div>
                         <div id="resumo-geral-tempo-paralisado-container">
                                 <div id="resumo-geral-grafico" class="chart chart-small-block">

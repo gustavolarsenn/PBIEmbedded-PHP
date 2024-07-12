@@ -1,0 +1,51 @@
+/* Titulo navio */ 
+#nome-navio{
+    text-align: center; 
+    padding: 10px;
+}
+
+    /* CONTAINER que engloba: Total descarregado, descarregado por porão e volume por Cliente e DI*/
+    #descarregado-total-porao-cliente-di-container{
+        min-width: 100%; 
+        display: flex; 
+        margin: 10px 0;
+    }
+        /* CONTAINER que engloba: Total descarregado e descarregado por porão */
+        #descarregado-total-porao-container{
+            width: 30%; 
+            height: 60vh;
+        }
+            
+            #descarregado-total-grafico{
+                margin-bottom: 10px;
+                height: 30vh;
+            }
+            #descarregado-porao-grafico{
+                height: 30vh;
+            }
+
+        /* Volume por Cliente e DI */
+        #volume-cliente-di-grafico{
+            width: 70%;
+            height: 60vh;
+            margin-left: 10px;
+        }
+    
+    /* CONTAINER que engloba: Descarregado por dia e Volume por Cliente */
+    #descarregado-dia-volume-cliente-container{
+        height: 40vh;
+        margin: 10px 0;
+        display: flex;
+    }
+        /* #descarregado-dia-grafico{} */
+
+        #volume-cliente-grafico{
+            margin-left: 10px
+        }
+
+    /* Descarregado por dia e periodo */
+    #descarregado-dia-periodo-grafico{
+        height: 40vh; 
+        display: grid; 
+        margin-bottom: 2%
+    }
