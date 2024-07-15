@@ -14,86 +14,6 @@ var count = 0;
 
 var clienteColorMap;
 
-const barOptions = {
-    scales: {
-        yAxes: [{
-            ticks: {
-                beginAtZero: true
-            },
-            gridLines: {
-                display: false,
-                drawBorder: false
-            },
-            display: false
-        }],
-        xAxes: [{
-            gridLines: {
-                display: false
-            }
-        }]
-    },
-    legend: {
-        display: false
-    },
-    responsive: true,
-}
-
-const horizontalBarOptions = {
-    scales: {
-        xAxes: [{
-            ticks: {
-                beginAtZero: true
-            },
-            gridLines: {
-                display: false,
-                drawBorder: false
-            },
-            display: false,
-            stacked: true
-        }],
-        yAxes: [{
-            gridLines: {
-                display: false
-            },
-            stacked: true
-        }]
-    },
-    legend: {
-        display: false
-    },
-    responsive: true,
-}
-
-const doughnutLabel = {
-    id: 'doughnutLabel',
-    beforeDatasetsDraw(chart, args, pluginOptions) {
-        const {ctx, data, chartArea} = chart;
-
-        // Calculate the center of the chart
-        const centerX = (chartArea.left + chartArea.right) / 2;
-        const centerY = (chartArea.top + chartArea.bottom) / 2;
-        
-        const totalDescarregado = data.datasets[0].data[0];
-        const totalRestante = data.datasets[0].data[1];
-        const totalManifestado = totalDescarregado + totalRestante;
-
-        const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
-
-        // Set the font properties
-        ctx.font = 'bold 1.5vw Arial';
-        ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle'; // Align vertically in the center
-
-        // Draw the text in the center of the chart
-        ctx.fillText(percentDescarregado + '%', centerX, centerY);
-    }
-};
-
-let firstBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
-let secondBarChartOptions = JSON.parse(JSON.stringify(barOptions)); // Deep copy
-secondBarChartOptions.legend.display = true;
-
 var vesselName = document.getElementById('nome-navio');
 
 var jaFoiFiltradoNavio = '';
@@ -182,34 +102,34 @@ function cleanFiltersData(){
     generateCharts();
 }
 
-async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
+async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosPlanejado) {
     // 1 - Total descarregado e restante
-    const dadosDescarregadoResto = dataDischarged.reduce((acc, d) => {
+    const dadosDescarregadoResto = dadosDescarregado.reduce((acc, d) => {
         acc.peso += d.peso;
         return acc;
     }, { peso: 0 });
 
-    const dadosPlanejado = dataPlanned.reduce((acc, d) => {
+    const dadosPlanejadoAgrupado = dadosPlanejado.reduce((acc, d) => {
         acc.planejado += d.planejado;
         return acc;
     }
     , { planejado: 0 });
 
-    const noDataGraficoDescarregadoResto = document.getElementById('emptyGraficoDescarregadoResto');
-    const dataGraficoDescarregadoResto = document.getElementById('graficoDescarregadoResto');
+    const naoPossuiDados = document.getElementById('emptyGraficoDescarregadoResto');
+    const possuiDados = document.getElementById('graficoDescarregadoResto');
 
-    dataGraficoDescarregadoResto.style.visibility = 'hidden';
-    noDataGraficoDescarregadoResto.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
+
     if (dadosDescarregadoResto.peso !== null) {
-        noDataGraficoDescarregadoResto.style.visibility = 'hidden';
-        dataGraficoDescarregadoResto.style.visibility = 'visible';
+        
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
 
-        graficoDescarregadoResto = new Chart('graficoDescarregadoResto', {
-        type: 'doughnut',
-        data: {
+        const dados = {
             labels: ['Realizado', 'Restante'],
             datasets: [{
-                data: [dadosDescarregadoResto.peso, dadosPlanejado.planejado - dadosDescarregadoResto.peso],
+                data: [dadosDescarregadoResto.peso, dadosPlanejadoAgrupado.planejado - dadosDescarregadoResto.peso],
                 backgroundColor: [
                     colorPalette['pbiGreenMidHighOpacity'],
                     'rgba(54, 162, 235, 0.05)'
@@ -218,9 +138,9 @@ async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
                     colorPalette['softBlue'],
                 ],
             }]
-        },
-        plugins: [doughnutLabel],
-        options: {
+        }
+
+        const options = {
             legend: {
                 display: false
             },
@@ -236,20 +156,51 @@ async function gerarGraficoTotalDescarregado(dataDischarged, dataPlanned) {
                 callbacks: {
                     label: function(tooltipItem, data) {
                         const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
-    
+
                         return valor_formatado;
                     }
                 }
             },
             cutoutPercentage: 80,
         }
-    });
 
+        const doughnutLabel = {
+            id: 'doughnutLabel',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+                const {ctx, data, chartArea} = chart;
+        
+                // Calculate the center of the chart
+                const centerX = (chartArea.left + chartArea.right) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 2;
+                
+                const totalDescarregado = data.datasets[0].data[0];
+                const totalRestante = data.datasets[0].data[1];
+                const totalManifestado = totalDescarregado + totalRestante;
+        
+                const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
+        
+                // Set the font properties
+                ctx.font = 'bold 1.5vw Arial';
+                ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle'; // Align vertically in the center
+        
+                // Draw the text in the center of the chart
+                ctx.fillText(percentDescarregado + '%', centerX, centerY);
+            }
+        }
+
+        graficoDescarregadoResto = new Chart('graficoDescarregadoResto', {
+            type: 'doughnut',
+            data: dados,
+            plugins: [doughnutLabel],
+            options: options
+        });
     }
 }
 
-async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
-    const dadosRealizadoPorao = dataDischarged.reduce((acc, d) => {
+async function gerarGraficoDescarregadoPorao(dadosDescarregado, dadosPlanejado) {
+    const dadosRealizadoPorao = dadosDescarregado.reduce((acc, d) => {
         acc[d.porao] = acc[d.porao] || { peso: 0 };
         acc[d.porao].peso += d.peso;
         return acc;
@@ -261,18 +212,18 @@ async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
     }));
 
     // const dadosRealizadoPorao = await getDischargingData('descarregadoPorao');
-    const noDataRealizadoPorao = document.getElementById('emptyGraficoRealizadoPorao');
-    const dataGraficoRealizadoPorao = document.getElementById('graficoRealizadoPorao');
+    const naoPossuiDados = document.getElementById('emptyGraficoRealizadoPorao');
+    const possuiDados = document.getElementById('graficoRealizadoPorao');
 
-    dataGraficoRealizadoPorao.style.visibility = 'hidden';
-    noDataRealizadoPorao.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
+
     if(dadosRealizadoPoraoArray.length > 0){
-        noDataRealizadoPorao.style.visibility = 'hidden';
-        dataGraficoRealizadoPorao.style.visibility = 'visible';
 
-        graficoRealizadoPorao = new Chart('graficoRealizadoPorao', {
-        type: 'horizontalBar',
-        data: {
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
+
+        const dados = {
             labels: dadosRealizadoPoraoArray.map(d => d.porao),
             datasets: [{
                 label: 'Realizado',
@@ -289,9 +240,28 @@ async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
                 borderWidth: 1
             }
         ]
-        },
-        options: 
-        {...horizontalBarOptions, 
+        }
+
+        const options = { 
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    display: false,
+                    stacked: true
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false
+                    },
+                    stacked: true
+                }]
+            },
             legend: {
                 display: true
             },
@@ -304,22 +274,26 @@ async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
                 }
             },
             responsive: true,
-        },
+        }
+
+        graficoRealizadoPorao = new Chart('graficoRealizadoPorao', {
+            type: 'horizontalBar',
+            data: dados,
+            options: options 
         });
     }
-
 }
 
-async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
+async function gerarGraficoClienteArmazemDI(dadosDescarregado, dadosPlanejado) {
     // 3 - Realizado por cliente, armazém e DI
     // Tratamento dos dados para o uso no gráfico
-    const dadosPlanejadoClienteDI = dataPlanned.reduce((acc, d) => {
+    const dadosPlanejadoClienteDI = dadosPlanejado.reduce((acc, d) => {
         acc[`${d.cliente} - ${d.armazem} - ${d.di}`] = acc[`${d.cliente} - ${d.armazem} - ${d.di}`] || { planejado: 0 };
         acc[`${d.cliente} - ${d.armazem} - ${d.di}`].planejado += d.planejado;
         return acc;
     }, {});
 
-    const dadosRealizadoClienteDI = dataDischarged.reduce((acc, d) => {
+    const dadosRealizadoClienteDI = dadosDescarregado.reduce((acc, d) => {
         acc[`${d.cliente} - ${d.armazem} - ${d.di}`] = acc[`${d.cliente} - ${d.armazem} - ${d.di}`] || { peso: 0};
         acc[`${d.cliente} - ${d.armazem} - ${d.di}`].peso += d.peso;
         return acc;
@@ -348,44 +322,54 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
         return { cliente, armazem, di, ...value };
     });
     
-    const noDataGraficoRealizadoClienteDI = document.getElementById('emptyGraficoRealizadoClienteDI');
-    const dataGraficoRealizadoClienteDI = document.getElementById('graficoRealizadoClienteDI');
+    const naoPossuiDados = document.getElementById('emptyGraficoRealizadoClienteDI');
+    const possuiDados = document.getElementById('graficoRealizadoClienteDI');
     
-    dataGraficoRealizadoClienteDI.style.visibility = 'hidden';
-    noDataGraficoRealizadoClienteDI.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
     
     const mergedDadosArrayFiltered = mergedDadosArray.filter(row => "peso" in row);
 
-    console.log(clienteColorMap)
     const barColorsClienteDI = mergedDadosArrayFiltered.map(d => d.cliente).map(item => ({ item, color: clienteColorMap[item] }))
 
-    if (mergedDadosArrayFiltered.length > 0) {
-        noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
-        dataGraficoRealizadoClienteDI.style.visibility = 'visible';
-
-    graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
-        type: 'horizontalBar',
-        plugins: [ChartDataLabels],
-        data: {
-            labels: mergedDadosArrayFiltered.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
-            datasets: [{
-                label: 'Realizado',
-                data: mergedDadosArrayFiltered.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: barColorsClienteDI.map(d => d.color),
-                borderColor: 'rgba(61, 68, 101, 0.75)',
-                borderWidth: 1
-            },
-            {
-                label: 'Restante',
-                data: mergedDadosArrayFiltered.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(54, 162, 235, 0.05)',
-                borderColor: 'rgba(54, 162, 235, 0.5)',
-                borderWidth: 1
-            }
-        ]
+    const dados = {
+        labels: mergedDadosArrayFiltered.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
+        datasets: [{
+            label: 'Realizado',
+            data: mergedDadosArrayFiltered.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
+            backgroundColor: barColorsClienteDI.map(d => d.color),
+            borderColor: 'rgba(61, 68, 101, 0.75)',
+            borderWidth: 1
         },
-        options: 
-        {...horizontalBarOptions, 
+        {
+            label: 'Restante',
+            data: mergedDadosArrayFiltered.map(d => ((1 - (d.peso / d.planejado))* 100).toFixed(2)), // Peso descarregado / planejado
+            backgroundColor: 'rgba(54, 162, 235, 0.05)',
+            borderColor: 'rgba(54, 162, 235, 0.5)',
+            borderWidth: 1
+        }]
+    }
+
+    const options = {
+            scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                gridLines: {
+                    display: false,
+                    drawBorder: false
+                },
+                display: false,
+                stacked: true
+            }],
+            yAxes: [{
+                gridLines: {
+                    display: false
+                },
+                stacked: true
+            }]
+            },
             legend: {
                 display: false
             },
@@ -413,15 +397,25 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
                     }
                 },
             },
-        },
+            responsive: true, 
+    }
+    if (mergedDadosArrayFiltered.length > 0) {
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
+
+    graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
+        type: 'horizontalBar',
+        plugins: [ChartDataLabels],
+        data: dados,
+        options: options
         });
     }
 }
 
-async function gerarGraficoVolumePorDia(dataDischarged) {
+async function gerarGraficoVolumePorDia(dadosDescarregado) {
     // 4 - Volume descarregado por dia
     // const dadosVolumeDia = await getDischargingData('descarregadoDia');
-    const dadosVolumeDia = dataDischarged.reduce((acc, d) => {
+    const dadosVolumeDia = dadosDescarregado.reduce((acc, d) => {
         acc[d.data] = acc[d.data] || { peso: 0 };
         acc[d.data].peso += d.peso;
         return acc;
@@ -432,17 +426,13 @@ async function gerarGraficoVolumePorDia(dataDischarged) {
         peso: dadosVolumeDia[data].peso
     }));
 
-    const noDataGraficoVolumeDia = document.getElementById('emptyGraficoVolumeDia');
-    const dataGraficoVolumeDia = document.getElementById('graficoVolumeDia');
+    const naoPossuiDados = document.getElementById('emptyGraficoVolumeDia');
+    const possuiDados = document.getElementById('graficoVolumeDia');
 
-    dataGraficoVolumeDia.style.visibility = 'hidden';
-    noDataGraficoVolumeDia.style.visibility = 'visible';
-    if (dadosVolumeDiaArray.length > 0) {
-        noDataGraficoVolumeDia.style.visibility = 'hidden';
-        dataGraficoVolumeDia.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
 
-    
-    const ctx = dataGraficoVolumeDia.getContext('2d');
+    const ctx = possuiDados.getContext('2d');
     var gradientStroke = ctx.createLinearGradient(500, 0, 100, 0);
     gradientStroke.addColorStop(1, "rgba(128, 182, 244, 1)");
     gradientStroke.addColorStop(0, "rgba(61, 68, 101, 1)");
@@ -451,104 +441,112 @@ async function gerarGraficoVolumePorDia(dataDischarged) {
     gradientFill.addColorStop(1, "rgba(128, 182, 244, 0.3)");
     gradientFill.addColorStop(0, "rgba(61, 68, 101, 0.3)");
 
-    graficoVolumeDia = new Chart('graficoVolumeDia', {
-        type: 'line',
-        data: {
-            labels: dadosVolumeDiaArray.map(d => d.data),
-            datasets: [{
-                label: 'Peso',
-                data: dadosVolumeDiaArray.map(d => d.peso),
-                backgroundColor: gradientFill,
-                borderColor: gradientStroke,
-                pointBorderColor: gradientStroke,
-                pointBackgroundColor: gradientStroke,
-                pointHoverBackgroundColor: gradientStroke,
-                pointHoverBorderColor: gradientStroke,
-                pointBorderWidth: 10,
-                pointHoverRadius: 10,
-                pointHoverBorderWidth: 1,
-                pointRadius: 2,
-                fill: true,
-                borderWidth: 1,
-                lineTension: 0
+    const dados = {
+        labels: dadosVolumeDiaArray.map(d => d.data),
+        datasets: [{
+            label: 'Peso',
+            data: dadosVolumeDiaArray.map(d => d.peso),
+            backgroundColor: gradientFill,
+            borderColor: gradientStroke,
+            pointBorderColor: gradientStroke,
+            pointBackgroundColor: gradientStroke,
+            pointHoverBackgroundColor: gradientStroke,
+            pointHoverBorderColor: gradientStroke,
+            pointBorderWidth: 10,
+            pointHoverRadius: 10,
+            pointHoverBorderWidth: 1,
+            pointRadius: 2,
+            fill: true,
+            borderWidth: 1,
+            lineTension: 0
+        }]
+    }
+
+    const options = {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    callback: function(value, index, values) {
+                        return floatParaStringFormatada(value);
+                    },
+                    beginAtZero: true
+                },
+                gridLines: {
+                    display: true,
+                    drawBorder: true
+                },
+                display: true
+            }],
+            xAxes: [{
+                gridLines: {
+                    display: false
+                },
             }]
         },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        callback: function(value, index, values) {
-                            return floatParaStringFormatada(value);
-                        },
-                        beginAtZero: true
-                    },
-                    gridLines: {
-                        display: true,
-                        drawBorder: true
-                    },
-                    display: true
-                }],
-                xAxes: [{
-                    gridLines: {
-                        display: false
-                    },
-                }]
-            },
-            legend: {
-                display: false
-            },
-            layout: {
-                padding: {
-                    top: 5,
+        legend: {
+            display: false
+        },
+        layout: {
+            padding: {
+                top: 5,
+        }
+    },
+        responsive: true,
+        maintainAspectRatio: true,
+        layout: {
+            padding: {
+                top: 15,
+                bottom: 15,
+                left: 15,
+                right: 15
             }
         },
-            responsive: true,
-            maintainAspectRatio: true,
-            layout: {
-                padding: {
-                    top: 15,
-                    bottom: 15,
-                    left: 15,
-                    right: 15
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+
+                    return valor_formatado;
                 }
-            },
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+            }
+        },
+    }
+
+    if (dadosVolumeDiaArray.length > 0) {
+
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
     
-                        return valor_formatado;
-                    }
-                }
-            },
-        }
+
+    graficoVolumeDia = new Chart('graficoVolumeDia', {
+        type: 'line',
+        data: dados,
+        options: options
     });
     }
 }
 
-async function gerarGraficoVolumePorCliente(dataDischarged) {
+async function gerarGraficoVolumePorCliente(dadosDescarregado) {
     // 5 - Volume descarregado por cliente
-    const dadosVolumeCliente = dataDischarged.reduce((acc, d) => {
+    const dadosVolumeCliente = dadosDescarregado.reduce((acc, d) => {
         acc[d.cliente] = acc[d.cliente] || { peso: 0 };
         acc[d.cliente].peso += d.peso;
         return acc;
     }, {});
 
-    
     const dadosVolumeClienteArray = Object.keys(dadosVolumeCliente).map(cliente => ({
         cliente: cliente,
         peso: dadosVolumeCliente[cliente].peso
     }));
 
-    const noDataGraficoVolumeCliente = document.getElementById('emptyGraficoVolumeCliente');
-    const dataGraficoVolumeCliente = document.getElementById('graficoVolumeCliente');
+    const naoPossuiDados = document.getElementById('emptyGraficoVolumeCliente');
+    const possuiDados = document.getElementById('graficoVolumeCliente');
 
     let dadosClienteOrdenados = [];
     // Convert the object to an array of [cliente, {peso: value}] pairs
     const sortedArray = Object.entries(dadosVolumeClienteArray).sort((a, b) => {
         return b[1].peso - a[1].peso;
     });
-
 
     sortedArray.forEach((item) => {
         dadosClienteOrdenados.push(item[1])
@@ -558,67 +556,93 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
 
     const barColorCliente = clientesUnicos.map(item => ({ item, color: clienteColorMap[item] }))
     
-    dataGraficoVolumeCliente.style.visibility = 'hidden';
-    noDataGraficoVolumeCliente.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
+
+    const dados = {
+        labels: dadosClienteOrdenados.map(d => d.cliente),
+        datasets: [{
+            label: 'Peso',
+            data: dadosClienteOrdenados.map(d => d.peso),
+            backgroundColor: barColorCliente.map(d => d.color),
+            borderColor: 'rgba(61, 68, 101, 0.75)',
+            borderWidth: 1
+        }]
+    }
+
+    const options = {
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                gridLines: {
+                    display: false,
+                    drawBorder: false
+                },
+                display: false,
+                stacked: true
+            }],
+            yAxes: [{
+                gridLines: {
+                    display: false
+                },
+                stacked: true
+            }]
+        },
+        legend: {
+            display: false
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+        layout: {
+            padding: {
+                top: 15,
+                bottom: 15,
+                left: 15,
+                right: 70
+            }
+        },
+        plugins: {
+            datalabels: {
+                display: true,
+                borderRadius: 5,
+                padding: 10,
+                color: 'black',
+                anchor: 'start',
+                align: 'end',
+                offset: 0,
+                formatter: (value, context) => {
+                    return floatParaStringFormatada(value);
+                }
+            },
+        },
+        tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                    const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+
+                    return valor_formatado;
+                }
+            }
+        },
+    }
     if (dadosVolumeClienteArray.length > 0) {
-        noDataGraficoVolumeCliente.style.visibility = 'hidden';
-        dataGraficoVolumeCliente.style.visibility = 'visible';
+        
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
 
         graficoVolumeCliente = new Chart('graficoVolumeCliente', {
             type: 'horizontalBar',
             plugins: [ChartDataLabels],
-            data: {
-                labels: dadosClienteOrdenados.map(d => d.cliente),
-                datasets: [{
-                    label: 'Peso',
-                    data: dadosClienteOrdenados.map(d => d.peso),
-                    backgroundColor: barColorCliente.map(d => d.color),
-                    borderColor: 'rgba(61, 68, 101, 0.75)',
-                    borderWidth: 1
-                    
-                }]
-            },
-            options: {...horizontalBarOptions,
-                responsive: true,
-                maintainAspectRatio: true,
-                layout: {
-                    padding: {
-                        top: 15,
-                        bottom: 15,
-                        left: 15,
-                        right: 70
-                    }
-                },
-                plugins: {
-                    datalabels: {
-                        display: true,
-                        borderRadius: 5,
-                        padding: 10,
-                        color: 'black',
-                        anchor: 'start',
-                        align: 'end',
-                        offset: 0,
-                        formatter: (value, context) => {
-                            return floatParaStringFormatada(value);
-                        }
-                    },
-                },
-                tooltips: {
-                    callbacks: {
-                        label: function(tooltipItem, data) {
-                            const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
-        
-                            return valor_formatado;
-                        }
-                    }
-                },
-            }
+            data: dados,
+            options: options
         });
     }
 }
 
-async function gerarGraficoVolumeDiaPeriodo(dataDischarged) {
-    const groupedData = dataDischarged.reduce((acc, d) => {
+async function gerarGraficoVolumeDiaPeriodo(dadosDescarregado) {
+    const groupedData = dadosDescarregado.reduce((acc, d) => {
         const key = `${d.data}-${d.periodo}`; // Combine data and periodo into a single key
         if (!acc[key]) {
             acc[key] = { data: d.data, periodo: d.periodo, peso: 0 };
@@ -656,55 +680,80 @@ async function gerarGraficoVolumeDiaPeriodo(dataDischarged) {
     });
 
     // 6 - Volume descarregado por dia e período
-    const noDataGraficoVolumeDiaPeriodo = document.getElementById('emptyGraficoVolumeDiaPeriodo');
-    const dataGraficoVolumeDiaPeriodo = document.getElementById('graficoVolumeDiaPeriodo');
+    const naoPossuiDados = document.getElementById('emptyGraficoVolumeDiaPeriodo');
+    const possuiDados = document.getElementById('graficoVolumeDiaPeriodo');
 
-    dataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-    noDataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
-    if (dataArray.length > 0) {
-        noDataGraficoVolumeDiaPeriodo.style.visibility = 'hidden';
-        dataGraficoVolumeDiaPeriodo.style.visibility = 'visible';
+    possuiDados.style.visibility = 'hidden';
+    naoPossuiDados.style.visibility = 'visible';
 
+    const dados = {
+        labels: datasUnicas,
+        datasets: datasets
+    }
 
-    graficoVolumeDiaPeriodo = new Chart('graficoVolumeDiaPeriodo', {
-        type: 'bar',
-        data: {
-            labels: datasUnicas,
-            datasets: datasets
-        },
-        options: {...secondBarChartOptions,
-            responsive: true,
-            maintainAspectRatio: true,
-            layout: {
-                padding: {
-                    top: 15,
-                    bottom: 15,
-                    left: 15,
-                    right: 15
+    const options = {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                },
+                gridLines: {
+                    display: false,
+                    drawBorder: false
+                },
+                display: false
+            }],
+            xAxes: [{
+                gridLines: {
+                    display: false
                 }
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    gridLines: {
-                        display: true
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    gridLines: {
-                        display: true
+            }]
+        },
+        legend: {
+            display: true
+        },
+        layout: {
+            padding: {
+                top: 15,
+                bottom: 15,
+                left: 15,
+                right: 15
+            }
+        },
+        scales: {
+            xAxes: [{
+                display: true,
+                gridLines: {
+                    display: true
+                }
+            }],
+            yAxes: [{
+                display: true,
+                gridLines: {
+                    display: true
+                },
+                ticks: {
+                    callback: function(value, index, values) {
+                        return floatParaStringFormatada(value);
                     },
-                    ticks: {
-                        callback: function(value, index, values) {
-                            return floatParaStringFormatada(value);
-                        },
-                    }
-                }],
-            },
-        }
-    });
-        }
+                }
+            }],
+        },
+        responsive: true,
+        maintainAspectRatio: true,
+    }
+
+    if (dataArray.length > 0) {
+
+        naoPossuiDados.style.visibility = 'hidden';
+        possuiDados.style.visibility = 'visible';
+
+        graficoVolumeDiaPeriodo = new Chart('graficoVolumeDiaPeriodo', {
+            type: 'bar',
+            data: dados,
+            options: options
+        });
+    }
 }
 
 async function generateCharts() {
@@ -748,8 +797,8 @@ async function generateCharts() {
         jaFiltradoPeriodo = [];
         jaFiltradoPorao = [];
         jaFiltradoProduto = [];
-
     }
+
     vesselName.innerText = navioSelecionado;
 
     const formattedDataDischarged = dataDischarged.map(item => {
@@ -796,8 +845,6 @@ async function generateCharts() {
     const clientesUnicos = [...new Set(filteredDataDischarged.map(d => d.cliente))];
     if (count < 1) clienteColorMap = assignColorsToList(clientesUnicos, pbiThemeColors);
     
-
-    // const listaNavio = [...new Set(filteredData.map(d => d.navio))];
     const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
     const listaPorao = [...new Set(filteredDataDischarged.map(d => d.porao))].sort();
     const listaCliente = [...new Set(filteredDataDischarged.map(d => d.cliente))].sort();
@@ -832,7 +879,7 @@ async function generateCharts() {
     jaFoiFiltradoNavio = navioSelecionado;
     count++;
     
-    await gerarGraficoTotalDescarregado(filteredDataDischarged, filteredDataPlanned);
+    await gerarGraficoTotalDescarregado(filteredDataDischarged, dataPlanned);
 
     await gerarGraficoDescarregadoPorao(filteredDataDischarged, filteredDataPlanned);
     
