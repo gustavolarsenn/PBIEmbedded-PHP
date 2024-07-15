@@ -32,11 +32,14 @@
     
     /* CONTAINER que engloba: Descarregado por dia e Volume por Cliente */
     #descarregado-dia-volume-cliente-container{
-        height: 40vh;
+        /* height: 40vh; */
         margin: 10px 0;
         display: flex;
     }
-        /* #descarregado-dia-grafico{} */
+        #descarregado-dia-grafico{
+            width: 50%;
+            margin-right: 10px;
+        }
 
         #volume-cliente-grafico{
             margin-left: 10px
@@ -44,7 +47,7 @@
 
     /* Descarregado por dia e periodo */
     #descarregado-dia-periodo-grafico{
-        height: 40vh; 
+        /* height: 40vh;  */
         display: grid; 
         margin-bottom: 2%
     }

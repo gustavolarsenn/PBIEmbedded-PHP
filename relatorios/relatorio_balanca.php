@@ -237,14 +237,14 @@ if (isset($_GET['json'])) {
                         <div id="descarregado-dia-volume-cliente-container">
                             <div id="descarregado-dia-grafico" class="chart half-chart">
                                 <label class="label-chart">Descarregado por dia</label>
-                                <canvas id="graficoVolumeDia" height="22" width="50"></canvas>
+                                <canvas id="graficoVolumeDia" height="25" width="50"></canvas>
                                 <div id="emptyGraficoVolumeDia" class="no-data">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>
                             </div>
                             <div id='volume-cliente-grafico' class="chart half-chart">
                                 <label class="label-chart">Volume por cliente</label>
-                                <canvas id="graficoVolumeCliente" height="22" width="50"></canvas>
+                                <canvas id="graficoVolumeCliente" height="25" width="50"></canvas>
                                 <div id="emptyGraficoVolumeCliente" class="no-data">
                                     <p>Nenhum valor encontrado!</p>
                                 </div>

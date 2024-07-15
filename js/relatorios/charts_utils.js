@@ -8,14 +8,14 @@ const colorPalette = {
     'coolBlue': 'rgba(144, 200, 255, 0.8)'
 }
 
-const pbiThemeColors = ["rgba(50, 87, 168, 0.65)","rgba(55, 167, 148, 0.65) ","rgba(139, 61, 136, 0.65)",
+const pbiThemeColors = ["rgba(50, 87, 168, 0.65)","rgba(55, 167, 148, 0.65)","rgba(139, 61, 136, 0.65)",
     "rgba(221, 107, 127, 0.65)","rgba(107, 145, 201, 0.65)","rgba(245, 200, 105, 0.65)","rgba(119, 196, 168, 0.65)",
     "rgba(222, 166, 207, 0.65)","rgba(186, 74, 197, 0.65)",
     "rgba(197, 74, 83, 0.65)","rgba(254, 226, 102, 0.65)","rgba(62, 155, 128, 0.65)",
     "rgba(197, 74, 145, 0.65)","rgba(37, 69, 181, 0.65)","rgba(128, 22, 137, 0.65)",
     "rgba(137, 22, 30, 0.65)","rgba(22, 31, 137, 0.65)","rgba(137, 22, 88, 0.65)","rgba(24, 45, 121, 0.65)","rgba(15, 21, 92, 0.65)"]
 
-const pbiThemeColorsBorder = ["rgba(50, 87, 168, 1)","rgba(55, 167, 148, 1) ","rgba(139, 61, 136, 1)",
+const pbiThemeColorsBorder = ["rgba(50, 87, 168, 1)","rgba(55, 167, 148, 1)","rgba(139, 61, 136, 1)",
     "rgba(221, 107, 127, 1)","rgba(107, 145, 201, 1)","rgba(245, 200, 105, 1)","rgba(119, 196, 168, 1)",
     "rgba(222, 166, 207, 1)","rgba(186, 74, 197, 1)",
     "rgba(197, 74, 83, 1)","rgba(254, 226, 102, 1)","rgba(62, 155, 128, 1)",
@@ -23,9 +23,22 @@ const pbiThemeColorsBorder = ["rgba(50, 87, 168, 1)","rgba(55, 167, 148, 1) ","r
     "rgba(137, 22, 30, 1)","rgba(22, 31, 137, 1)","rgba(137, 22, 88, 1)","rgba(24, 45, 121, 1)","rgba(15, 21, 92, 1)"]
 
 
-function floatParaFloatFormatado(valor){
-    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(valor);
+function floatParaFloatFormatado(valor, casasDecimais = 2){
+    return new Intl.NumberFormat('pt-BR', { minimumFractionDigits: casasDecimais, maximumFractionDigits: casasDecimais }).format(valor);
 }
+
+function floatParaStringFormatada(valor){
+    if(String(valor).length === 6){
+            return String(valor / 1_000).substring(0, 4) + 'K';
+    } else if (String(valor).length === 7 || String(valor).length === 8 || String(valor).length === 9){
+            return String(valor / 1_000_000).substring(0, 4) + 'M';
+    } else if (String(valor).length === 10 || String(valor).length === 11 || String(valor).length === 12){
+            return String(valor / 1_000_000_000).substring(0, 4) + 'B';
+    } else {
+        return valor;
+    }
+    }
+
 function convertSecondsToTime(seconds){
         // Convert total time from seconds to hh:mm:ss format
         const hours = Math.floor(seconds / 3600);
@@ -76,12 +89,6 @@ function getColorForDate(date, colorTheme) {
     return colorTheme[dayOfWeek % pbiThemeColors.length];
 }
 
-// function getColor(list, colorTheme) {
-//     return list.map((item, index) => {
-//         return { item: item, color: colorTheme[index % colorTheme.length] };
-//     });
-// }
-
 function assignColorsToList(list, colorTheme) {
     // Step 1: Identify unique values
     const uniqueValues = [...new Set(list)];
@@ -93,7 +100,7 @@ function assignColorsToList(list, colorTheme) {
     }, {});
 
     // Step 3: Map original list to colors, preserving order
-    return list.map(item => ({ item, color: colorMapping[item] }));
+    return colorMapping;
 }
 
-export { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, colorPalette, pbiThemeColors, pbiThemeColorsBorder }
+export { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, floatParaStringFormatada, colorPalette, pbiThemeColors, pbiThemeColorsBorder }

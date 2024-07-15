@@ -1,5 +1,5 @@
 import { getVesselData, getUniqueVessels } from './balanca_data.js';
-import { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, colorPalette, pbiThemeColors, pbiThemeColorsBorder  } from '../charts_utils.js';
+import { floatParaFloatFormatado, floatParaStringFormatada, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, colorPalette, pbiThemeColors, pbiThemeColorsBorder  } from '../charts_utils.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -11,6 +11,8 @@ window.addEventListener("load", async function() {
 var graficoDescarregadoResto, graficoVolumeCliente, graficoVolumeDiaPeriodo, graficoVolumeDia, graficoRealizadoClienteDI, graficoRealizadoPorao;
 
 var count = 0;
+
+var clienteColorMap;
 
 const barOptions = {
     scales: {
@@ -275,8 +277,8 @@ async function gerarGraficoDescarregadoPorao(dataDischarged, dataPlanned) {
             datasets: [{
                 label: 'Realizado',
                 data: dadosRealizadoPoraoArray.map(d => ((d.peso / (d.peso + 1000000)) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: 'rgba(82, 183, 136, 0.5)',
-                borderColor: 'rgba(82, 183, 136, 0.8)',
+                backgroundColor: colorPalette['pbiGreenMidHighOpacity'],
+                borderColor: 'rgba(61, 68, 101, 0.75)',
                 borderWidth: 1
             },
             {
@@ -354,22 +356,23 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
     
     const mergedDadosArrayFiltered = mergedDadosArray.filter(row => "peso" in row);
 
-    const barColors = Object.values(assignColorsToList(mergedDadosArrayFiltered.map(d => d.cliente), pbiThemeColors));
-    const barColorsBorder = Object.values(assignColorsToList(mergedDadosArrayFiltered.map(d => d.cliente), pbiThemeColorsBorder));
-    
+    console.log(clienteColorMap)
+    const barColorsClienteDI = mergedDadosArrayFiltered.map(d => d.cliente).map(item => ({ item, color: clienteColorMap[item] }))
+
     if (mergedDadosArrayFiltered.length > 0) {
         noDataGraficoRealizadoClienteDI.style.visibility = 'hidden';
         dataGraficoRealizadoClienteDI.style.visibility = 'visible';
 
     graficoRealizadoClienteDI = new Chart('graficoRealizadoClienteDI', {
         type: 'horizontalBar',
+        plugins: [ChartDataLabels],
         data: {
             labels: mergedDadosArrayFiltered.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
             datasets: [{
                 label: 'Realizado',
                 data: mergedDadosArrayFiltered.map(d => ((d.peso / d.planejado) * 100).toFixed(2)), // Peso descarregado / planejado
-                backgroundColor: barColors.map(d => d.color),
-                borderColor: barColorsBorder.map(d => d.color),
+                backgroundColor: barColorsClienteDI.map(d => d.color),
+                borderColor: 'rgba(61, 68, 101, 0.75)',
                 borderWidth: 1
             },
             {
@@ -384,7 +387,7 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
         options: 
         {...horizontalBarOptions, 
             legend: {
-                display: true
+                display: false
             },
             layout: {
                 padding: {
@@ -393,6 +396,22 @@ async function gerarGraficoClienteArmazemDI(dataDischarged, dataPlanned) {
                     left: 15,
                     right: 15
                 }
+            },
+            plugins: {
+                datalabels: {
+                    display: (value, context) => {
+                        return value.datasetIndex === 0; // Só exibe o valor para o dataset de 'Realizado'
+                    },
+                    color: 'black',
+                    anchor: 'center',
+                    align: (value, context) => {
+                        return value.dataset.data[value.dataIndex] > 90 ? 'start' : 'end'
+                    },
+                    offset: 3,
+                    formatter: (value, context) => {
+                        return floatParaFloatFormatado(value, 0) + '%';
+                    }
+                },
             },
         },
         });
@@ -458,13 +477,16 @@ async function gerarGraficoVolumePorDia(dataDischarged) {
             scales: {
                 yAxes: [{
                     ticks: {
+                        callback: function(value, index, values) {
+                            return floatParaStringFormatada(value);
+                        },
                         beginAtZero: true
                     },
                     gridLines: {
-                        display: false,
-                        drawBorder: false
+                        display: true,
+                        drawBorder: true
                     },
-                    display: false
+                    display: true
                 }],
                 xAxes: [{
                     gridLines: {
@@ -490,6 +512,15 @@ async function gerarGraficoVolumePorDia(dataDischarged) {
                     right: 15
                 }
             },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+    
+                        return valor_formatado;
+                    }
+                }
+            },
         }
     });
     }
@@ -503,6 +534,7 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
         return acc;
     }, {});
 
+    
     const dadosVolumeClienteArray = Object.keys(dadosVolumeCliente).map(cliente => ({
         cliente: cliente,
         peso: dadosVolumeCliente[cliente].peso
@@ -511,6 +543,21 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
     const noDataGraficoVolumeCliente = document.getElementById('emptyGraficoVolumeCliente');
     const dataGraficoVolumeCliente = document.getElementById('graficoVolumeCliente');
 
+    let dadosClienteOrdenados = [];
+    // Convert the object to an array of [cliente, {peso: value}] pairs
+    const sortedArray = Object.entries(dadosVolumeClienteArray).sort((a, b) => {
+        return b[1].peso - a[1].peso;
+    });
+
+
+    sortedArray.forEach((item) => {
+        dadosClienteOrdenados.push(item[1])
+    });
+
+    const clientesUnicos = [...new Set(dadosClienteOrdenados.map(d => d.cliente))];
+
+    const barColorCliente = clientesUnicos.map(item => ({ item, color: clienteColorMap[item] }))
+    
     dataGraficoVolumeCliente.style.visibility = 'hidden';
     noDataGraficoVolumeCliente.style.visibility = 'visible';
     if (dadosVolumeClienteArray.length > 0) {
@@ -519,13 +566,14 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
 
         graficoVolumeCliente = new Chart('graficoVolumeCliente', {
             type: 'horizontalBar',
+            plugins: [ChartDataLabels],
             data: {
-                labels: dadosVolumeClienteArray.map(d => d.cliente),
+                labels: dadosClienteOrdenados.map(d => d.cliente),
                 datasets: [{
                     label: 'Peso',
-                    data: dadosVolumeClienteArray.map(d => d.peso),
-                    backgroundColor: 'rgba(61, 68, 101, 0.8)',
-                    borderColor: 'rgba(61, 68, 101, 1)',
+                    data: dadosClienteOrdenados.map(d => d.peso),
+                    backgroundColor: barColorCliente.map(d => d.color),
+                    borderColor: 'rgba(61, 68, 101, 0.75)',
                     borderWidth: 1
                     
                 }]
@@ -538,7 +586,30 @@ async function gerarGraficoVolumePorCliente(dataDischarged) {
                         top: 15,
                         bottom: 15,
                         left: 15,
-                        right: 15
+                        right: 70
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        borderRadius: 5,
+                        padding: 10,
+                        color: 'black',
+                        anchor: 'start',
+                        align: 'end',
+                        offset: 0,
+                        formatter: (value, context) => {
+                            return floatParaStringFormatada(value);
+                        }
+                    },
+                },
+                tooltips: {
+                    callbacks: {
+                        label: function(tooltipItem, data) {
+                            const valor_formatado = floatParaFloatFormatado(data.datasets[0].data[tooltipItem.index]);
+        
+                            return valor_formatado;
+                        }
                     }
                 },
             }
@@ -579,7 +650,7 @@ async function gerarGraficoVolumeDiaPeriodo(dataDischarged) {
             label: periodo,
             data: data,
             backgroundColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 0.8)`,
-            borderColor: `rgba(${255 - i * 30}, ${99 + i * 30}, ${132 + i * 30}, 1)`,
+            borderColor: 'rgba(61, 68, 101, 0.75)',
             borderWidth: 1
         };
     });
@@ -611,6 +682,25 @@ async function gerarGraficoVolumeDiaPeriodo(dataDischarged) {
                     left: 15,
                     right: 15
                 }
+            },
+            scales: {
+                xAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: true
+                    }
+                }],
+                yAxes: [{
+                    display: true,
+                    gridLines: {
+                        display: true
+                    },
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return floatParaStringFormatada(value);
+                        },
+                    }
+                }],
             },
         }
     });
@@ -702,6 +792,10 @@ async function generateCharts() {
         // A record must match all active filters to be included
         return matchesNavio && matchesCliente && matchesArmazem && matchesProduto && matchesDI;
     });
+
+    const clientesUnicos = [...new Set(filteredDataDischarged.map(d => d.cliente))];
+    if (count < 1) clienteColorMap = assignColorsToList(clientesUnicos, pbiThemeColors);
+    
 
     // const listaNavio = [...new Set(filteredData.map(d => d.navio))];
     const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
