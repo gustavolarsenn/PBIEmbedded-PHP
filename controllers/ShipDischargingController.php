@@ -1,5 +1,5 @@
 <?php
-require_once 'shipDischarging.php';
+require_once '../models/shipDischarging.php';
 require_once '../config/database.php';
 require_once '../SessionManager.php';
 

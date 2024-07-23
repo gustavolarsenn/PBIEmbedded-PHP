@@ -1,6 +1,6 @@
 async function getUniqueVessels(){
     var request = {
-        url: "../shipDischarging/shipDischargingController.php",
+        url: "../../controllers/ShipDischargingController.php",
         method: 'POST',
         data: [
         {
@@ -33,7 +33,7 @@ async function getVesselData($type, $vessel){
     const $key = $type == 'discharged' ? 'vesselDataDischarged' : 'vesselDataPlanned';
 
     var request = {
-        url: "../shipDischarging/shipDischargingController.php",
+        url: "../../controllers/ShipDischargingController.php",
         method: 'POST',
         data: [
         {

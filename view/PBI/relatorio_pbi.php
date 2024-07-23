@@ -1,10 +1,9 @@
 <?php
 
-$basePath = '..'; // Adjust this path as needed 
+$basePath = '../../'; // Adjust this path as needed 
 
-require 'pbi_auth.php';
-require $basePath . '/SessionManager.php';
-
+include_once $basePath . "PBI/pbi_auth.php";
+include_once $basePath . "SessionManager.php";
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -13,7 +12,7 @@ $actualLink = basename($_GET["reportName"]);
 
 $embedInfo = pbi($actualLink);
 
-if (isset($_GET['json'])) {
+if (isset($_GET['json'])) { // && json_decode($embedInfo)->sucesso
     header('Content-Type: application/json');
     echo $embedInfo;
     exit;
@@ -28,11 +27,13 @@ if (isset($_GET['json'])) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
+    <link rel="icon" type="image/png" href="../../img/z.png">
+
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
-    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/pbi_reports.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/relatorio_pbi.css">
 </head>
 
 <body>
@@ -113,50 +114,7 @@ if (isset($_GET['json'])) {
             </div>
         </div>
 
-        <div class="quixnav">
-            <div class="quixnav-scroll">
-                <ul class="metismenu" id="menu">
-                    <li class="nav-label first">Módulo Operacional</li>
-					
-					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-single-04"></i><span class="nav-text">Cadastro</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/cadNavios.php">Navios</a></li>	
-						<li><a href="<?php echo $basePath; ?>/cliente.php">Clientes</a></li>
-						<li><a href="<?php echo $basePath; ?>/carga.php">Carga</a></li>
-                        </ul>
-                    </li>
-					
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-form"></i><span class="nav-text">Inclusão</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/Escala1.php">Escala</a></li>
-						<li><a href="<?php echo $basePath; ?>/paralizacao.php">Paralizações</a></li>
-						<li><a href="<?php echo $basePath; ?>/periodosTrabalhados.php">Periodo Trabalhado</a></li>
-						<li><a href="<?php echo $basePath; ?>/planoDistribuicao.php">Plano de Distribuição</a></li>
-						
-                        </ul>
-                    </li>
-				
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/relatorioEscala1.php">Relatório de Escala</a></li>	
-						<li><a href="<?php echo $basePath; ?>/solRelatorioDescarga1.php">Relatório por periodo</a></li>
-						<li><a href="<?php echo $basePath; ?>/solRelatorioCliente.php">Relatório por cliente</a></li>
-						<li><a href="<?php echo $basePath; ?>/cadChuvaNavio.php">Relatório Chuva</a></li>
-						<li><a href="<?php echo $basePath; ?>/relatorios/relatorio_balanca.php">Relatório Balança</a></li>
-                        <li><a href="<?php echo $basePath; ?>/relatorios/relatorio_controle_prancha.php">Controle de Prancha</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios - BI</span></a>
-                        <ul aria-expanded="false" id="bi-reports">
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-		
+        <?php include_once $basePath . '/components/sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
@@ -190,7 +148,7 @@ if (isset($_GET['json'])) {
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-	<script src="<?php echo $basePath; ?>/js/pbi/pbi_report.js"></script>
+	<script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
     <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
 
     <!-- Required vendors -->

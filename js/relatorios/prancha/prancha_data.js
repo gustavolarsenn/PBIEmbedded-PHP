@@ -1,6 +1,6 @@
 async function getVesselInfo($vessel){
     var request = {
-        url: "../Navio/NavioController.php",
+        url: "../../controllers/NavioController.php",
         method: 'POST',
         data: [
         {
@@ -34,7 +34,7 @@ async function getVesselInfo($vessel){
 }
 async function getUniqueVessels(){
     var request = {
-        url: "../Prancha/PranchaController.php",
+        url: "../../controllers/PranchaController.php",
         method: 'POST',
         data: [
         {
@@ -65,7 +65,7 @@ async function getUniqueVessels(){
 
 async function getVesselData($vessel){
     var request = {
-        url: "../Prancha/PranchaController.php",
+        url: "../../controllers/PranchaController.php",
         method: 'POST',
         data: [
         {

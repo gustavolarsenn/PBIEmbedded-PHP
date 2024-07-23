@@ -25,17 +25,17 @@ class Usuario
         $usuario = $stmt->fetch();
 
         if ($usuario) {
-            return json_encode(['error' => 'Usuário já existe']);
+            return json_encode(['sucesso' => false, 'mensagem' => 'Usuário já existe']);
         } else {
             try {
                 // Insira o novo usuário no banco de dados
                 $stmt = $this->pdo->prepare('INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)');
                 $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT)]);
-
-                return json_encode(['message' => 'Usuário registrado com sucesso']);
+                
+                return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
             } catch (PDOException $e) {
                 $error = $e->getMessage();
-                return json_encode(['error' => 'Erro:' . $error]);
+                return json_encode(['sucesso' => false, 'erro' => `Erro:` . $error]);
             }
         }
     }
@@ -47,14 +47,15 @@ class Usuario
         $usuario = $stmt->fetch();
         
         if (!$usuario) {
-            return json_encode(['error' => 'Usuário não encontrado']);
+            return json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado']);
         }
         // Verifique se o usuário existe e a senha está correta
         if ($this->email && password_verify($this->senha, $usuario['senha'])) {
             SessionManager::iniciarSessao($usuario['id'], $usuario['nome'], $usuario['email']);
-            return json_encode(['message' => 'Login bem-sucedido']);
+
+            return json_encode(['sucesso' => true, 'mensagem' => 'Login bem-sucedido']);
         } else {
-            return json_encode(['error' => 'Nome de usuário ou senha inválidos']);
+            return json_encode(['sucesso' => false, 'mensagem' => 'Nome de usuário ou senha inválidos']);
             }
         }
         
@@ -62,6 +63,7 @@ class Usuario
         {
             SessionManager::sessaoIniciada();
             session_destroy();
-            return json_encode(['message' => 'Logout bem-sucedido']);
+
+            return json_encode(['sucesso' => true, 'message' => 'Logout bem-sucedido']);
         }
     }

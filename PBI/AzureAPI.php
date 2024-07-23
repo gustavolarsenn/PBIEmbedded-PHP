@@ -118,7 +118,11 @@ class AzureAPI {
             'Content-Type: application/x-www-form-urlencoded',
         ];
 
-        $response = ApiCalls::apiCall('POST', $url, $params, $header);
+        try {
+            $response = ApiCalls::apiCall('POST', $url, $params, $header);
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
+        }
 
         return json_decode($response)->access_token;
     }
@@ -135,10 +139,14 @@ class AzureAPI {
                 $this->capacity_name . "/" . $actionApi . "?api-version=2021-01-01";
 
         $header = [
-            'Authorization: Bearer ' . $token,
+            "Authorization: Bearer " . $token,
         ];
 
-        $response = ApiCalls::apiCall('POST', $url, [], $header);
+        try {
+            $response = ApiCalls::apiCall('POST', $url, [], $header);
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
+        }
 
         return $response;
     }
@@ -153,10 +161,13 @@ class AzureAPI {
                     $this->capacity_name . "?api-version=2021-01-01";
     
             $header = [
-                'Authorization: Bearer ' . $token,
+                "Authorization: Bearer " . $token,
             ];
-    
-            $response = ApiCalls::apiCall('GET', $url, [], $header);
+            try {
+                $response = ApiCalls::apiCall('GET', $url, [], $header);
+            } catch (Exception $e) {
+                return json_decode($e->getMessage());
+            }
     
             return json_decode($response)->properties->state;
     }

@@ -1,5 +1,5 @@
 <?php
-require_once 'Usuario.php';
+require_once '../models/Usuario.php';
 require_once '../config/database.php';
 require_once '../SessionManager.php';
 
@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $usuario = new Usuario($pdo, $nome, $email, $senha);
         $message = $usuario->register();
 
-    } elseif ($action === 'login') {
+    } else if ($action === 'login') {
         $usuario = new Usuario($pdo, null, $email, $senha);
         $message = $usuario->login();
     }

@@ -1,6 +1,6 @@
 const biReportContainer = document.getElementById('bi-reports');
 
-fetch('/controller/pbi_reports.php', {
+fetch('../../controllers/PbiReportsController.php', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
@@ -11,7 +11,7 @@ fetch('/controller/pbi_reports.php', {
 })
 .then(response => {
     if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
     }
     return response.json();
 })
@@ -20,7 +20,7 @@ fetch('/controller/pbi_reports.php', {
         const reportList = document.createElement('li');
         const reportLink = document.createElement('a');
         reportLink.classList.add('report-link');
-        reportLink.href = `../PBI/pbi_report.php?reportName=${report}`;
+        reportLink.href = `../PBI/relatorio_pbi.php?reportName=${report}`;
         reportLink.innerText = report;
         reportList.appendChild(reportLink);
         biReportContainer.appendChild(reportList);

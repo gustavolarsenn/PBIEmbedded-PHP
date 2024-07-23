@@ -7,9 +7,51 @@ $(document).ready(function() {
         const reportName = urlParams.get('reportName');
         const reportTitle = document.getElementById('report-title');
         reportTitle.innerText = reportName;
-        loadReport("pbi_report.php?reportName=" + encodeURIComponent(reportName));
+        loadReport("relatorio_pbi.php?reportName=" + encodeURIComponent(reportName));
     });
 });
+
+function tratarErro(erro) {
+    // Show error container
+    $(".embed-container").hide();
+    $(".embed-section").hide();
+    let errorContainer = $(".error-container");
+
+    errorContainer.show();
+
+    // Get the error message from err object
+    // let errMsg = JSON.parse(erro)["error"];
+    let errMsg = erro;
+
+    // Split the message with \r\n delimiter to get the errors from the error message
+    let errorLines = errMsg.split("\r\n");
+    
+    // "Erro ao puxar dados em API da Azure e carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
+    // Create error header
+    let errHeader = document.createElement("p");
+    let strong = document.createElement("strong");
+    let node = document.createTextNode(
+        "Erro:\n"
+    );
+
+    // Get the error container
+    let errContainer = errorContainer.get(0);
+
+    // Add the error header in the container
+    strong.appendChild(node);
+    errHeader.appendChild(strong);
+    errContainer.appendChild(errHeader);
+
+    // Create <p> as per the length of the array and append them to the container
+    errorLines.forEach((element) => {
+        let errorContent = document.createElement("p");
+        let node = document.createTextNode(element);
+        errorContent.appendChild(node);
+        errContainer.appendChild(errorContent);
+    });
+
+    return;
+}
 
 function loadReport(reportLinkFix) {
     // Create a config object with type of the object, Embed details and Token Type
@@ -23,14 +65,19 @@ function loadReport(reportLinkFix) {
         url: reportLinkFix + "&json=true",
         dataType: "json",
         success: function(embedData) {
+            if (embedData.sucesso === false) {
+                tratarErro(embedData.mensagem);
+                return;
+            }
+            embedInfo = JSON.parse(embedData.dados);
 
             let reportLoadConfig = {
                 type: "report",
                 tokenType: models.TokenType.Embed,
-                accessToken: embedData.embedToken,
+                accessToken: embedInfo.embedToken,
 
                 // Use other embed report config based on the requirement. We have used the first one for demo purpose
-                embedUrl: embedData.reportsDetail[0].embedUrl,
+                embedUrl: embedInfo.reportsDetail[0].embedUrl,
 
                 // Enable this setting to remove gray shoulders from embedded report
                 settings: {
@@ -42,10 +89,9 @@ function loadReport(reportLinkFix) {
                     },
                 }
             };
-            console.log(embedData);
             // Use the token expiry to regenerate Embed token for seamless end user experience
             // Refer https://aka.ms/RefreshEmbedToken
-            tokenExpiry = embedData.expiry;
+            tokenExpiry = embedInfo.expiry;
 
             // Embed Power BI report when Access token and Embed URL are available
             let report = powerbi.embed(reportContainer, reportLoadConfig);
@@ -88,41 +134,6 @@ function loadReport(reportLinkFix) {
             });
         },
 
-        error: function(err) {
-            // Show error container
-            $(".embed-container").hide();
-            $(".embed-section").hide();
-            let errorContainer = $(".error-container");
-
-            errorContainer.show();
-            // Get the error message from err object
-            let errMsg = JSON.parse(err.responseText)["error"];
-
-            // Split the message with \r\n delimiter to get the errors from the error message
-            let errorLines = errMsg.split("\r\n");
-
-            // Create error header
-            let errHeader = document.createElement("p");
-            let strong = document.createElement("strong");
-            let node = document.createTextNode(
-                "Erro ao carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
-            );
-
-            // Get the error container
-            let errContainer = errorContainer.get(0);
-
-            // Add the error header in the container
-            strong.appendChild(node);
-            errHeader.appendChild(strong);
-            errContainer.appendChild(errHeader);
-
-            // Create <p> as per the length of the array and append them to the container
-            errorLines.forEach((element) => {
-                let errorContent = document.createElement("p");
-                let node = document.createTextNode(element);
-                errorContent.appendChild(node);
-                errContainer.appendChild(errorContent);
-            });
-        },
+        error: tratarErro
     });
 }

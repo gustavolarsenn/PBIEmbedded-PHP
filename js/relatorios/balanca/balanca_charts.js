@@ -194,7 +194,7 @@ async function generateCharts() {
     });
 
     const clientesUnicos = [...new Set(filteredDataDischarged.map(d => d.cliente))];
-    if (count < 1) clienteColorMap = assignColorsToList(clientesUnicos, pbiThemeColors);
+    if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) clienteColorMap = assignColorsToList(clientesUnicos, pbiThemeColors);
     
     const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
     const listaPorao = [...new Set(filteredDataDischarged.map(d => d.porao))].sort();

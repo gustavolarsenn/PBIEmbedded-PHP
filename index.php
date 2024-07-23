@@ -1,5 +1,7 @@
 <?php
-require_once 'SessionManager.php';
+$basePath = '..'; // Adjust this path as needed 
+
+require 'SessionManager.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -14,6 +16,9 @@ SessionManager::checarCsrfToken();
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
+    <!-- <link rel="icon" type="image/png" href="../../img/icone/zp-01 - azul.png" sizes="20x20"> -->
+    <link rel="icon" type="image/png" href="../../img/icone/zp-01 - azul - redux.png">
+
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="./vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="./vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -21,6 +26,9 @@ SessionManager::checarCsrfToken();
 </head>
 
 <body>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
+<script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <div id="preloader">
@@ -100,50 +108,7 @@ SessionManager::checarCsrfToken();
             </div>
         </div>
 >
-        <div class="quixnav">
-            <div class="quixnav-scroll">
-                <ul class="metismenu" id="menu">
-                    <li class="nav-label first">Módulo Operacional</li>
-					
-					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-single-04"></i><span class="nav-text">Cadastro</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="cadNavios.php">Navios</a></li>	
-						<li><a href="cliente.php">Clientes</a></li>
-						<li><a href="carga.php">Carga</a></li>
-                        </ul>
-                    </li>
-					
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-form"></i><span class="nav-text">Inclusão</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="Escala1.php">Escala</a></li>
-						<li><a href="paralizacao.php">Paralizações</a></li>
-						<li><a href="periodosTrabalhados.php">Periodo Trabalhado</a></li>
-						<li><a href="planoDistribuicao.php">Plano de Distribuição</a></li>
-						
-                        </ul>
-                    </li>
-				
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="relatorioEscala1.php">Relatório de Escala</a></li>	
-						<li><a href="solRelatorioDescarga1.php">Relatório por periodo</a></li>
-						<li><a href="solRelatorioCliente.php">Relatório por cliente</a></li>
-						<li><a href="cadChuvaNavio.php">Relatório Chuva</a></li>
-						<li><a href="relatorios/relatorio_balanca.php">Relatório Balança</a></li>
-						<li><a href="relatorios/relatorio_controle_prancha.php">Controle de Prancha</a></li>
-                        </ul>
-                    </li>
-					
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios - BI</span></a>
-                        <ul aria-expanded="false" id="bi-reports">
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-		
+        <?php include_once 'components/sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
@@ -155,10 +120,15 @@ SessionManager::checarCsrfToken();
     <script src="./js/quixnav-init.js"></script>
     <script src="./js/custom.min.js"></script>
 	<script src="./js/logout.js"></script>
-	<script src="pbi_report.js"></script>
+	<script src="links_pbi.js"></script>
+    <script src="embed.js"></script>
 
-    <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
+
+
+    <!-- <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
+    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script> -->
     
 	<!-- Form validate init -->
     <script src="./js/plugins-init/jquery.validate-init.js"></script>

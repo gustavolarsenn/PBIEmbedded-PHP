@@ -4,7 +4,7 @@ function logoutConfirmation() {
     $(document).ready(function(event){
           // event.preventDefault();
           var request = {
-              url: "Usuario/UsuarioController.php",
+              url: "controllers/UsuarioController.php",
               method: 'GET',
               data: [{
                   name: 'action',

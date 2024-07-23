@@ -50,8 +50,6 @@ class ApiCalls{
     
             return $response;
         } catch (Exception $e) {
-            // Log the error and return a meaningful response
-            // error_log('Error in apiCall: ' . $e->getMessage(), 3, '/path/to/your/error.log');
             throw new Exception('Error in apiCall: ' . $e->getMessage() . 'Line:' . $e->getLine());
         }
     }

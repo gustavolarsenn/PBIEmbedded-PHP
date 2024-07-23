@@ -48,6 +48,8 @@ async function gerarGraficoClienteArmazemDI(dadosDescarregado, dadosPlanejado, m
 
     const barColorsClienteDI = mergedDadosArrayFiltered.map(d => d.cliente).map(item => ({ item, color: mapeamentoCorCliente[item] }))
 
+    console.log(barColorsClienteDI)
+
     const dados = {
         labels: mergedDadosArrayFiltered.map(d => d.cliente + " - " + d.armazem + " - " + d.di),
         datasets: [{

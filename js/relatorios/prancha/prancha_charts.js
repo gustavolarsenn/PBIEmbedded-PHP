@@ -1,5 +1,5 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
-import { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, colorPalette, pbiThemeColors, pbiThemeColorsBorder } from '../charts_utils.js';
+import { floatParaFloatFormatado, paralisacoesSoma, renameKeys, pbiThemeColors, pbiThemeColorsBorder } from '../charts_utils.js';
 import { gerarGraficoTotalDescarregado } from './graficos/total_descarregado.js';
 import { gerarGraficoDescarregadoPorDia } from './graficos/volume_dia.js';
 import { gerarGraficoResumoGeral } from './graficos/resumo_geral.js';

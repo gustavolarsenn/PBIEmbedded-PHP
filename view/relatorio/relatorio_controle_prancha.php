@@ -1,8 +1,9 @@
 <?php
 
-$basePath = '..'; // Adjust this path as needed 
+$basePath = '../../'; // Adjust this path as needed 
 
-require $basePath . '/SessionManager.php';
+// require $basePath . `/SessionManager.php`;
+require_once $basePath . "SessionManager.php";
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -116,50 +117,7 @@ if (isset($_GET['json'])) {
             </div>
         </div>
 
-        <div class="quixnav">
-            <div class="quixnav-scroll">
-                <ul class="metismenu" id="menu">
-                    <li class="nav-label first">Módulo Operacional</li>
-					
-					<li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-single-04"></i><span class="nav-text">Cadastro</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/cadNavios.php">Navios</a></li>	
-						<li><a href="<?php echo $basePath; ?>/cliente.php">Clientes</a></li>
-						<li><a href="<?php echo $basePath; ?>/carga.php">Carga</a></li>
-                        </ul>
-                    </li>
-					
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-form"></i><span class="nav-text">Inclusão</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/Escala1.php">Escala</a></li>
-						<li><a href="<?php echo $basePath; ?>/paralizacao.php">Paralizações</a></li>
-						<li><a href="<?php echo $basePath; ?>/periodosTrabalhados.php">Periodo Trabalhado</a></li>
-						<li><a href="<?php echo $basePath; ?>/planoDistribuicao.php">Plano de Distribuição</a></li>
-						
-                        </ul>
-                    </li>
-				
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios</span></a>
-                        <ul aria-expanded="false">
-                        <li><a href="<?php echo $basePath; ?>/relatorioEscala1.php">Relatório de Escala</a></li>	
-						<li><a href="<?php echo $basePath; ?>/solRelatorioDescarga1.php">Relatório por periodo</a></li>
-						<li><a href="<?php echo $basePath; ?>/solRelatorioCliente.php">Relatório por cliente</a></li>
-						<li><a href="<?php echo $basePath; ?>/cadChuvaNavio.php">Relatório Chuva</a></li>
-						<li><a href="<?php echo $basePath; ?>/relatorios/relatorio_balanca.php">Relatório Balança</a></li>
-						<li><a href="<?php echo $basePath; ?>/relatorios/relatorio_controle_prancha.php">Controle de Prancha</a></li>
-                        </ul>
-                    </li>
-
-                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i
-                                class="icon icon-layout-25"></i><span class="nav-text">Relatórios - BI</span></a>
-                        <ul aria-expanded="false" id="bi-reports">
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
+        <?php include_once $basePath . '/components/sidebar.php'?>
 
         <div class="content-body">
             <div class="container-fluid">
@@ -323,7 +281,7 @@ if (isset($_GET['json'])) {
     <script src="<?php echo $basePath; ?>/js/quixnav-init.js"></script>
     <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
 	<script src="<?php echo $basePath; ?>/js/logout.js"></script>
-    <script src="<?php echo $basePath; ?>/js/pbi/pbi_report.js"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
     
     <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
     <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>
