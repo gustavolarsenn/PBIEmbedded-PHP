@@ -1,5 +1,5 @@
 let models = window["powerbi-client"].models;
-let reportContainer = $("#report-container")[0];
+let reportContainer = $("#report-container").get(0);
 
 $(document).ready(function() {
     $(document).ready(function() {
@@ -7,7 +7,8 @@ $(document).ready(function() {
         const reportName = urlParams.get('reportName');
         const reportTitle = document.getElementById('report-title');
         reportTitle.innerText = reportName;
-        loadReport("relatorio_pbi.php?reportName=" + encodeURIComponent(reportName));
+        // loadReport("/PBI/pbi_auth.php?reportName=" + encodeURIComponent(reportName));
+        loadReport("/PBI/pbi_auth.php?reportName=" + encodeURIComponent(reportName), reportName);
     });
 });
 
@@ -47,23 +48,27 @@ function tratarErro(erro) {
         errorContent.appendChild(node);
         errContainer.appendChild(errorContent);
     });
-    const reportContainer_ = document.querySelector('#report-container')
-    const loaderContainer_ = document.querySelector('#preloader-report')
-    reportContainer_.style.display = "flex";
-    loaderContainer_.style.display = "none";
+    // const reportContainer_ = document.querySelector('#report-container')
+    // const loaderContainer_ = document.querySelector('#preloader-report')
+    // reportContainer_.style.display = "flex";
+    // loaderContainer_.style.display = "none";
     return;
 }
 
-function loadReport(reportLinkFix) {
+function loadReport(reportLinkFix, report) {
     // Create a config object with type of the object, Embed details and Token Type
-    const reportContainer_ = document.querySelector('#report-container')
-    const loaderContainer_ = document.querySelector('#preloader-report')
-    reportContainer_.style.display = "none";
-    loaderContainer_.style.display = "flex";
+    // const reportContainer_ = document.querySelector('#report-container')
+    // const loaderContainer_ = document.querySelector('#preloader-report')
+    // reportContainer_.style.display = "none";
+    // loaderContainer_.style.display = "flex";
     // AJAX request to get Embed token
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: reportLinkFix + "&json=true",
+        data: {
+            action: "gerarRelatorioPBI",
+            reportName: report
+        },
         dataType: "json",
         success: function(embedData) {
             if (embedData.sucesso === false) {
@@ -97,29 +102,29 @@ function loadReport(reportLinkFix) {
             // Embed Power BI report when Access token and Embed URL are available
             let report = powerbi.embed(reportContainer, reportLoadConfig);
 
-            const fullscreenButton = document.getElementById('fullscreen');
-            fullscreenButton.addEventListener('click', () => {
-                report.fullscreen();
-            });
+            // const fullscreenButton = document.getElementById('fullscreen');
+            // fullscreenButton.addEventListener('click', () => {
+            //     report.fullscreen();
+            // });
 
-            const downloadButton = document.getElementById('download');
-            downloadButton.addEventListener('click', () => {
-                report.print();
-            });
+            // const downloadButton = document.getElementById('download');
+            // downloadButton.addEventListener('click', () => {
+            //     report.print();
+            // });
 
             // Clear any other loaded handler events
             report.off("loaded");
-
+            
             // Triggers when a report schema is successfully loaded
             report.on("loaded", function() {
                 console.log("Report load successful");
-                reportContainer_.style.display = "flex";
-                loaderContainer_.style.display = "none";
+                // reportContainer_.style.display = "flex";
+                // loaderContainer_.style.display = "none";
             });
 
             // Clear any other rendered handler events
             report.off("rendered");
-
+            
             // Triggers when a report is successfully embedded in UI
             report.on("rendered", function() {
                 console.log("Report render successful");

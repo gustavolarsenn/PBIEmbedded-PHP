@@ -2,7 +2,6 @@
 
 $basePath = '../../'; // Adjust this path as needed 
 
-include_once $basePath . "PBI/pbi_auth.php";
 include_once $basePath . "SessionManager.php";
 
 SessionManager::checarSessao();
@@ -10,13 +9,18 @@ SessionManager::checarCsrfToken();
 
 $actualLink = basename($_GET["reportName"]);
 
-$embedInfo = gerarRelatorioPBI($actualLink);
-
 if (isset($_GET['json'])) {
-    header('Content-Type: application/json');
-    echo $embedInfo;
+    echo $actualLink;
     exit;
 }
+
+// $embedInfo = gerarRelatorioPBI($actualLink);
+
+// if (isset($_GET['json'])) {
+//     header('Content-Type: application/json');
+//     echo $embedInfo;
+//     exit;
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -61,13 +65,13 @@ if (isset($_GET['json'])) {
                     </div>
                 </div>
 
-                <div id="preloader-report">
+                <!-- <div id="preloader-report">
                     <div class="report-container sk-three-bounce">
                         <div class="sk-child sk-bounce1"></div>
                         <div class="sk-child sk-bounce2"></div>
                         <div class="sk-child sk-bounce3"></div>
                     </div>
-                </div>
+                </div> -->
                 <section class="report-container" id="report-container">
                     <div class="error-container"></div>
                 </section>
@@ -76,8 +80,9 @@ if (isset($_GET['json'])) {
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
+    
 	<script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
-    <script src="<?php echo $basePath; ?>/js/pbi/embed.js" type="module"></script>
+    <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
 
     <!-- Required vendors -->
     <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>

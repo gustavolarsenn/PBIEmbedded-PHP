@@ -3,11 +3,15 @@ require_once 'AzureAPI.php';
 require_once 'PowerBiReportDetails.php';
 require_once 'EmbedConfig.php';
 require_once 'ApiCalls.php';
-require_once '../../config/database.php';
-require_once '../../controllers/PbiReportsController.php';
+require_once '../config/database.php';
+require_once '../controllers/PbiReportsController.php';
 require_once 'PowerBISession.php';
 
+require_once '../SessionManager.php';
+
 function gerarRelatorioPBI($actualLink){
+    SessionManager::checarSessao();
+
     try {
         $conn = (new Database())->getConnection();
         $pbiReports = new PbiReports($conn);
@@ -54,14 +58,19 @@ function gerarRelatorioPBI($actualLink){
             return json_encode(['sucesso' => false, 'mensagem' => 'Capacidade não está disponível para gerar o relatório!']);
         }
 
-        $reportInfo = [
-            'report_id' => $currentReport['report_id'],
-            'report_name' => $currentReport['report_name'],
-            'token' => $token,
-        ];
+        // $reportInfo = [
+        //     'report_id' => $currentReport['report_id'],
+        //     'report_name' => $currentReport['report_name'],
+        //     'token' => $token,
+        // ];
 
         return json_encode(['sucesso' => true, 'dados' => json_encode($reportEmbedConfig)]);
     } catch (Exception $e) {
         echo 'Caught exception: ',  $e->getMessage(), "\n";
     }
+}
+
+if($_POST['action'] === 'gerarRelatorioPBI'){
+    $actualLink = $_POST['reportName'];
+    echo gerarRelatorioPBI($actualLink);
 }

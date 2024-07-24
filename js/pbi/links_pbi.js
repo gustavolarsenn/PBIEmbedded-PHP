@@ -20,7 +20,7 @@ fetch('../../controllers/PbiReportsController.php', {
         const reportList = document.createElement('li');
         const reportLink = document.createElement('a');
         reportLink.classList.add('report-link');
-        reportLink.href = `../view/PBI/relatorio_pbi.php?reportName=${report}`;
+        reportLink.href = `/view/PBI/relatorio_pbi.php?reportName=${report}`;
         reportLink.innerText = report;
         reportList.appendChild(reportLink);
         biReportContainer.appendChild(reportList);
