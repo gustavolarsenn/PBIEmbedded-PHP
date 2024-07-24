@@ -23,6 +23,8 @@ if (isset($_GET['json'])) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Controle de Prancha</title>
 
+    <link rel="icon" type="image/png" href="/img/icone.png">
+
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
@@ -42,81 +44,13 @@ if (isset($_GET['json'])) {
 <!-- Include Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-    <div id="preloader">
-        <div class="sk-three-bounce">
-            <div class="sk-child sk-bounce1"></div>
-            <div class="sk-child sk-bounce2"></div>
-            <div class="sk-child sk-bounce3"></div>
-        </div>
-    </div>
+    
+    <?php include_once $basePath . '/components/loader.php'?>
 
     <div id="main-wrapper">
 
-        <div class="nav-header">
-            <a href="index.php" class="brand-logo">
-                <img class="logo-compact" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
-                <img class="brand-title" src="<?php echo $basePath; ?>/images/logo-zport-branca-3x.png" alt="">
-            </a>
-
-            <div class="nav-control">
-                <div class="hamburger">
-                    <span class="line"></span><span class="line"></span><span class="line"></span>
-                </div>
-            </div>
-        </div>
-
-        <div class="header">
-            <div class="header-content">
-                <nav class="navbar navbar-expand">
-                    <div class="collapse navbar-collapse justify-content-between">
-                        <div class="header-left">
-                            <div class="search_bar dropdown">
-                                <span class="search_icon p-3 c-pointer" data-toggle="dropdown">
-                                    <i class="mdi mdi-magnify"></i>
-                                </span>
-                                <div class="dropdown-menu p-0 m-0">
-                                    <form>
-                                        <input class="form-control" type="search" placeholder="Pesquisar" aria-label="Search">
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <ul class="navbar-nav header-right">
-                            <li class="nav-item dropdown notification_dropdown">
-                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                    <i class="mdi mdi-bell"></i>
-                                    <div class="pulse-css"></div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <ul class="list-unstyled">
-                                        <li class="media dropdown-item">
-                                            
-                            <li class="nav-item dropdown header-profile">
-                                <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                    <i class="mdi mdi-account"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a href="./app-profile.html" class="dropdown-item">
-                                        <i class="icon-user"></i>
-                                        <span class="ml-2">Profile </span>
-                                    </a>
-                                    <a href="./email-inbox.html" class="dropdown-item">
-                                        <i class="icon-envelope-open"></i>
-                                        <span class="ml-2">Inbox </span>
-                                    </a>
-									<a class="dropdown-item" href="#" onclick="logoutConfirmation()" >
-										<i class="icon-key"></i>
-										<span class="ml-2">Logout</span>
-									</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-            </div>
-        </div>
-
+        <?php include_once $basePath . '/components/header.php'?>
+        
         <?php include_once $basePath . '/components/sidebar.php'?>
 
         <div class="content-body">

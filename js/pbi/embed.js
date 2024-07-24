@@ -19,12 +19,10 @@ function tratarErro(erro) {
 
     errorContainer.show();
 
-    // Get the error message from err object
-    // let errMsg = JSON.parse(erro)["error"];
-    let errMsg = erro;
+    console.log(erro)
 
     // Split the message with \r\n delimiter to get the errors from the error message
-    let errorLines = errMsg.split("\r\n");
+    let errorLines = erro.split("\r\n");
     
     // "Erro ao puxar dados em API da Azure e carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
     // Create error header
@@ -49,7 +47,10 @@ function tratarErro(erro) {
         errorContent.appendChild(node);
         errContainer.appendChild(errorContent);
     });
-
+    const reportContainer_ = document.querySelector('#report-container')
+    const loaderContainer_ = document.querySelector('#preloader-report')
+    reportContainer_.style.display = "flex";
+    loaderContainer_.style.display = "none";
     return;
 }
 

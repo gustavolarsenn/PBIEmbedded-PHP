@@ -7,10 +7,8 @@ require_once '../../config/database.php';
 require_once '../../controllers/PbiReportsController.php';
 require_once 'PowerBISession.php';
 
-function pbi($actualLink){
-    
+function gerarRelatorioPBI($actualLink){
     try {
-
         $conn = (new Database())->getConnection();
         $pbiReports = new PbiReports($conn);
         
@@ -30,27 +28,39 @@ function pbi($actualLink){
         
         $azureAPI = new AzureAPI();
     
-        if ($powerBISession->sessoesAtivasPBI()){
-            for ($i = 0; $i < 10; $i++) {
-                $statusCapacity = $azureAPI->pegarStatusCapacity();
-                if ($statusCapacity == 'Succeeded'){
-                    $conn = null;
+        // if ($powerBISession->sessoesAtivasPBI()){
+        //     for ($i = 0; $i < 10; $i++) {
+        //         $statusCapacity = $azureAPI->pegarStatusCapacity();
+        //         if ($statusCapacity == 'Succeeded'){
+        //             $conn = null;
                     
-                    $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['report_id'], $currentReport['dataset_id'], null);
                     
-                    return json_encode(['sucesso' => true, 'dados' => json_encode($reportEmbedConfig)]);
-                }
-                if ($statusCapacity == 'Paused' || $statusCapacity == 'Pausing'){
-                    $azureAPI->gerenciarCapacity(true);
-                }
-                // sleep(2.5);
-                sleep(1);
-            }
-            $conn = null;
-            return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível iniciar capacidade para gerar o relatório!']);
-        } 
-    
+        //         }
+        //         if ($statusCapacity == 'Paused' || $statusCapacity == 'Pausing'){
+        //             $azureAPI->gerenciarCapacity(true);
+        //         }
+        //         // sleep(2.5);
+        //         sleep(1);
+        //     }
+        //     return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível iniciar capacidade para gerar o relatório!']);
+        // } 
+        $token = $azureAPI->pegarAuthToken();
+        
+        $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['report_id'], $currentReport['dataset_id'], null);
+        $statusCapacity = $azureAPI->pegarStatusCapacity();
+        $conn = null;
+        
+        if ($statusCapacity == 'Paused' || $statusCapacity == 'Pausing'){
+            return json_encode(['sucesso' => false, 'mensagem' => 'Capacidade não está disponível para gerar o relatório!']);
+        }
 
+        $reportInfo = [
+            'report_id' => $currentReport['report_id'],
+            'report_name' => $currentReport['report_name'],
+            'token' => $token,
+        ];
+
+        return json_encode(['sucesso' => true, 'dados' => json_encode($reportEmbedConfig)]);
     } catch (Exception $e) {
         echo 'Caught exception: ',  $e->getMessage(), "\n";
     }

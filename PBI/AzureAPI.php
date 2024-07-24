@@ -3,7 +3,6 @@
 require_once 'ApiCalls.php';
 
 class AzureAPI {
-
     private $username;
     private $password;
     private $client_id;
