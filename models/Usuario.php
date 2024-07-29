@@ -1,6 +1,7 @@
 <?php
 
 require_once '../SessionManager.php';
+require_once '../PBI/PowerBISession.php';
 
 class Usuario
 {
@@ -63,6 +64,9 @@ class Usuario
         {
             SessionManager::sessaoIniciada();
             session_destroy();
+
+            $sessao_pbi = new PowerBISession($this->pdo, $_SESSION['id_usuario']);
+            $sessao_pbi->inativarSessaoPBI();
 
             return json_encode(['sucesso' => true, 'message' => 'Logout bem-sucedido']);
         }

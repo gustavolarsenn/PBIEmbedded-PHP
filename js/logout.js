@@ -4,7 +4,7 @@ function logoutConfirmation() {
     $(document).ready(function(event){
           // event.preventDefault();
           var request = {
-              url: "controllers/UsuarioController.php",
+              url: "../../controllers/UsuarioController.php",
               method: 'GET',
               data: [{
                   name: 'action',
@@ -19,7 +19,7 @@ function logoutConfirmation() {
                   error.innerHTML = response.error;
               } else {
                   console.log("Logged out...")
-                  location.assign('login.php');
+                  location.assign('/login.php');
                 }
               }
             )

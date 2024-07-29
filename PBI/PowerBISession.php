@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ .'\\..\\vendor\\autoload.php';
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class PowerBISession {
 
@@ -24,15 +27,22 @@ class PowerBISession {
         }
     }
 
-    public function sessoesAtivasPBI(){
-        $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE id_usuario = ? AND data_validade > NOW()');
+    public function inativarSessaoPBI(){
+        $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = NOW() WHERE id_usuario = ?');
         $stmt->execute([$this->id_usuario]);
-        $powerbi = $stmt->fetch();
+    }
+    
+    public function sessoesAtivasPBI(){
+        // $log = new Logger('gerenciamento_capacidade');
+        // $log->pushHandler(new StreamHandler(__DIR__ . '/gerenciamento_capacidade.log', Logger::DEBUG));
 
+        $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE data_validade > NOW()');
+        $stmt->execute();
+        $powerbi = $stmt->fetch();
+        
         if ($powerbi) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 }

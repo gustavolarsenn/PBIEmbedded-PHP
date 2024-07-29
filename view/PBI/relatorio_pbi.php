@@ -65,13 +65,18 @@ if (isset($_GET['json'])) {
                     </div>
                 </div>
 
-                <!-- <div id="preloader-report">
-                    <div class="report-container sk-three-bounce">
-                        <div class="sk-child sk-bounce1"></div>
-                        <div class="sk-child sk-bounce2"></div>
-                        <div class="sk-child sk-bounce3"></div>
+                <div id="preloader-report" style="display: flex; flex-direction: column">
+                    <div class="report-container sk-three-bounce" style="min-height: 100%">
+                        <div style="height: 80%">
+                            <div class="sk-child sk-bounce1"></div>
+                            <div class="sk-child sk-bounce2"></div>
+                            <div class="sk-child sk-bounce3"></div>
+                        </div>
+                        <div style="height: 20%; font-size: 1.5em;">
+                            <label id="loader-message">Conectando ao Power BI...</label>
+                        </div>
                     </div>
-                </div> -->
+                </div>
                 <section class="report-container" id="report-container">
                     <div class="error-container"></div>
                 </section>

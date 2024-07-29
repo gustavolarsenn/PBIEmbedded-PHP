@@ -26,132 +26,168 @@ class AzureAPI {
     }
 
     public function pegarAuthToken(){
-        $params = [
-            'grant_type' => 'password',
-            'client_id' => $this->client_id,
-            'username' => $this->username,
-            'password' => $this->password,
-            'scope' => 'https://analysis.windows.net/powerbi/api/.default',
-        ];
-
-        $response = ApiCalls::apiCall('POST', 'https://login.microsoftonline.com/' . $this->tenant_id . '/oauth2/v2.0/token', $params, []);
-
-        return json_decode($response)->access_token;
+        /* 
+        Pega token para fazer chamadas em API do PowerBI.
+        Utiliza informações de login, senha e id do cliente (Azure).
+        */
+        try {
+            $params = [
+                'grant_type' => 'password',
+                'client_id' => $this->client_id,
+                'username' => $this->username,
+                'password' => $this->password,
+                'scope' => 'https://analysis.windows.net/powerbi/api/.default',
+            ];
+    
+            $response = ApiCalls::apiCall('POST', 'https://login.microsoftonline.com/' . $this->tenant_id . '/oauth2/v2.0/token', $params, []);
+    
+            return json_decode($response)->access_token;
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
+        }
     }
 
     public function pegarEmbedToken($token, $report_id, $dataset_id, $rlsInfo){
-        
-        $header = [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $token
-        ];
+        /* 
+        Pega token que identifica e permite a visualização de um relatório específico.
+        Utiliza token de autenticação e informações do relatório e dataset.
 
-        $embedTokenParams = [
-            'reports' => [
-                [
-                    'id' => $report_id
-                ]
-            ],
-            'datasets' => [
-                [
-                    'id' => $dataset_id
-                ]
-            ],
-            'targetWorkspaces' => [
-                [
-                    'id' => $this->workspace_id,
-                ]
-            ],
-            'allowSaveAs' => "true",
-            'accessLevel' => "View",
-        ];
-
-        if ($rlsInfo){
-            $embedTokenParams['identities'] = $rlsInfo;
+        TODO: Adicionar informações de RLS (Row Level Security) para permitir visualização de dados específicos.
+        */
+        try {
+            $header = [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $token
+            ];
+    
+            $embedTokenParams = [
+                'reports' => [
+                    [
+                        'id' => $report_id
+                    ]
+                ],
+                'datasets' => [
+                    [
+                        'id' => $dataset_id
+                    ]
+                ],
+                'targetWorkspaces' => [
+                    [
+                        'id' => $this->workspace_id,
+                    ]
+                ],
+                'allowSaveAs' => "true",
+                'accessLevel' => "View",
+            ];
+    
+            if ($rlsInfo){
+                $embedTokenParams['identities'] = $rlsInfo;
+            }
+    
+            $embedToken = json_decode(ApiCalls::apiCall('POST', "https://api.powerbi.com/v1.0/myorg/GenerateToken", $embedTokenParams, $header))->token;
+    
+            return $embedToken;
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
         }
-
-        $embedToken = json_decode(ApiCalls::apiCall('POST', "https://api.powerbi.com/v1.0/myorg/GenerateToken", $embedTokenParams, $header))->token;
-
-        return $embedToken;
     }
 
     public function pegarEmbedParams($report_id, $dataset_id, $rlsInfo){
-        $token = $this->pegarAuthToken();
-        $embedToken = $this->pegarEmbedToken($token, $report_id,  $dataset_id, $rlsInfo);
-
-        $header = [
-            'Content-Type: application/json',
-            'Authorization: Bearer ' . $token
-        ];
-
-        $embedParamsAPI = "https://api.powerbi.com/v1.0/myorg/groups/" . $this->workspace_id . "/reports/" . $report_id;
-
-        $parametrosEmbed = ApiCalls::apiCall('GET', $embedParamsAPI, [], $header);
-
-        $reportDetails = new PowerBiReportDetails(
-            $report_id, 
-            json_decode($parametrosEmbed)->name, 
-            json_decode($parametrosEmbed)->embedUrl
-        );
-        $reportEmbedConfig = new EmbedConfig();
-        
-        $reportEmbedConfig->reportsDetail = [$reportDetails];
-        $reportEmbedConfig->embedToken = $embedToken;
+        /*
+        Gera link para realizar o "embed" e permitir a visualizar o relatório.
+        Usa o embed token e id do relatório e dataset.
+        */
+        try {
+            $token = $this->pegarAuthToken();
+            $embedToken = $this->pegarEmbedToken($token, $report_id,  $dataset_id, $rlsInfo);
     
-        return $reportEmbedConfig;
+            $header = [
+                'Content-Type: application/json',
+                'Authorization: Bearer ' . $token
+            ];
+    
+            $embedParamsAPI = "https://api.powerbi.com/v1.0/myorg/groups/" . $this->workspace_id . "/reports/" . $report_id;
+    
+            $parametrosEmbed = ApiCalls::apiCall('GET', $embedParamsAPI, [], $header);
+    
+            $parametros_json = json_decode($parametrosEmbed);
+
+            $reportDetails = new PowerBiReportDetails(
+                $report_id, 
+                $parametros_json->name, 
+                $parametros_json->embedUrl
+            );
+            $reportEmbedConfig = new EmbedConfig();
+            
+            $reportEmbedConfig->reportsDetail = [$reportDetails];
+            $reportEmbedConfig->embedToken = $embedToken;
+        
+            return $reportEmbedConfig;
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
+        }
     }
 
     public function pegarTokenAzureCapacity(){
-        $grant_type = "client_credentials";
-        $resource = "https://management.core.windows.net";
-        $url = "https://login.windows.net/" . $this->tenant_id . "/oauth2/token";
-
-        $params = [
-            'grant_type' => $grant_type,
-            'client_id' => $this->client_id,
-            'client_secret' => $this->client_secret,
-            'resource' => $resource,
-        ];
-
-        $header = [
-            'Content-Type: application/x-www-form-urlencoded',
-        ];
-
+        /*
+        Gera token para poder usar API da Azure e manipular capacidade (cluster) de PowerBI.
+        Usando id do cliente, segredo do cliente.
+        */
         try {
+            $url = "https://login.windows.net/" . $this->tenant_id . "/oauth2/token";
+    
+            $params = [
+                'grant_type' => "client_credentials",
+                'client_id' => $this->client_id,
+                'client_secret' => $this->client_secret,
+                'resource' => "https://management.core.windows.net",
+            ];
+    
+            $header = [
+                'Content-Type: application/x-www-form-urlencoded',
+            ];
+    
             $response = ApiCalls::apiCall('POST', $url, $params, $header);
+
+            return json_decode($response)->access_token;
         } catch (Exception $e) {
             return json_decode($e->getMessage());
         }
-
-        return json_decode($response)->access_token;
     }
 
-    public function gerenciarCapacity($action){
-
-        $actionApi = $action ? 'resume' : 'suspend';
-
-        $token = $this->pegarTokenAzureCapacity();
-
-        $url = "https://management.azure.com/subscriptions/" . $this->subscription_id . 
-                "/resourceGroups/" . $this->resource_group . 
-                "/providers/Microsoft.PowerBIDedicated/capacities/" . 
-                $this->capacity_name . "/" . $actionApi . "?api-version=2021-01-01";
-
-        $header = [
-            "Authorization: Bearer " . $token,
-        ];
-
+    public function ligarDesligarCapacity($action){
+        /* 
+        Liga ou desliga a capacidade (cluster) de PowerBI.
+        Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
+        */
         try {
+            $actionApi = $action ? 'resume' : 'suspend';
+
+            $token = $this->pegarTokenAzureCapacity();
+
+            $url = "https://management.azure.com/subscriptions/" . $this->subscription_id . 
+                    "/resourceGroups/" . $this->resource_group . 
+                    "/providers/Microsoft.PowerBIDedicated/capacities/" . 
+                    $this->capacity_name . "/" . $actionApi . "?api-version=2021-01-01";
+
+            $header = [
+                "Authorization: Bearer " . $token,
+            ];
+
             $response = ApiCalls::apiCall('POST', $url, [], $header);
+
+            return $response;
         } catch (Exception $e) {
             return json_decode($e->getMessage());
         }
-
-        return $response;
     }
 
     public function pegarStatusCapacity(){
-            
+        /*
+        Pega status atual da capacidade (cluster) de PowerBI.
+        Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
+        */
+        try {
             $token = $this->pegarTokenAzureCapacity();
     
             $url = "https://management.azure.com/subscriptions/" . $this->subscription_id . 
@@ -162,12 +198,11 @@ class AzureAPI {
             $header = [
                 "Authorization: Bearer " . $token,
             ];
-            try {
                 $response = ApiCalls::apiCall('GET', $url, [], $header);
-            } catch (Exception $e) {
-                return json_decode($e->getMessage());
-            }
     
             return json_decode($response)->properties->state;
+        } catch (Exception $e) {
+            return json_decode($e->getMessage());
+        }
     }
 }

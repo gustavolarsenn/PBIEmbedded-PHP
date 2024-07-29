@@ -15,7 +15,6 @@ body{
     margin: auto 0;
 }
 
-
 .report-buttons svg{
     width: fit-content;
     height: 20px;
@@ -31,10 +30,27 @@ body{
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 }
 
+#report-container{
+    display: none;
+}
+
+#preloader-report{
+    display: flex;
+}
 .report-container{
     height: 75vh !important;
     width: 100% !important;
     max-height: 100vh;
     background-color: transparent;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+}
+
+.error-container{
+    font-size: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
 }

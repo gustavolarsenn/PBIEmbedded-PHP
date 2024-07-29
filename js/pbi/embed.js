@@ -7,7 +7,6 @@ $(document).ready(function() {
         const reportName = urlParams.get('reportName');
         const reportTitle = document.getElementById('report-title');
         reportTitle.innerText = reportName;
-        // loadReport("/PBI/pbi_auth.php?reportName=" + encodeURIComponent(reportName));
         loadReport("/PBI/pbi_auth.php?reportName=" + encodeURIComponent(reportName), reportName);
     });
 });
@@ -30,7 +29,7 @@ function tratarErro(erro) {
     let errHeader = document.createElement("p");
     let strong = document.createElement("strong");
     let node = document.createTextNode(
-        "Erro:\n"
+        "Erro"
     );
 
     // Get the error container
@@ -48,20 +47,14 @@ function tratarErro(erro) {
         errorContent.appendChild(node);
         errContainer.appendChild(errorContent);
     });
-    // const reportContainer_ = document.querySelector('#report-container')
-    // const loaderContainer_ = document.querySelector('#preloader-report')
-    // reportContainer_.style.display = "flex";
-    // loaderContainer_.style.display = "none";
+    const reportContainer_ = document.querySelector('#report-container')
+    const loaderContainer_= document.querySelector('#preloader-report')
+    reportContainer_.style.display = "flex";
+    loaderContainer_.style.display = "none";
     return;
 }
 
 function loadReport(reportLinkFix, report) {
-    // Create a config object with type of the object, Embed details and Token Type
-    // const reportContainer_ = document.querySelector('#report-container')
-    // const loaderContainer_ = document.querySelector('#preloader-report')
-    // reportContainer_.style.display = "none";
-    // loaderContainer_.style.display = "flex";
-    // AJAX request to get Embed token
     $.ajax({
         type: "POST",
         url: reportLinkFix + "&json=true",
@@ -71,10 +64,18 @@ function loadReport(reportLinkFix, report) {
         },
         dataType: "json",
         success: function(embedData) {
+            const loaderMessage_= document.querySelector('#loader-message')
+            loaderMessage_.innerText = "Carregando relatório..."
+
+            console.log(embedData);
+
             if (embedData.sucesso === false) {
                 tratarErro(embedData.mensagem);
                 return;
             }
+            const reportContainer_ = document.querySelector('#report-container')
+            const loaderContainer_= document.querySelector('#preloader-report')
+            
             embedInfo = JSON.parse(embedData.dados);
 
             let reportLoadConfig = {
@@ -102,26 +103,27 @@ function loadReport(reportLinkFix, report) {
             // Embed Power BI report when Access token and Embed URL are available
             let report = powerbi.embed(reportContainer, reportLoadConfig);
 
-            // const fullscreenButton = document.getElementById('fullscreen');
-            // fullscreenButton.addEventListener('click', () => {
-            //     report.fullscreen();
-            // });
+            const fullscreenButton = document.getElementById('fullscreen');
+            fullscreenButton.addEventListener('click', () => {
+                report.fullscreen();
+            });
 
-            // const downloadButton = document.getElementById('download');
-            // downloadButton.addEventListener('click', () => {
-            //     report.print();
-            // });
+            const downloadButton = document.getElementById('download');
+            downloadButton.addEventListener('click', () => {
+                report.print();
+            });
 
             // Clear any other loaded handler events
             report.off("loaded");
             
+            reportContainer_.style.display = "flex";
+            loaderContainer_.style.display = "none";
+
             // Triggers when a report schema is successfully loaded
             report.on("loaded", function() {
                 console.log("Report load successful");
-                // reportContainer_.style.display = "flex";
-                // loaderContainer_.style.display = "none";
             });
-
+            
             // Clear any other rendered handler events
             report.off("rendered");
             
