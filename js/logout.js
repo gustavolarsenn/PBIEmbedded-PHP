@@ -14,15 +14,14 @@ function logoutConfirmation() {
           };
           console.log("Logging out...")
           $.ajax(request).done(function(response) {
-              const error = document.getElementById('error-message');
-              if(response.error) {
-                  error.innerHTML = response.error;
-              } else {
-                  console.log("Logged out...")
-                  location.assign('/login.php');
-                }
-              }
-            )
+            const error = document.getElementById('error-message');
+            if (response.error) {
+              error.innerHTML = response.error;
+            } else {
+              console.log("Logged out...");
+              location.assign('/login.php');
+            }
+          });
           })
   } else {
   }

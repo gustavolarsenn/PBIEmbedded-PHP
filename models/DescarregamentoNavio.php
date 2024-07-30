@@ -1,5 +1,5 @@
 <?php
-    class ShipDischarging{
+    class DescarregamentoNavio{
         private $pdo;
         private $no;
         private $ticket;
@@ -30,7 +30,7 @@
             $this->observacao = $observacao;
         }
 
-        public function create(){
+        public function criarRegistro(){
             $stmt = $this->pdo->prepare('INSERT INTO shipdischarging (ticket, placa, peso, data, periodo, cliente, porao, armazem, cliente_armazem_lote_di_produto, produto, observacao) VALUES (:ticket, :placa, :peso, :data, :periodo, :cliente, :porao, :armazem, :cliente_armazem_lote_di_produto, :produto, :observacao)');
             $stmt->execute([
                 'ticket' => $this->ticket,
@@ -45,33 +45,20 @@
                 'produto' => $this->produto,
                 'observacao' => $this->observacao
             ]);
-
     }
 
-    public static function readAll($pdo){
+    public static function buscarTodosDados($pdo){
         $stmt = $pdo->prepare('SELECT * FROM shipdischarging');
         $stmt->execute();
         // return $stmt->fetchAll();
         return json_encode(['data' => $stmt->fetchAll()]);
     }
 
-    public function read(){
+    public function buscarRegistroPorNum(){
         $stmt = $this->pdo->prepare('SELECT * FROM shipdischarging WHERE no = :no');
         $stmt->execute([':no' => $this->no]);
         return $stmt->fetch();
     }
-
-    // public function pegarUnicos($where, $campo){
-    //     $json_where = json_decode($where, true);
-
-    //     $query = 'SELECT DISTINCT ' . $json_where->campo . ' FROM shipdischarging WHERE 1=1';
-    //     $query = $this->concatWhereArray($query, $where, $this->type);
-    //     $stmt = $this->pdo->prepare($query);
-    //     $stmt = $this->bindWhereArray($stmt, $where, $this->type);
-    //     $stmt->execute();
-    //     return json_encode(['data' => $stmt->fetchAll()]);
-
-    // }
 
     public function pegarDadosNavioRealizado($pdo, $navio){
         $stmt = $pdo->prepare('SELECT * FROM shipdischarging WHERE navio = :navio');

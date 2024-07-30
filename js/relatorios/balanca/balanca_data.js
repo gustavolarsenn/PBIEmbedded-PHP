@@ -1,11 +1,11 @@
 async function getUniqueVessels(){
     var request = {
-        url: "../../controllers/ShipDischargingController.php",
+        url: "../../controllers/DescarregamentoNavioController.php",
         method: 'POST',
         data: [
         {
             name: 'action',
-            value: 'uniqueVessels'
+            value: 'pegarNaviosUnicos'
         }
     ],
         dataType: 'json'
@@ -30,10 +30,10 @@ async function getUniqueVessels(){
 }
 
 async function getVesselData($type, $vessel){
-    const $key = $type == 'discharged' ? 'vesselDataDischarged' : 'vesselDataPlanned';
+    const $key = $type == 'discharged' ? 'pegarDadosNavioRealizado' : 'pegarDadosNavioPlanejado';
 
     var request = {
-        url: "../../controllers/ShipDischargingController.php",
+        url: "../../controllers/DescarregamentoNavioController.php",
         method: 'POST',
         data: [
         {

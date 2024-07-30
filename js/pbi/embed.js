@@ -19,8 +19,6 @@ function tratarErro(erro) {
 
     errorContainer.show();
 
-    console.log(erro)
-
     // Split the message with \r\n delimiter to get the errors from the error message
     let errorLines = erro.split("\r\n");
     
@@ -66,8 +64,6 @@ function loadReport(reportLinkFix, report) {
         success: function(embedData) {
             const loaderMessage_= document.querySelector('#loader-message')
             loaderMessage_.innerText = "Carregando relatório..."
-
-            console.log(embedData);
 
             if (embedData.sucesso === false) {
                 tratarErro(embedData.mensagem);
