@@ -7,7 +7,7 @@ $(document).ready(function() {
         const reportName = urlParams.get('reportName');
         const reportTitle = document.getElementById('report-title');
         reportTitle.innerText = reportName;
-        loadReport("/PBI/pbi_auth.php?reportName=" + encodeURIComponent(reportName), reportName);
+        loadReport("/controllers/RelatorioPBIController.php?reportName=" + encodeURIComponent(reportName), reportName);
     });
 });
 
@@ -18,6 +18,8 @@ function tratarErro(erro) {
     let errorContainer = $(".error-container");
 
     errorContainer.show();
+
+    console.log(erro)
 
     // Split the message with \r\n delimiter to get the errors from the error message
     let errorLines = erro.split("\r\n");

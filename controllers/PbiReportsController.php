@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__ . '\\..\\config\\database.php';
+require_once __DIR__ . '\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\config\\database.php';
 
 class PbiReports{
     private $pdo;

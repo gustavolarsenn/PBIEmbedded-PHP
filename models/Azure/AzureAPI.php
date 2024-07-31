@@ -1,6 +1,13 @@
 <?php
 
-require_once 'ApiCalls.php';
+require_once __DIR__ . '\\..\\..\\config.php';
+require_once CAMINHO_BASE . '\\models\\API\\ApiCalls.php';
+require_once CAMINHO_BASE . '\\models\\PBI\\PowerBiReportDetails.php';
+require_once CAMINHO_BASE . '\\models\\PBI\\EmbedConfig.php';
+
+require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
 
 class AzureAPI {
     private $username;
@@ -12,6 +19,9 @@ class AzureAPI {
     private $subscription_id;
     private $resource_group;
     private $capacity_name;
+    private const LOG_FILE = 'AzureAPI';
+    private const LOG = 'azure_api';
+    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
 
     public function __construct() {
         $this->username = getenv('PBI_USERNAME');
@@ -30,6 +40,11 @@ class AzureAPI {
         Pega token para fazer chamadas em API do PowerBI.
         Utiliza informações de login, senha e id do cliente (Azure).
         */
+
+        
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $params = [
                 'grant_type' => 'password',
@@ -41,8 +56,11 @@ class AzureAPI {
     
             $response = ApiCalls::apiCall('POST', 'https://login.microsoftonline.com/' . $this->tenant_id . '/oauth2/v2.0/token', $params, []);
     
+            $log->info('Token de autenticação do PowerBI obtido com sucesso');
+
             return json_decode($response)->access_token;
         } catch (Exception $e) {
+            $log->error('Erro ao obter token de autenticação do PowerBI: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }
@@ -54,6 +72,11 @@ class AzureAPI {
 
         TODO: Adicionar informações de RLS (Row Level Security) para permitir visualização de dados específicos.
         */
+
+        
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $header = [
                 'Content-Type: application/json',
@@ -86,8 +109,11 @@ class AzureAPI {
     
             $embedToken = json_decode(ApiCalls::apiCall('POST', "https://api.powerbi.com/v1.0/myorg/GenerateToken", $embedTokenParams, $header))->token;
     
+            $log->info('Token de Embed do PowerBI obtido com sucesso');
+
             return $embedToken;
         } catch (Exception $e) {
+            $log->error('Erro ao obter token de Embed do PowerBI: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }
@@ -97,6 +123,11 @@ class AzureAPI {
         Gera link para realizar o "embed" e permitir a visualizar o relatório.
         Usa o embed token e id do relatório e dataset.
         */
+
+        
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $token = $this->pegarAuthToken();
             $embedToken = $this->pegarEmbedToken($token, $report_id,  $dataset_id, $rlsInfo);
@@ -110,6 +141,8 @@ class AzureAPI {
     
             $parametrosEmbed = ApiCalls::apiCall('GET', $embedParamsAPI, [], $header);
     
+            $log->info('Parâmetros para Embed do PowerBI obtido com sucesso');
+
             $parametros_json = json_decode($parametrosEmbed);
 
             $reportDetails = new PowerBiReportDetails(
@@ -124,6 +157,7 @@ class AzureAPI {
         
             return $reportEmbedConfig;
         } catch (Exception $e) {
+            $log->error('Erro ao obter parâmetros para Embed do PowerBI: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }
@@ -133,6 +167,10 @@ class AzureAPI {
         Gera token para poder usar API da Azure e manipular capacidade (cluster) de PowerBI.
         Usando id do cliente, segredo do cliente.
         */
+
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $url = "https://login.windows.net/" . $this->tenant_id . "/oauth2/token";
     
@@ -149,8 +187,11 @@ class AzureAPI {
     
             $response = ApiCalls::apiCall('POST', $url, $params, $header);
 
+            $log->info('Token de autenticação da Azure obtido com sucesso');
+
             return json_decode($response)->access_token;
         } catch (Exception $e) {
+            $log->error('Erro ao obter token de autenticação da Azure: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }
@@ -160,6 +201,10 @@ class AzureAPI {
         Liga ou desliga a capacidade (cluster) de PowerBI.
         Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
         */
+        
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $actionApi = $action ? 'resume' : 'suspend';
 
@@ -176,8 +221,11 @@ class AzureAPI {
 
             $response = ApiCalls::apiCall('POST', $url, [], $header);
 
+            $log->info('Capacidade do PowerBI ' . ($action ? 'ligada' : 'desligada') . ' com sucesso');
+
             return $response;
         } catch (Exception $e) {
+            $log->error('Erro ao ' . ($action ? 'ligar' : 'desligar') . ' capacidade do PowerBI: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }
@@ -187,6 +235,10 @@ class AzureAPI {
         Pega status atual da capacidade (cluster) de PowerBI.
         Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
         */
+
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $token = $this->pegarTokenAzureCapacity();
     
@@ -200,8 +252,11 @@ class AzureAPI {
             ];
                 $response = ApiCalls::apiCall('GET', $url, [], $header);
     
+            $log->info('Status da capacidade do PowerBI obtido com sucesso');
+
             return json_decode($response)->properties->state;
         } catch (Exception $e) {
+            $log->error('Erro ao obter status da capacidade do PowerBI: ' . $e->getMessage());
             return json_decode($e->getMessage());
         }
     }

@@ -1,6 +1,8 @@
 <?php
-require_once __DIR__ .'\\..\\vendor\\autoload.php';
-require_once __DIR__ .'\\..\\models\\Capacidade.php';
+
+require_once __DIR__ . '\\..\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -11,7 +13,7 @@ class PowerBISession {
     private $id_usuario;
     private const LOG_FILE = 'PowerBI';
     private const LOG = 'sessao_pbi';
-    private const CAMINHO_LOG = __DIR__ . '/../logs/' . self::LOG_FILE . '.log';
+    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
     
     public function __construct($pdo, $id_usuario) {
         $this->pdo = $pdo;
@@ -49,13 +51,9 @@ class PowerBISession {
 
         try {
             $log->info('Inativando sessão de PowerBI', ['user' => $this->id_usuario]);
-
             
             $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = NOW() WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
-
-            $capacidade = new Capacidade();
-            $capacidade->gatilhoTarefa();
 
             $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario]);
         } catch (Exception $e) {

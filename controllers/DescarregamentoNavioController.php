@@ -1,7 +1,10 @@
 <?php
-require_once '../models/DescarregamentoNavio.php';
-require_once '../config/database.php';
-require_once '../SessionManager.php';
+
+require_once __DIR__ . '\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\models\\DescarregamentoNavio.php';
+require_once CAMINHO_BASE . '\\config\\database.php';
+require_once CAMINHO_BASE . '\\SessionManager.php';
 
 $pdo = (new Database())->getConnection();
 $descarregamentoNavio = new DescarregamentoNavio($pdo, null, null, null, null, null, null, null, null, null, null, null, null);

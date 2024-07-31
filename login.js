@@ -50,7 +50,7 @@ formLogin.addEventListener('submit', function(event) {
             erroLogin.innerText = data.mensagem;
             return 
         }
-        window.location.assign('/index.php');
+        window.location.assign('/view/index.php');
     })
     .catch(error => {
         console.error('Houve algum problema com a requisição:', error, );
@@ -78,7 +78,7 @@ formRegistro.addEventListener('submit', function(event) {
             erroRegistro.innerText = data.mensagem;
             return 
         }
-        window.location.assign('/index.php');
+        window.location.assign('/view/index.php');
     })
     .catch(error => {
         console.error('Houve algum problema com a requisição:', error);

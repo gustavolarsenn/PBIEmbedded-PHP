@@ -1,6 +1,11 @@
 <?php
-require_once 'SessionManager.php';
+
+require_once __DIR__ . '\\..\\config.php'; 
+
+require_once CAMINHO_BASE . '\\SessionManager.php';
 SessionManager::checarCsrfToken();
+
+$urlBase = '/'
 ?>
 
 <!DOCTYPE html>
@@ -12,10 +17,10 @@ SessionManager::checarCsrfToken();
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Zport</title>
 
-    <link rel="icon" type="image/png" href="/img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
 
-    <link href="./css/style.css" rel="stylesheet">
-    <link href="./login.css" rel="stylesheet">
+    <link href="<?php echo $urlBase;?>css/style.css" rel="stylesheet">
+    <link href="<?php echo $urlBase;?>login.css" rel="stylesheet">
 
 </head>
 
@@ -36,7 +41,7 @@ SessionManager::checarCsrfToken();
     <div class="authincation h-100">
         <div class="container-fluid h-100">
 		<video autoplay muted loop>
-        <source src="./config/background-video.mp4" type="video/mp4">
+        <source src="<?php echo $urlBase;?>config/background-video.mp4" type="video/mp4">
       
     </video>
             <div class="row justify-content-center h-100 align-items-center">
@@ -47,7 +52,7 @@ SessionManager::checarCsrfToken();
 								<!-- <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"> -->
 								<div class="auth-form">
 									<h2 id="titulo-form">Login</h2>
-                                    <form id="form-login" method="post" action="controllers/UsuarioController.php">
+                                    <form id="form-login" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                         <input type="hidden" name="action" value="login">
                                         <span class="ml-2">Email</span>
@@ -59,7 +64,7 @@ SessionManager::checarCsrfToken();
                                         <div class="mensagem-login-registro" id="erro-login"></div>
                                     </form>
 
-                                    <form id="form-registro" method="post" action="controllers/UsuarioController.php">
+                                    <form id="form-registro" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
                                         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                         <input type="hidden" name="action" value="register">
                                         <span class="ml-2">Nome</span>
@@ -101,11 +106,11 @@ SessionManager::checarCsrfToken();
         Scripts
     ***********************************-->
     <!-- Required vendors -->
-    <script src="/login.js"></script>
+    <script src="<?php echo $urlBase;?>login.js"></script>
 
-    <script src="./vendor/global/global.min.js"></script>
-    <script src="./js/quixnav-init.js"></script>
-    <script src="./js/custom.min.js"></script>
+    <script src="<?php echo $urlBase;?>/vendor/global/global.min.js"></script>
+    <script src="<?php echo $urlBase;?>/js/quixnav-init.js"></script>
+    <script src="<?php echo $urlBase;?>/js/custom.min.js"></script>
 
 </body>
 

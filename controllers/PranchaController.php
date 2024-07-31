@@ -1,7 +1,9 @@
 <?php
-require_once '../models/Prancha.php';
-require_once '../config/database.php';
-require_once '../SessionManager.php';
+require_once __DIR__ . '\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\models\\Prancha.php';
+require_once CAMINHO_BASE . '\\config\\database.php';
+require_once CAMINHO_BASE . '\\SessionManager.php';
 
 $pdo = (new Database())->getConnection();
 $prancha = new Prancha($pdo, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);

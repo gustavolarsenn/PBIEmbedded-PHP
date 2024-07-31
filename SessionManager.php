@@ -1,4 +1,6 @@
 <?php
+
+require_once __DIR__ . '\\config.php';
 class SessionManager{
     public static function sessaoIniciada(){
         if (session_status() !== PHP_SESSION_ACTIVE) {
@@ -43,7 +45,7 @@ class SessionManager{
     public static function checarSessao() {
         self::sessaoIniciada();
         if (empty($_SESSION['id_usuario'])){
-            header('Location: /login.php');
+            header('Location: /view/login.php');
             exit;
         }
     }

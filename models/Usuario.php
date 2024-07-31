@@ -1,7 +1,10 @@
 <?php
 
-require_once '../SessionManager.php';
-require_once '../PBI/PowerBISession.php';
+require_once __DIR__ . '\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
+require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
 
 class Usuario
 {
@@ -62,11 +65,14 @@ class Usuario
         
         public function logout()
         {
-            SessionManager::sessaoIniciada();
-            session_destroy();
-
             $sessao_pbi = new PowerBISession($this->pdo, $_SESSION['id_usuario']);
             $sessao_pbi->inativarSessaoPBI();
+
+            $capacidade = new Capacidade();
+            $capacidade->gatilhoTarefa();
+
+            SessionManager::sessaoIniciada();
+            session_destroy();
 
             return json_encode(['sucesso' => true, 'message' => 'Logout bem-sucedido']);
         }
