@@ -21,6 +21,20 @@ class Usuario
         $this->senha = $senha;
     }
 
+    public function pegarUsuarios()
+    {
+        try {
+            // header('Content-Type: application/json');
+            $stmt = $this->pdo->prepare('SELECT nome, email, tipo FROM usuario');
+            $stmt->execute();
+            $usuarios = $stmt->fetchAll();
+    
+            return json_encode($usuarios);
+        } catch (PDOException $e) {
+            $error = $e->getMessage();
+            return json_encode(['sucesso' => false, 'erro' => `Erro:` . $error]);
+        }
+    }
     public function register()
     {
         // Verifique se o usuário já existe

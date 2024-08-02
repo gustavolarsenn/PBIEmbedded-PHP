@@ -41,7 +41,6 @@ if (isset($_GET['json'])) {
 </head>
 
 <body>
-
     <?php include_once $basePath . '/components/loader.php'?>
 
     <div id="main-wrapper">
@@ -83,14 +82,17 @@ if (isset($_GET['json'])) {
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
-    <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
     
+    <!-- Importa a biblioteca do PowerBI -->
+    <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.23.1/dist/powerbi.js"></script>
+
 	<script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
     <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
 
     <!-- Required vendors -->
     <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>
+
     <script src="<?php echo $basePath; ?>/js/quixnav-init.js"></script>
     <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
 	<script src="<?php echo $basePath; ?>/js/logout.js"></script>

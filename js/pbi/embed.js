@@ -19,8 +19,6 @@ function tratarErro(erro) {
 
     errorContainer.show();
 
-    console.log(erro)
-
     // Split the message with \r\n delimiter to get the errors from the error message
     let errorLines = erro.split("\r\n");
     

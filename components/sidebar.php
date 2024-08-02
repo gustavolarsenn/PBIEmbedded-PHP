@@ -8,7 +8,7 @@
                 <li><a href="/cadNavios.php">Navios</a></li>	
                 <li><a href="/cliente.php">Clientes</a></li>
                 <li><a href="/carga.php">Carga</a></li>
-                <li><a href="/usuario.php">Usuário</a></li>
+                <li><a href="/view/cadastro/usuario.php">Usuário</a></li>
                 </ul>
             </li>
             

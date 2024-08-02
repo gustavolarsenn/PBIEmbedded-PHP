@@ -20,12 +20,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
 
-    SessionManager::validarCsrfToken();
+    // SessionManager::validarCsrfToken();
     
-    $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
-    $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
     
     if ($action === 'register') {
+        SessionManager::validarCsrfToken();
+        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+        $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
+        
         $nome = htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8');
         $usuario = new Usuario($pdo, $nome, $email, $senha);
         $message = $usuario->register();
@@ -33,13 +35,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return;
     }
     if ($action === 'login') {
+        SessionManager::validarCsrfToken();
+        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+        $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
+
         $usuario = new Usuario($pdo, null, $email, $senha);
         $message = $usuario->login();
         echo $message;
         return;
-        
     } 
-    // if ($message) {
-    //     echo $message;
-    // }
+    if ($action === 'pegarUsuarios') {
+        $usuario = new Usuario($pdo, null, null, null);
+        $message = $usuario->pegarUsuarios();
+        echo $message;
+        return;
+    }
 }

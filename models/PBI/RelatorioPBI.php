@@ -6,7 +6,7 @@ require_once __DIR__ . '\\..\\..\\config.php';
 // require_once 'PowerBiReportDetails.php';
 // require_once '../models/PBI/EmbedConfig.php';
 // require_once '../models/API/ApiCalls.php';
-require_once CAMINHO_BASE . '\\controllers\\PbiReportsController.php';
+// require_once CAMINHO_BASE . '\\controllers\\PbiReportsController.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
 
@@ -20,10 +20,33 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
 class RelatorioPBI {
-    
+    private $pdo;
     private const LOG_FILE = 'PowerBI';
     private const LOG = 'relatorio_pbi';
     private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
+
+    public function __construct($pdo) {
+        $this->pdo = $pdo;
+    }
+
+    public function pegarRelatoriosAtivos(){
+        $sql = "SELECT * FROM pbi_reports WHERE is_active = 1";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $reportsArray = array_reduce($reports, function($carry, $report) {
+        $carry[$report['report_name']] = [
+            "report_id" => $report['report_id'],
+            "dataset_id" => $report['dataset_id'],
+            "rls" => $report['rls']
+        ];
+            return $carry;
+        }, []);
+
+        return $reportsArray;
+    }
 
     function gerarRelatorioPBI($actualLink){
 
@@ -38,9 +61,8 @@ class RelatorioPBI {
         try {
             $capacidade->criarTarefaChecarCapacidade();
             $conn = (new Database())->getConnection();
-            $pbiReports = new PbiReports($conn);
             
-            $reports = $pbiReports->getActiveReports();
+            $reports = self::pegarRelatoriosAtivos();
             
             if (!isset($reports[$actualLink])) {
                 $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], ['report' => $actualLink]]);            

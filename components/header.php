@@ -1,5 +1,5 @@
 <div class="nav-header">
-    <a href="index.php" class="brand-logo">
+    <a href="/view/index.php" class="brand-logo">
         <!-- <img class="logo-abbr" src="/images/logo-zport-branca-3x.png" alt=""> -->
         <img class="logo-compact" src="/images/logo-zport-branca-3x.png" alt="">
         <img class="brand-title" src="/images/logo-zport-branca-3x.png" alt="">

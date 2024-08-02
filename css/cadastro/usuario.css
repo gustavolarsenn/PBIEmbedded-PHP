@@ -1,0 +1,41 @@
+.main-container{
+    display: flex;
+    height: 100%;
+}
+
+
+#formulario-registro {
+    width: 30%;
+}
+
+.container {
+    margin: 10px;
+    height: auto;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+}
+
+#card-body-table{
+    padding: 0px !important; /* Removendo padding que vem de outro stylesheet */
+}
+
+#tabela-usuarios-container {
+    width: 70%;
+    border-collapse: collapse;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto; /* Allow the table to grow and shrink */
+    overflow: auto;
+}
+
+#tabela-usuarios-container thead th{
+    position: sticky;
+    top: 0;
+    transition: background-color 0.5s;
+}
+
+#tabela-usuarios-container tbody {
+    width: 100%;
+}

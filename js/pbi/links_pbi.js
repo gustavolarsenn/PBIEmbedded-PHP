@@ -1,12 +1,12 @@
 const biReportContainer = document.getElementById('bi-reports');
 
-fetch('../../controllers/PbiReportsController.php', {
+fetch('/controllers/RelatorioPBIController.php', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: new URLSearchParams({
-        action: 'getActiveReports',
+        action: 'pegarRelatoriosAtivos',
     }),
 })
 .then(response => {
