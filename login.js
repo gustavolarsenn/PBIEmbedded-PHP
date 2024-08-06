@@ -75,8 +75,11 @@ formRegistro.addEventListener('submit', function(event) {
     .then(data => {
         if (!data.sucesso) {
             erroRegistro.innerText = data.mensagem;
+            console.log(data);
             return 
         }
+        console.log("Chegou");
+        console.log(data);
         window.location.assign('/view/index.php');
     })
     .catch(error => {

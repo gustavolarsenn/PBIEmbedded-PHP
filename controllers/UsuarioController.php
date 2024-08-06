@@ -34,15 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // SessionManager::validarCsrfToken();
     
     if ($action === 'register') {
-        SessionManager::validarCsrfToken();
-        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
-        $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
-        
-        $nome = htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8');
-        $usuario = new Usuario($pdo, $nome, $email, $senha);
-        $message = $usuario->register();
-        echo $message;
-        return;
+        try {
+            SessionManager::validarCsrfToken();
+            $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
+            $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
+            $nome = htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8');
+            $tipo = htmlspecialchars($_POST['tipo'], ENT_QUOTES, 'UTF-8');
+    
+            if (empty($tipo)) {
+                $tipo = null;
+            }
+            $usuario = new Usuario($pdo, $nome, $email, $senha, $tipo);
+            $message = $usuario->register();
+            echo $message;
+            return;
+        } catch (Exception $e) {
+            echo json_encode(['sucesso' => false, 'erro' => 'Erro: ' . $e->getMessage()]);
+        }
     }
     if ($action === 'login') {
         SessionManager::validarCsrfToken();

@@ -106,15 +106,15 @@ class Usuario
                 $log->info('Usuário com esse email (' . $this->email .') já existe');
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
-                    $stmt = $this->pdo->prepare('INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)');
-                    $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT)]);
+                    $stmt = $this->pdo->prepare('INSERT INTO usuario (nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
+                    $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT), $this->tipo]);
                     
                     $log->info('Usuário ' . $this->email .' registrado com sucesso');
                     return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
                 }
         } catch (Exception $e) {
-            $log->error('Erro ao registrar usuário', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage()]);
-            return json_encode(['sucesso' => false, 'erro' => 'Erro:' . $e->getMessage()]);
+            $log->error('Erro ao registrar usuário', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage(), 'tipo' => $this->tipo, 'nome' => $this->nome, 'email' => $this->email]);
+            return json_encode(['sucesso' => false, 'erro' => 'Erro: ' . $e->getMessage(), 'tipo' => $this->tipo, 'nome' => $this->nome, 'email' => $this->email]);
         }
     }
 

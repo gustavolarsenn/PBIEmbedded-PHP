@@ -70,7 +70,7 @@ $urlBase = '/'
                                     </div>
                                     <div class="form-group mt-3">
                                         <label for="tipo-editar">Tipo de usuário</label>
-                                        <select class="form-control" id="tipo-editar" required>
+                                        <select class="form-control" id="tipo-editar" name="tipo-editar" required>
                                         </select>
                                     </div>
                                     <div class="modal-botoes">
@@ -104,7 +104,7 @@ $urlBase = '/'
                                     </div>
                                     <div class="form-group mt-3">
                                         <label for="tipo">Tipo de usuário</label>
-                                        <select class="form-control" id="tipo" required>
+                                        <select class="form-control" id="tipo" name="tipo" required>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-3" id="botao-registro">Cadastrar</button>

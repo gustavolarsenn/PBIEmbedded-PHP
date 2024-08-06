@@ -55,7 +55,6 @@ async function gerarTabelaUsuarios(){
     if (filtroStatus.length > 0) {
         usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
     }
-    console.log(usuarios)
     /* Filtro */
 
     
