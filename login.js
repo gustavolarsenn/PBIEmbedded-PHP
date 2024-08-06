@@ -42,7 +42,6 @@ formLogin.addEventListener('submit', function(event) {
             throw new Error('Não foi possível fazer requisição!');
         }
 
-        // console.log(response.text())
         return response.json();
     })
     .then(data => {
@@ -62,7 +61,7 @@ formRegistro.addEventListener('submit', function(event) {
 
     const formData = new FormData(formRegistro);
     const actionURL = formRegistro.getAttribute('action');
-   
+
     fetch(actionURL, {
         method: 'POST',
         body: formData,

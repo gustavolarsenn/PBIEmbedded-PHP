@@ -26,7 +26,7 @@ class Navio {
             $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM navio WHERE navio = :navio");
             $stmt->execute([':navio' => $navio]);
             return json_encode(['data' => $stmt->fetchAll()]);
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return json_encode(['message' => $e->getMessage()]);
         }
     }

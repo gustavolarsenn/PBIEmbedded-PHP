@@ -4,13 +4,8 @@ function logoutConfirmation() {
     $(document).ready(function(event){
           // event.preventDefault();
           var request = {
-              url: "/controllers/UsuarioController.php",
-              method: 'POST',
-              data: [{
-                  name: 'action',
-                  value: 'logout'
-              }],
-              dataType: 'json'
+              url: "/controllers/UsuarioController.php?action=logout",
+              method: 'GET',
           };
           console.log("Logging out...")
           $.ajax(request).done(function(response) {

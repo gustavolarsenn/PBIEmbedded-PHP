@@ -25,7 +25,11 @@ $urlBase = '/'
     <link rel="stylesheet" href="<?php echo $urlBase; ?>vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="<?php echo $urlBase; ?>vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="<?php echo $urlBase; ?>css/style.css" rel="stylesheet">
+    <link href="<?php echo $urlBase; ?>css/charts.css" rel="stylesheet">
+    <link href="<?php echo $urlBase; ?>login.css" rel="stylesheet">
+    <link href="<?php echo $urlBase; ?>css/MultiSelect.css" rel="stylesheet" type="text/css">
     <link href="<?php echo $urlBase; ?>css/cadastro/usuario.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -33,7 +37,7 @@ $urlBase = '/'
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
 <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
 <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
     <?php include_once CAMINHO_BASE . '\\components\\loader.php'?>
@@ -49,6 +53,34 @@ $urlBase = '/'
 
                 <div class="row">
                     <div class="col-lg-12 main-container">
+                        
+                        <div class="card container" id="modalEditar" tabindex="1900" role="dialog">
+                            <h2>Editar usuário</h2>
+                            <div class="card-body">
+                                <form id="formulario-editar-usuario" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
+                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                                    <input type="hidden" name="action" value="editar">
+                                    <div class="form-group mt-3">
+                                        <label for="email-editar">Email</label>
+                                        <input type="email" class="form-control" id="email-editar" name="email-editar" required disabled>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="nome-editar">Nome</label>
+                                        <input type="text" class="form-control" id="nome-editar" name="nome-editar" required>
+                                    </div>
+                                    <div class="form-group mt-3">
+                                        <label for="tipo-editar">Tipo de usuário</label>
+                                        <select class="form-control" id="tipo-editar" required>
+                                        </select>
+                                    </div>
+                                    <div class="modal-botoes">
+                                        <button type="button" data-dismiss='modal' class="btn mt-3 btn-danger" id="botao-cancelar-edicao">Cancelar</button>
+                                        <button type="submit" class="btn btn-primary mt-3" id="botao-confirmar-edicao">Confirmar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
                         <div class="card container" id="formulario-registro">
                             <div class="card-body">
                                     <form id="formulario-registro-usuario" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
@@ -73,35 +105,62 @@ $urlBase = '/'
                                     <div class="form-group mt-3">
                                         <label for="tipo">Tipo de usuário</label>
                                         <select class="form-control" id="tipo" required>
-                                            <option value="ADMIN">ADMIN</option>
-                                            <option value="USER">USER</option>
                                         </select>
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-3" id="botao-registro">Cadastrar</button>
+                                    <div class="form-group mt-3">
+                                        <div class="mensagem-login-registro" id="erro-cadastro-usuario"></div>
+                                    </div>
                                 </form>
                             </div>
                         </div>  
-                        <div class="card container" id="tabela-usuarios-container">
-                            <div class="card-body" id="card-body-table">
-                                <table class="table table-striped" id="tabela-usuarios-final">
-                                    <thead>
-                                        <tr>
-                                            <th>Nome</th>
-                                            <th>Email</th>
-                                            <th>Tipo de usuário</th>
-                                            <th>Ações</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabela-usuarios-body">
-                                    </tbody>
-                                </table>
+
+                        <div class="container" id="tabela-filtro-container">
+                        
+                            <div class="card" id="container-filtro">
+                                <div class="input-label">
+                                    <label>Nome</label>
+                                    <input type="text" id="nome-usuario">
+                                </div>
+                                <div class="input-label">
+                                    <label>Email</label>
+                                    <input type="text" id="email-usuario">
+                                </div>
+                                <div class="input-label">
+                                    <label>Tipo de usuário</label>
+                                    <select id='lista-tipo' multiple data-multi-select>
+                                    </select>
+                                </div>
+                                <div class="input-label">
+                                    <label>Status</label>
+                                    <select id='lista-status' multiple data-multi-select>
+                                    </select>
+                                </div>
                             </div>
-                        </div>  
+                            <div class="card" id="tabela-usuarios-container">
+                                <div class="card-body" id="card-body-table">
+                                    <table class="table table-striped" id="tabela-usuarios-final">
+                                        <thead>
+                                            <tr>
+                                                <th>Nome</th>
+                                                <th>Email</th>
+                                                <th>Tipo de usuário</th>
+                                                <th>Ativo</th>
+                                                <th>Ações</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabela-usuarios-body">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>  
+                        </div>
                     </div>
                 </div>
                                         
     </div>
-
+    <!-- Filtros -->
+    <script src="<?php echo $urlBase; ?>js/relatorios/MultiSelect.js"></script>
     <!-- Required vendors -->
     <script src="<?php echo $urlBase; ?>vendor/global/global.min.js"></script>
     <script src="<?php echo $urlBase; ?>js/quixnav-init.js"></script>

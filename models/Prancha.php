@@ -42,7 +42,7 @@ class Prancha {
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM pranchareports ORDER BY CAST(periodo_inicial AS date) DESC');
             $stmt->execute();
             return json_encode(['data' => $stmt->fetchAll()]);
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return json_encode(['message' => $e->getMessage()]);
         }
     }
@@ -54,7 +54,7 @@ class Prancha {
             data, TIME_TO_SEC(duracao) AS duracao, TIME_TO_SEC(chuva) AS chuva, TIME_TO_SEC(transporte) AS transporte, TIME_TO_SEC(forca_maior) AS forca_maior, TIME_TO_SEC(outros) AS outros, TIME_TO_SEC(horas_operacionais) AS horas_operacionais, volume, meta, observacao FROM pranchareports WHERE navio = :navio");
             $stmt->execute([':navio' => $navio]);
             return json_encode(['data' => $stmt->fetchAll()]);
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return json_encode(['message' => $e->getMessage()]);
         }
     }

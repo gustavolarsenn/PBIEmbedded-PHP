@@ -3,7 +3,6 @@
     height: 100%;
 }
 
-
 #formulario-registro {
     width: 30%;
 }
@@ -11,7 +10,7 @@
 .container {
     margin: 10px;
     height: auto;
-    max-height: 70vh;
+    max-height: 75vh;
     display: flex;
     flex-direction: column;
     padding: 0px;
@@ -21,21 +20,60 @@
     padding: 0px !important; /* Removendo padding que vem de outro stylesheet */
 }
 
-#tabela-usuarios-container {
+#tabela-filtro-container {
     width: 70%;
     border-collapse: collapse;
     display: flex;
     flex-direction: column;
     flex: 1 1 auto; /* Allow the table to grow and shrink */
     overflow: auto;
+    
+}
+#tabela-usuarios-container {
+    overflow: auto;
+    margin-bottom: 0px !important;
+    height: 100%;
 }
 
 #tabela-usuarios-container thead th{
     position: sticky;
     top: 0;
     transition: background-color 0.5s;
+    color: black;
 }
 
 #tabela-usuarios-container tbody {
     width: 100%;
+}
+
+#modalEditar{
+    display: none;
+    position:fixed;
+    top:calc(50% - 200px);
+    right:calc(50% - 275px);
+    margin: auto;
+    width:30%;
+    height:fit-content;
+    z-index:10000;
+}
+
+#modalEditar h2{
+    text-align: center;
+    padding: 20px 5px;
+}
+
+.modal-botoes{
+    display: flex;
+    justify-content: space-between
+}
+
+.form-control:disabled{
+    background-color: #bdbdc73a;
+}
+
+#container-filtro{
+    display: flex !important; 
+    flex-direction: row !important;
+    margin-bottom: 10px;
+    justify-content: space-around;
 }

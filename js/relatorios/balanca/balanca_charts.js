@@ -30,8 +30,6 @@ var jaFiltradoArmazem = [];
 var jaFiltradoProduto = [];
 var jaFiltradoDI = [];
 
-var count = 0;
-
 const dataField = document.getElementById('data');
 
 // Ao trocar o valor do filtro de data, os gráficos são alterados com os valores atualizados

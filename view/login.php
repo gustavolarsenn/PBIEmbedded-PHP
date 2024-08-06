@@ -108,9 +108,9 @@ $urlBase = '/'
     <!-- Required vendors -->
     <script src="<?php echo $urlBase;?>login.js"></script>
 
-    <script src="<?php echo $urlBase;?>/vendor/global/global.min.js"></script>
-    <script src="<?php echo $urlBase;?>/js/quixnav-init.js"></script>
-    <script src="<?php echo $urlBase;?>/js/custom.min.js"></script>
+    <script src="<?php echo $urlBase;?>vendor/global/global.min.js"></script>
+    <script src="<?php echo $urlBase;?>js/quixnav-init.js"></script>
+    <script src="<?php echo $urlBase;?>js/custom.min.js"></script>
 
 </body>
 

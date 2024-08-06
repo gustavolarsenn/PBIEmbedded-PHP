@@ -79,7 +79,7 @@
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
             $stmt->execute();
             return json_encode(['data' => $stmt->fetchAll(), 'message' => 'Navios únicos']);
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             return json_encode(['message' => $e->getMessage()]);
         }
     }
