@@ -4,6 +4,8 @@ const tabelaUsuariosHeader = document.querySelectorAll('#tabela-usuarios-contain
 const botaoRegistro = document.getElementById('botao-registro');
 const formRegistroUsuario = document.getElementById('formulario-registro-usuario');
 const selectTipo = document.getElementById('tipo');
+const nomeUsuarioFilter = document.getElementById('nome-usuario');
+const emailUsuarioFilter = document.getElementById('email-usuario');
 
 const botaoConfirmarEdicao = document.getElementById('botao-confirmar-edicao');
 
@@ -83,9 +85,30 @@ async function gerarTabelaUsuarios(){
     })
 }
 
+
 (async function() {
     await gerarTabelaUsuarios()
 })();
+
+/* 
+Função para debounce, que evita que a função seja chamada várias vezes seguidas, chamando-a somente depois que o evento trigger ser finalizado. 
+Ou seja, se o usuário digitar muito rápido, o filtro só será realizado assim que ele parar de digitar, não afetando tanto a performance.
+*/
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+$(nomeUsuarioFilter).on('keyup', debounce(async function() {
+    await gerarTabelaUsuarios();
+}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
+
+$(emailUsuarioFilter).on('keyup', debounce(async function() {
+    await gerarTabelaUsuarios();
+}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
 
 $(botaoRegistro).on('click', async function(event){
     event.preventDefault();
@@ -93,6 +116,8 @@ $(botaoRegistro).on('click', async function(event){
     const usuarios = await buscarUsuario();
     await carregarUsuarios(usuarios);
 })
+
+$
 
 /* Filtro */ 
 function renameKeys(obj, keyMap) {
@@ -188,8 +213,6 @@ async function buscarUsuario(){
 
     const data = await response.json();
 
-
-
     return data;
 }
 
@@ -262,6 +285,9 @@ async function excluirUsuario(email){
     })
 
     const data = await response.json();
+
+    const usuarios = await buscarUsuario();
+    await carregarUsuarios(usuarios);
 }
 
 async function abrirModalEditar(email, nome, tipo){
@@ -292,6 +318,9 @@ async function abrirModalEditar(email, nome, tipo){
     
         await editarUsuario(email, nome, tipo);
         $('#modalEditar').modal('hide');
+
+        const usuarios = await buscarUsuario();
+        await carregarUsuarios(usuarios);
     }
 }
 

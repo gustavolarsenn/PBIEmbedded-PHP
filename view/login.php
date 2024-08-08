@@ -70,7 +70,7 @@ $urlBase = '/'
                                         <span class="ml-2">Nome</span>
                                         <input class="form-control" type="text" name="nome" placeholder="Nome" aria-label="Search" required>
                                         <span class="ml-2">Email</span>
-                                        <input class="form-control" type="text" name="email" placeholder="Email" aria-label="Search" required>
+                                        <input class="form-control" type="email" name="email" placeholder="Email" aria-label="Search" required>
                                         <span class="ml-2">Senha</span>
                                         <input class="form-control" type="password" name="senha" placeholder="Senha" aria-label="Search" required>
                                         <span class="ml-2"></span>

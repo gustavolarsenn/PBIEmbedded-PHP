@@ -30,20 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Determine a ação com base em um campo de formulário oculto
+    
     $action = $_POST['action'];
-    // SessionManager::validarCsrfToken();
+    
+    SessionManager::validarCsrfToken();
+    $email = isset($_POST['email']) ? htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8') : null;
+    $senha = isset($_POST['senha']) ? htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8') : null;
+    $nome = isset($_POST['nome']) ? htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8') : null;
+    $tipo = isset($_POST['tipo']) ? htmlspecialchars($_POST['tipo'], ENT_QUOTES, 'UTF-8') : null;
     
     if ($action === 'register') {
         try {
-            SessionManager::validarCsrfToken();
-            $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
-            $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
-            $nome = htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8');
-            $tipo = htmlspecialchars($_POST['tipo'], ENT_QUOTES, 'UTF-8');
-    
-            if (empty($tipo)) {
-                $tipo = null;
-            }
             $usuario = new Usuario($pdo, $nome, $email, $senha, $tipo);
             $message = $usuario->register();
             echo $message;
@@ -53,10 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     if ($action === 'login') {
-        SessionManager::validarCsrfToken();
-        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
-        $senha = htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8');
-
         $usuario = new Usuario($pdo, null, $email, $senha);
         $message = $usuario->login();
         echo $message;
@@ -64,8 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } 
 
     if ($action === 'excluir') {
-        SessionManager::validarCsrfToken();
-        $email = htmlspecialchars($_POST['email'], ENT_QUOTES, 'UTF-8');
         $usuario = new Usuario($pdo, null, $email, null);
         $message = $usuario->excluir();
         echo $message;

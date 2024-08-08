@@ -62,6 +62,8 @@ formRegistro.addEventListener('submit', function(event) {
     const formData = new FormData(formRegistro);
     const actionURL = formRegistro.getAttribute('action');
 
+    console.log(formData.forEach((value, key) => console.log(key, value)));
+
     fetch(actionURL, {
         method: 'POST',
         body: formData,
@@ -78,8 +80,6 @@ formRegistro.addEventListener('submit', function(event) {
             console.log(data);
             return 
         }
-        console.log("Chegou");
-        console.log(data);
         window.location.assign('/view/index.php');
     })
     .catch(error => {
