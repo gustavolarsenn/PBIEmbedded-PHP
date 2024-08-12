@@ -1,11 +1,12 @@
 import { getVesselData, getUniqueVessels } from './balanca_data.js';
-import { renameKeys, assignColorsToList, pbiThemeColors } from '../charts_utils.js';
+import { assignColorsToList, pbiThemeColors } from '../charts_utils.js';
 import { gerarGraficoTotalDescarregado } from './graficos/total_descarregado.js';
 import { gerarGraficoDescarregadoPorao } from './graficos/descarregado_porao.js';
 import { gerarGraficoClienteArmazemDI } from './graficos/volume_cliente_di_armazem.js';
 import { gerarGraficoVolumePorDia } from './graficos/volume_dia.js';
 import { gerarGraficoVolumePorCliente } from './graficos/volume_cliente.js';
 import { gerarGraficoVolumeDiaPeriodo } from './graficos/volume_dia_periodo.js';
+import { generateFilters, updateFilters } from '../../utils/utils.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -36,64 +37,6 @@ const dataField = document.getElementById('data');
 dataField.addEventListener('change', async function() {
     await generateCharts();
 });
-
-async function generateFilters(campo, filterData, condition){
-    const keyMapping = {
-        0: 'value',
-        [campo]: 'text',
-    };
-
-    let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
-    const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
-
-    let multiSelectOptions = {
-        data: renamedFilteredData,
-        placeholder: 'Todos',
-        max: null,
-        multiple: true,
-        search: true,
-        selectAll: true,
-        count: true,
-        keepOpen: true,
-        listAll: false,
-        onSelect: async function() {
-            await generateCharts();
-        },
-        onUnselect: async function() {
-            await generateCharts();
-        }
-    } 
-
-    if (condition.includes(campo)) {
-        multiSelectOptions['max'] = 1;
-        multiSelectOptions['selectAll'] = false;
-        multiSelectOptions['listAll'] = false;
-    } 
-
-    new MultiSelect(`#lista-${campo}`, 
-        multiSelectOptions,
-    );
-}
-
-async function updateFilters(campo, filterData, alreadySelected){
-    if (alreadySelected.length < 1) {
-    const listaElement = document.getElementById(`lista-${campo}`);
-    const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
-    
-        allOptions.forEach(option => {
-            const value = option.getAttribute('data-value');
-            const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
-        
-            if (!filterData.map(String).includes(value) && !isSelected) {
-                // If the option is not in filterData and not already selected, hide it
-                option.style.display = 'none';
-            } else {
-                // Otherwise, ensure it's visible
-                option.style.display = 'flex';
-            }
-        });
-    }
-}
 
 function cleanFiltersData(){
     [jaFiltradoPeriodo, jaFiltradoPorao, jaFiltradoCliente, jaFiltradoArmazem, jaFiltradoProduto, jaFiltradoDI].forEach(filtro => {
@@ -209,13 +152,13 @@ async function generateCharts() {
     if (graficoVolumeDiaPeriodo) graficoVolumeDiaPeriodo.destroy();
     
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
-        if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio']);
-        generateFilters('periodo', listaPeriodo, ['navio']);
-        generateFilters('porao', listaPorao, ['navio']);
-        generateFilters('cliente', listaCliente, ['navio']);
-        generateFilters('armazem', listaArmazem, ['navio']);
-        generateFilters('produto', listaProduto, ['navio']);
-        generateFilters('di', listaDI, ['navio']);
+        if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('periodo', listaPeriodo, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('porao', listaPorao, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('cliente', listaCliente, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('armazem', listaArmazem, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('produto', listaProduto, ['navio'],async function() {await generateCharts();}, true);
+        generateFilters('di', listaDI, ['navio'],async function() {await generateCharts();}, true);
     } else {
         updateFilters('periodo', listaPeriodo, jaFiltradoPeriodo);
         updateFilters('porao', listaPorao, jaFiltradoPorao);

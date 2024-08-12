@@ -8,12 +8,13 @@ class SessionManager{
         } 
     }
 
-    public static function iniciarSessao($id_usuario, $nome, $email){
+    public static function iniciarSessao($id_usuario, $nome, $email, $tipo_usuario){
         self::sessaoIniciada();
         $_SESSION['id_usuario'] = $id_usuario;
         $_SESSION['sessao_validade'] = time(); // 1 hora
         $_SESSION['nome'] = $nome;
         $_SESSION['email'] = $email;
+        $_SESSION['tipo_usuario'] = $tipo_usuario;
     }
     
     public static function validarCsrfToken() {
@@ -45,7 +46,7 @@ class SessionManager{
     public static function checarSessao() {
         self::sessaoIniciada();
         if (empty($_SESSION['id_usuario'])){
-            header('Location: /view/login.php');
+            header('Location: /views/login.php');
             exit;
         }
     }

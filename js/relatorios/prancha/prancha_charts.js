@@ -1,10 +1,11 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
-import { floatParaFloatFormatado, paralisacoesSoma, renameKeys, pbiThemeColors, pbiThemeColorsBorder } from '../charts_utils.js';
+import { floatParaFloatFormatado, paralisacoesSoma, pbiThemeColors, pbiThemeColorsBorder } from '../charts_utils.js';
 import { gerarGraficoTotalDescarregado } from './graficos/total_descarregado.js';
 import { gerarGraficoDescarregadoPorDia } from './graficos/volume_dia.js';
 import { gerarGraficoResumoGeral } from './graficos/resumo_geral.js';
 import { gerarGraficoTempoParalisado } from './graficos/tempo_paralisado.js';
 import { gerarGraficoDescarregadoDiaPeriodo } from './graficos/volume_dia_periodo.js';
+import { generateFilters, updateFilters } from '../../utils/utils.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -82,65 +83,6 @@ let filtrosParalisacao = {
     'transporte': 'Transporte',
     'outros': 'Outros'
 };
-
-async function generateFilters(campo, filterData, condition){
-    const keyMapping = {
-        0: 'value',
-        [campo]: 'text',
-    };
-
-    let filteredData = filterData.map(item => ({ 0: item, [campo]: item }));
-    const renamedFilteredData = filteredData.map(item => renameKeys(item, keyMapping));
-
-    let multiSelectOptions = {
-        data: renamedFilteredData,
-        placeholder: 'Todos',
-        max: null,
-        multiple: true,
-        search: true,
-        selectAll: true,
-        count: true,
-        listAll: false,
-        onSelect: async function() {
-            await generateCharts();
-        },
-        onUnselect: async function() {
-            await generateCharts();
-        }
-    } 
-
-    if (condition.includes(campo)) {
-        multiSelectOptions['max'] = 1;
-        multiSelectOptions['multiple'] = false;
-        multiSelectOptions['selectAll'] = false;
-    } 
-
-    new MultiSelect(`#lista-${campo}`, 
-        multiSelectOptions,
-    );
-}
-
-async function updateFilters(campo, filterData, alreadySelected){
-    if (alreadySelected.length < 1) {
-    paralisacaoSelecionada.innerText = '';
-    const listaElement = document.getElementById(`lista-${campo}`);
-    const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
-
-        allOptions.forEach(option => {
-            const value = option.getAttribute('data-value');
-            const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
-
-            if (!filterData.map(String).includes(value) && !isSelected) {
-                // If the option is not in filterData and not already selected, hide it
-                option.style.display = 'none';
-            } else {
-                // Otherwise, ensure it's visible
-                option.style.display = 'flex';
-            }
-        });
-    }
-}
-
 
 function cleanFiltersData(){
     [jaFiltradoPeriodo, jaFiltradoRelatorio, jaFiltradoParalisacao].forEach(filtro => {
@@ -238,10 +180,10 @@ async function generateCharts() {
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
     
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
-        if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio']);
-        generateFilters('periodo', listaPeriodo, ['navio']);
-        generateFilters('relatorio_no', listaRelatorio, ['navio']);
-        generateFilters('motivo_paralisacao', Object.values(filtrosParalisacao), ['navio']);
+        if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio'], async function() {await generateCharts();}, true);
+        generateFilters('periodo', listaPeriodo, ['navio'], async function() {await generateCharts();}, true);
+        generateFilters('relatorio_no', listaRelatorio, ['navio'], async function() {await generateCharts();}, true);
+        generateFilters('motivo_paralisacao', Object.values(filtrosParalisacao), ['navio'], async function() {await generateCharts();}, true);
     } else {
         updateFilters('periodo', listaPeriodo, jaFiltradoPeriodo);
         updateFilters('relatorio_no', listaRelatorio, jaFiltradoRelatorio);

@@ -1,0 +1,29 @@
+#logo-mobile {
+    display: none;
+}
+
+#logo-desktop {
+    display: block;
+}
+
+@media (max-width: 768px) {
+    #logo-mobile {
+        display: block;
+    }
+
+    #logo-desktop {
+        display: none;
+    }
+
+    #header-wrap {
+        transition: ease-in-out 1s;
+    }
+
+    .hidden {
+        transform: translateY(-100%)
+    }
+
+    h2{
+        font-size: 1.5em;
+    }
+}

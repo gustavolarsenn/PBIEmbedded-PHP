@@ -129,7 +129,7 @@ class Usuario
         }
         // Verifique se o usuário existe e a senha está correta
         if ($this->email && password_verify($this->senha, $usuario['senha'])) {
-            SessionManager::iniciarSessao($usuario['id'], $usuario['nome'], $usuario['email']);
+            SessionManager::iniciarSessao($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['tipo']);
 
             return json_encode(['sucesso' => true, 'mensagem' => 'Login bem-sucedido']);
         } else {

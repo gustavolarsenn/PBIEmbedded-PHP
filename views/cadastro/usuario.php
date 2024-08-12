@@ -2,13 +2,21 @@
 require_once __DIR__ . '\\..\\..\\config.php'; 
 
 require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
+require_once CAMINHO_BASE . '\\config\\database.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
 
+$pdo = (new Database())->getConnection();
+$permissaoPagina = new PermissoesPagina($pdo, basename(__FILE__, ".php"), $_SESSION['tipo_usuario'], null, $_SESSION['id_usuario']);
+$possuiPermissao = $permissaoPagina->verificarPermissao();
+
 // TODO: Somente ADMIN pode acessar essa página
 
-$urlBase = '/'
+$urlBase = '/';
+
+if ($possuiPermissao) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -169,11 +177,8 @@ $urlBase = '/'
 
     <script src="<?php echo $urlBase; ?>js/pbi/links_pbi.js"></script>
 
-    <script src="<?php echo $urlBase; ?>js/cadastro/usuario.js"></script>
+    <script src="<?php echo $urlBase; ?>js/cadastro/usuario.js" type="module"></script>
 
-    <!-- <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script> -->
-    
 	<!-- Form validate init -->
     <script src="<?php echo $urlBase; ?>js/plugins-init/jquery.validate-init.js"></script>
 
@@ -183,3 +188,5 @@ $urlBase = '/'
 </body>
 
 </html>
+<?php
+}

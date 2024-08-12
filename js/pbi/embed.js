@@ -4,9 +4,10 @@ let reportContainer = $("#report-container").get(0);
 $(document).ready(function() {
     $(document).ready(function() {
         const urlParams = new URLSearchParams(window.location.search);
+        const relatorioAtual = document.querySelector('.report-link.mm-active').innerText
         const reportName = urlParams.get('reportName');
         const reportTitle = document.getElementById('report-title');
-        reportTitle.innerText = reportName;
+        reportTitle.innerText = relatorioAtual;
         loadReport("/controllers/RelatorioPBIController.php?reportName=" + encodeURIComponent(reportName), reportName);
     });
 });

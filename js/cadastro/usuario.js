@@ -1,3 +1,5 @@
+import { debounce, updateFilters, generateFilters } from '../utils/utils.js';
+
 const tabelaUsuariosBody = document.getElementById('tabela-usuarios-body');
 const tabelaUsuariosContainer = document.getElementById('tabela-usuarios-container');
 const tabelaUsuariosHeader = document.querySelectorAll('#tabela-usuarios-container thead th');
@@ -6,45 +8,45 @@ const formRegistroUsuario = document.getElementById('formulario-registro-usuario
 const selectTipo = document.getElementById('tipo');
 const nomeUsuarioFilter = document.getElementById('nome-usuario');
 const emailUsuarioFilter = document.getElementById('email-usuario');
-
 const botaoConfirmarEdicao = document.getElementById('botao-confirmar-edicao');
 
-/* Filtro */ 
-var tiposUsuariosLista, jaFiltradoTipo = [], jaFiltradoStatus = [];
-var count = 0;
-/* Filtro */ 
+const filtros = {
+    tiposUsuariosLista: [],
+    jaFiltradoTipo: [],
+    jaFiltradoStatus: [],
+    count: 0
+}
 
 async function gerarTabelaUsuarios(){
-    /* Filtro */ 
-    const filtroNome = document.getElementById('nome-usuario').value;
-    const filtroEmail = document.getElementById('email-usuario').value;
+    const filtroNome = nomeUsuarioFilter.value;
+    const filtroEmail = emailUsuarioFilter.value;
     const filtroTipo = Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroStatus = Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
-    /* Filtro */ 
     
-    tiposUsuariosLista = await buscarTipoUsuario();
+    filtros.tiposUsuariosLista = await buscarTipoUsuario();
     
-    tiposUsuariosLista.forEach(tipo => {
+    filtros.tiposUsuariosLista.forEach(tipo => {
         selectTipo.innerHTML += `<option value="${tipo.id}">${tipo.tipo}</option>`;
     });
     
-    /* Filtro */ 
-    const tiposUsuariosListaFormatada = tiposUsuariosLista.map(item => ({
-        0: item.id,
-        tipo: item.tipo
-    }));
-    const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}].map(item => ({
-        0: item.id,
-        status: item.status
-    }));
+    // const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista.map(item => ({
+    //     0: item.id,
+    //     tipo: item.tipo
+    // }));
+    // const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}].map(item => ({
+    //     0: item.id,
+    //     status: item.status
+    // }));
 
-    jaFiltradoTipo = tiposUsuariosListaFormatada
-    jaFiltradoStatus = listaStatusFormatada
-    /* Filtro */ 
+    const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista
+    const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}]
+
+    console.log(tiposUsuariosListaFormatada, listaStatusFormatada)
+    filtros.jaFiltradoTipo = tiposUsuariosListaFormatada
+    filtros.jaFiltradoStatus = listaStatusFormatada
     
     let usuarios = await buscarUsuario();
 
-    /* Filtro */
     if (filtroNome) {
         usuarios = usuarios.filter(usuario => usuario.nome.toLowerCase().includes(filtroNome.toLowerCase()));
     }
@@ -57,22 +59,18 @@ async function gerarTabelaUsuarios(){
     if (filtroStatus.length > 0) {
         usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
     }
-    /* Filtro */
-
-    
 
     await carregarUsuarios(usuarios)
     
-    /* Filtro */ 
-    if (count < 1) {
-        await generateFilters('tipo', tiposUsuariosListaFormatada, [], usuarios);    
-        await generateFilters('status', listaStatusFormatada, [], usuarios);    
+    if (filtros.count < 1) {
+        await generateFilters('tipo', tiposUsuariosListaFormatada, [], usuarios, async function() { await gerarTabelaUsuarios();}, false);
+        await generateFilters('status', listaStatusFormatada, [], usuarios, async function() { await gerarTabelaUsuarios();}, false);    
     } else {
-        await updateFilters('tipo', tiposUsuariosListaFormatada, jaFiltradoTipo);
-        await updateFilters('status', listaStatusFormatada, jaFiltradoStatus);
+        await updateFilters('tipo', tiposUsuariosListaFormatada, filtros.jaFiltradoTipo);
+        await updateFilters('status', listaStatusFormatada, filtros.jaFiltradoStatus);
     }
-    count++;
-    /* Filtro */ 
+
+    filtros.count++;
     
     $(tabelaUsuariosContainer).on("scroll", function(){
         if ($(tabelaUsuariosContainer).scrollTop() > 50) {
@@ -84,108 +82,6 @@ async function gerarTabelaUsuarios(){
         }
     })
 }
-
-
-(async function() {
-    await gerarTabelaUsuarios()
-})();
-
-/* 
-Função para debounce, que evita que a função seja chamada várias vezes seguidas, chamando-a somente depois que o evento trigger ser finalizado. 
-Ou seja, se o usuário digitar muito rápido, o filtro só será realizado assim que ele parar de digitar, não afetando tanto a performance.
-*/
-function debounce(func, wait) {
-    let timeout;
-    return function(...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
-}
-
-$(nomeUsuarioFilter).on('keyup', debounce(async function() {
-    await gerarTabelaUsuarios();
-}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
-
-$(emailUsuarioFilter).on('keyup', debounce(async function() {
-    await gerarTabelaUsuarios();
-}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
-
-$(botaoRegistro).on('click', async function(event){
-    event.preventDefault();
-    await criarUsuario();
-    const usuarios = await buscarUsuario();
-    await carregarUsuarios(usuarios);
-})
-
-$
-
-/* Filtro */ 
-function renameKeys(obj, keyMap) {
-    return Object.keys(obj).reduce((acc, key) => {
-        const newKey = keyMap[key] || key; // Use new key name if it exists in the mapping, otherwise use the original key
-        acc[newKey] = obj[key]; // Assign the value to the new key in the accumulator object
-        return acc;
-    }, {}); // Initial value for the accumulator is an empty object
-}
-
-async function updateFilters(campo, filterData, alreadySelected){
-    if (alreadySelected.length < 1) {
-    const listaElement = document.getElementById(`lista-${campo}`);
-    const allOptions = listaElement.querySelectorAll('[data-value]'); // Select all options
-    
-    allOptions.forEach(option => {
-        const value = option.getAttribute('data-value');
-        const isSelected = option.classList.contains('multi-select-selected'); // Check if the option is already selected
-        
-        if (!filterData.map(String).includes(value) && !isSelected) {
-            // If the option is not in filterData and not already selected, hide it
-                option.style.display = 'none';
-            } else {
-                // Otherwise, ensure it's visible
-                option.style.display = 'flex';
-            }
-        });
-    }
-}
-
-async function generateFilters(campo, dados, condicao){
-    const keyMapping = {
-        0: 'value',
-        [campo]: 'text',
-    };
-
-    console.log(dados)
-    // let filteredData = dados.map(item => ({ 0: item, [campo]: item }));
-    const renamedFilteredData = dados.map(item => renameKeys(item, keyMapping));
-    
-    let multiSelectOptions = {
-        data: renamedFilteredData,
-        placeholder: 'Todos',
-        max: null,
-        multiple: true,
-        search: true,
-        selectAll: true,
-        count: true,
-        listAll: false,
-        onSelect: async function() {
-            await gerarTabelaUsuarios();
-        },
-        onUnselect: async function() {
-            await gerarTabelaUsuarios();
-        }
-    } 
-    
-    if (condicao.includes(campo)) {
-        multiSelectOptions['max'] = 1;
-        multiSelectOptions['multiple'] = false;
-        multiSelectOptions['selectAll'] = false;
-    } 
-    
-    new MultiSelect(`#lista-${campo}`, 
-        multiSelectOptions,
-    );
-}
-/* Filtro */ 
 
 async function buscarTipoUsuario(){
     /* Busca tipos de usuários no banco de dados para listar em select, usando script PHP que faz conexão */
@@ -299,7 +195,7 @@ async function abrirModalEditar(email, nome, tipo){
     const select = document.getElementById('tipo-editar')//.value = tipo;
     select.innerHTML = '';
 
-    tiposUsuariosLista.forEach(tipoUsuario => {
+    filtros.tiposUsuariosLista.forEach(tipoUsuario => {
         let option = document.createElement('option');
         option.value = tipoUsuario.id;
         option.innerText = tipoUsuario.tipo;
@@ -343,3 +239,22 @@ async function editarUsuario(email, nome, tipo){
 
     const data = await response.json();
 }
+
+(async function() {
+    await gerarTabelaUsuarios()
+})();
+
+$(nomeUsuarioFilter).on('keyup', debounce(async function() {
+    await gerarTabelaUsuarios();
+}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
+
+$(emailUsuarioFilter).on('keyup', debounce(async function() {
+    await gerarTabelaUsuarios();
+}, 300)); // Só faz o filtro após 300ms que o usuário parar de digitar
+
+$(botaoRegistro).on('click', async function(event){
+    event.preventDefault();
+    await criarUsuario();
+    const usuarios = await buscarUsuario();
+    await carregarUsuarios(usuarios);
+})

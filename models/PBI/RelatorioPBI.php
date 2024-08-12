@@ -3,10 +3,6 @@
 
 
 require_once __DIR__ . '\\..\\..\\config.php';
-// require_once 'PowerBiReportDetails.php';
-// require_once '../models/PBI/EmbedConfig.php';
-// require_once '../models/API/ApiCalls.php';
-// require_once CAMINHO_BASE . '\\controllers\\PbiReportsController.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
 
@@ -30,16 +26,17 @@ class RelatorioPBI {
     }
 
     public function pegarRelatoriosAtivos(){
-        $sql = "SELECT * FROM pbi_reports WHERE is_active = 1";
+        $sql = "SELECT * FROM relatorio_pbi WHERE ativo = 1";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $stmt->closeCursor();
 
         $reportsArray = array_reduce($reports, function($carry, $report) {
-        $carry[$report['report_name']] = [
-            "report_id" => $report['report_id'],
-            "dataset_id" => $report['dataset_id'],
+        $carry[$report['relatorio_clean']] = [
+            "relatorio" => $report['relatorio'],
+            "id_relatorio" => $report['id_relatorio'],
+            "id_dataset" => $report['id_dataset'],
             "rls" => $report['rls']
         ];
             return $carry;
@@ -65,8 +62,8 @@ class RelatorioPBI {
             $reports = self::pegarRelatoriosAtivos();
             
             if (!isset($reports[$actualLink])) {
-                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], ['report' => $actualLink]]);            
-                header('Location: /view/index.php');
+                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], ['relatorio' => $actualLink]]);            
+                header('Location: /views/index.php');
                 exit;
             } 
     
@@ -80,18 +77,18 @@ class RelatorioPBI {
             $capacidadeAtiva = $capacidade->ligarCapacity($powerBISession->sessoesAtivasPBI(), $azureAPI);
     
             if (!json_decode($capacidadeAtiva)->sucesso){
-                $log->error('Não foi possível gerar relatório, capacidade não iniciada', ['user' => $_SESSION['id_usuario'], 'report' => $actualLink]);
+                $log->error('Não foi possível gerar relatório, capacidade não iniciada', ['user' => $_SESSION['id_usuario'], 'relatorio' => $actualLink]);
                 return $capacidadeAtiva;
             }
     
-            $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['report_id'], $currentReport['dataset_id'], null);
+            $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['id_relatorio'], $currentReport['id_dataset'], null);
             $conn = null;
     
-            $log->info('Relatório gerado com sucesso', ['user' => $_SESSION['id_usuario'], 'report' => $actualLink]);
+            $log->info('Relatório gerado com sucesso', ['user' => $_SESSION['id_usuario'], 'relatorio' => $actualLink]);
             return json_encode(['sucesso' => true, 'dados' => json_encode($reportEmbedConfig)]);
     
         } catch (Exception $e) {
-            $log->error('Erro ao gerar relatório PowerBI: ' . $e->getMessage(), ['user' => $_SESSION['id_usuario'], 'report' => $actualLink]);
+            $log->error('Erro ao gerar relatório PowerBI: ' . $e->getMessage(), ['user' => $_SESSION['id_usuario'], 'relatorio' => $actualLink]);
         }
     }
 }

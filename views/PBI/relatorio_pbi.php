@@ -1,26 +1,31 @@
 <?php
 
+
 $basePath = '../../'; // Adjust this path as needed 
 
-include_once $basePath . "SessionManager.php";
+require_once __DIR__ . '\\..\\..\\config.php'; 
+
+require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
+require_once CAMINHO_BASE . '\\config\\database.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
 
 $actualLink = basename($_GET["reportName"]);
 
+$pdo = (new Database())->getConnection();
+
+// Ao invés de pegar o nome do arquivo, vou buscar o parâmetro reportName da URL, que é o nome do relatório
+$permissaoPagina = new PermissoesPagina($pdo, basename($_REQUEST['reportName'], ".php"), $_SESSION['tipo_usuario'], null, $_SESSION['id_usuario']);
+$possuiPermissao = $permissaoPagina->verificarPermissao();
+
 if (isset($_GET['json'])) {
     echo $actualLink;
     exit;
 }
 
-// $embedInfo = gerarRelatorioPBI($actualLink);
-
-// if (isset($_GET['json'])) {
-//     header('Content-Type: application/json');
-//     echo $embedInfo;
-//     exit;
-// }
+if ($possuiPermissao) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -76,9 +81,14 @@ if (isset($_GET['json'])) {
                         </div>
                     </div>
                 </div>
+                <div class="report-container-wrapper">
                 <section class="report-container" id="report-container">
                     <div class="error-container"></div>
                 </section>
+                </div>
+                <!-- <section class="report-container" id="report-container">
+                    <div class="error-container"></div>
+                </section> -->
     </div>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
@@ -112,3 +122,5 @@ if (isset($_GET['json'])) {
 
     </body>
 </html>
+<?php
+}

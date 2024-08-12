@@ -77,3 +77,17 @@
     margin-bottom: 10px;
     justify-content: space-around;
 }
+
+/* @media (max-width: 768px) {
+    .main-container{
+        flex-direction: column;
+    }
+
+    #formulario-registro {
+        width: 100%;
+    }
+
+    #tabela-filtro-container {
+        width: 100%;
+    }
+} */
