@@ -27,7 +27,6 @@
     flex-direction: column;
     flex: 1 1 auto; /* Allow the table to grow and shrink */
     overflow: auto;
-    
 }
 #tabela-usuarios-container {
     overflow: auto;
@@ -48,13 +47,13 @@
 
 #modalEditar{
     display: none;
-    position:fixed;
-    top:calc(50% - 200px);
-    right:calc(50% - 275px);
+    position: fixed;
+    top: calc(50% - 200px);
+    right: calc(50% - 275px);
     margin: auto;
-    width:30%;
-    height:fit-content;
-    z-index:10000;
+    width: 30%;
+    height: fit-content;
+    z-index: 10000;
 }
 
 #modalEditar h2{
@@ -73,12 +72,25 @@
 
 #container-filtro{
     display: flex !important; 
-    flex-direction: row !important;
+    flex-direction: row;
     margin-bottom: 10px;
-    justify-content: space-around;
+}
+
+.subcontainer-filtro{
+    display: flex;
+    width: 100%;
+}
+
+.subcontainer-filtro .input-label{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 10px;
+    margin: 0;
 }
 
 @media (max-width: 768px) {
+
     .main-container{
         flex-direction: column;
     }
@@ -90,4 +102,33 @@
     #tabela-filtro-container {
         width: 100%;
     }
+
+    #container-filtro{
+        flex-direction: column;
+    }
+    
+    #container-filtro .input-label label{
+        font-size: 1.0em;
+    }
+
+    #container-filtro .input-label input{
+        font-size: 1.0em;
+        height: 2.5em;
+    }
+
+    #container-filtro .input-label select{
+        font-size: 1.0em;
+        height: 2.5em;
+    }
+
+    #modalEditar{
+        width: 90%;
+        right: calc(50% - 45%);
+    }
+
+    #tabela-usuarios-body tr th {
+        font-size: 0.8em;
+        width: 10px !important;
+    }
+
 }

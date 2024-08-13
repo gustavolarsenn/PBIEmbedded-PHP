@@ -102,25 +102,7 @@ async function buscarUsuario(){
     return data;
 }
 
-async function excluirUsuario(email){
-    /* Exclui usuário do Banco de Dados */
-    const response = await fetch('/controllers/UsuarioController.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            action: 'excluir',
-            email: email,
-            csrf_token: document.querySelector('input[name="csrf_token"]').value
-        }),
-    })
 
-    const data = await response.json();
-
-    const usuarios = await buscarUsuario();
-    await carregarUsuarios(usuarios);
-}
 
 async function editarUsuario(email, nome, tipo){
     /* Edita usuário no Banco de Dados*/
@@ -141,6 +123,74 @@ async function editarUsuario(email, nome, tipo){
 
     const data = await response.json();
 }
+
+async function carregarUsuarios(dadosUsuarios) {
+    /* Carrega usuários nas linhas da tabela */
+    tabelaUsuariosBody.innerHTML = '';
+    dadosUsuarios.forEach(usuario => {
+        const row = document.createElement('tr');
+
+        const nomeCell = document.createElement('td');
+        nomeCell.textContent = usuario.nome;
+        row.appendChild(nomeCell);
+
+        const emailCell = document.createElement('td');
+        emailCell.textContent = usuario.email;
+        row.appendChild(emailCell);
+
+        const tipoCell = document.createElement('td');
+        tipoCell.textContent = usuario.tipo;
+        row.appendChild(tipoCell);
+
+        const ativoCell = document.createElement('td');
+        ativoCell.textContent = usuario.ativo ? 'Sim' : 'Não';
+        ativoCell.style.color = usuario.ativo ? 'green' : 'red';
+        ativoCell.style.fontWeight = 'bold';
+        row.appendChild(ativoCell);
+
+        const actionsCell = document.createElement('td');
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Editar';
+        editButton.className = 'btn btn-warning';
+        editButton.addEventListener('click', () => {
+            abrirModalEditar(usuario.email, usuario.nome, usuario.tipo);
+        });
+        actionsCell.appendChild(editButton);
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'btn btn-danger';
+        deleteButton.addEventListener('click', () => {
+            excluirUsuario(usuario.email);
+        });
+        actionsCell.appendChild(deleteButton);
+
+        row.appendChild(actionsCell);
+
+        tabelaUsuariosBody.appendChild(row);
+    });
+}
+
+
+// async function carregarUsuarios(dadosUsuarios){
+//     /* Carrega usuários nas linhas da tabela */
+//     tabelaUsuariosBody.innerHTML = '';
+//     dadosUsuarios.forEach(usuario => {
+//         tabelaUsuariosBody.innerHTML += `
+//             <tr>
+//                 <td>${usuario.nome}</td>
+//                 <td>${usuario.email}</td>
+//                 <td>${usuario.tipo}</td>
+//                 <td style="color: ${usuario.ativo ? 'green' : 'red'}; font-weight: bold">${usuario.ativo ? 'Sim' : 'Não'}</td>
+//                 <td>
+//                     <button onclick="abrirModalEditar('${usuario.email}', '${usuario.nome}', '${usuario.tipo}')" class="btn btn-warning">Editar</button>
+//                     <button onclick="excluirUsuario('${usuario.email}')" class="btn btn-danger">Excluir</button>
+//                 </td>
+//             </tr>
+//         `;
+//     });
+// }
 
 async function abrirModalEditar(email, nome, tipo){
     /* Abre modal de edição de usuário */
@@ -176,24 +226,24 @@ async function abrirModalEditar(email, nome, tipo){
     }
 }
 
+async function excluirUsuario(email){
+    /* Exclui usuário do Banco de Dados */
+    const response = await fetch('/controllers/UsuarioController.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            action: 'excluir',
+            email: email,
+            csrf_token: document.querySelector('input[name="csrf_token"]').value
+        }),
+    })
 
-async function carregarUsuarios(dadosUsuarios){
-    /* Carrega usuários nas linhas da tabela */
-    tabelaUsuariosBody.innerHTML = '';
-    dadosUsuarios.forEach(usuario => {
-        tabelaUsuariosBody.innerHTML += `
-            <tr>
-                <td>${usuario.nome}</td>
-                <td>${usuario.email}</td>
-                <td>${usuario.tipo}</td>
-                <td style="color: ${usuario.ativo ? 'green' : 'red'}; font-weight: bold">${usuario.ativo ? 'Sim' : 'Não'}</td>
-                <td>
-                    <button onclick="abrirModalEditar('${usuario.email}', '${usuario.nome}', '${usuario.tipo}')" class="btn btn-warning">Editar</button>
-                    <button onclick="excluirUsuario('${usuario.email}')" class="btn btn-danger">Excluir</button>
-                </td>
-            </tr>
-        `;
-    });
+    const data = await response.json();
+
+    const usuarios = await buscarUsuario();
+    await carregarUsuarios(usuarios);
 }
 
 async function criarUsuario(){

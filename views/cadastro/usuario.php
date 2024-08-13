@@ -13,7 +13,6 @@ $permissaoPagina = new PermissoesPagina($pdo, basename(__FILE__, ".php"), $_SESS
 $possuiPermissao = $permissaoPagina->verificarPermissao();
 
 // TODO: Somente ADMIN pode acessar essa página
-
 $urlBase = '/';
 
 if ($possuiPermissao) {
@@ -37,6 +36,7 @@ if ($possuiPermissao) {
     <link href="<?php echo $urlBase; ?>login.css" rel="stylesheet">
     <link href="<?php echo $urlBase; ?>css/MultiSelect.css" rel="stylesheet" type="text/css">
     <link href="<?php echo $urlBase; ?>css/cadastro/usuario.css" rel="stylesheet">
+
 
 </head>
 
@@ -124,27 +124,31 @@ if ($possuiPermissao) {
                         </div>  
 
                         <div class="container" id="tabela-filtro-container">
-                        
                             <div class="card" id="container-filtro">
-                                <div class="input-label">
-                                    <label>Nome</label>
-                                    <input type="text" id="nome-usuario">
+                                <div class="subcontainer-filtro">
+                                    <div class="input-label">
+                                        <label>Nome</label>
+                                        <input type="text" id="nome-usuario">
+                                    </div>
+                                    <div class="input-label">
+                                        <label>Email</label>
+                                        <input type="text" id="email-usuario">
+                                    </div>
                                 </div>
-                                <div class="input-label">
-                                    <label>Email</label>
-                                    <input type="text" id="email-usuario">
-                                </div>
-                                <div class="input-label">
-                                    <label>Tipo de usuário</label>
-                                    <select id='lista-tipo' multiple data-multi-select>
-                                    </select>
-                                </div>
-                                <div class="input-label">
-                                    <label>Status</label>
-                                    <select id='lista-status' multiple data-multi-select>
-                                    </select>
+                                <div class="subcontainer-filtro">
+                                    <div class="input-label">
+                                        <label>Tipo de usuário</label>
+                                        <select id='lista-tipo' multiple data-multi-select>
+                                        </select>
+                                    </div>
+                                    <div class="input-label">
+                                        <label>Status</label>
+                                        <select id='lista-status' multiple data-multi-select>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="card" id="tabela-usuarios-container">
                                 <div class="card-body" id="card-body-table">
                                     <table class="table table-striped" id="tabela-usuarios-final">
@@ -167,8 +171,10 @@ if ($possuiPermissao) {
                 </div>
                                         
     </div>
+
     <!-- Filtros -->
     <script src="<?php echo $urlBase; ?>js/relatorios/MultiSelect.js"></script>
+    
     <!-- Required vendors -->
     <script src="<?php echo $urlBase; ?>vendor/global/global.min.js"></script>
     <script src="<?php echo $urlBase; ?>js/quixnav-init.js"></script>
@@ -176,7 +182,6 @@ if ($possuiPermissao) {
 	<script src="<?php echo $urlBase; ?>js/logout.js"></script>
 
     <script src="<?php echo $urlBase; ?>js/pbi/links_pbi.js"></script>
-
     <script src="<?php echo $urlBase; ?>js/cadastro/usuario.js" type="module"></script>
 
 	<!-- Form validate init -->
