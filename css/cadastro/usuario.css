@@ -78,7 +78,7 @@
     justify-content: space-around;
 }
 
-/* @media (max-width: 768px) {
+@media (max-width: 768px) {
     .main-container{
         flex-direction: column;
     }
@@ -90,4 +90,4 @@
     #tabela-filtro-container {
         width: 100%;
     }
-} */
+}

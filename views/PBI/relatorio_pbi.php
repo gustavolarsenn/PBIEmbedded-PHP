@@ -43,6 +43,7 @@ if ($possuiPermissao) {
     <link href="<?php echo $basePath; ?>/vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/css/relatorio_pbi.css">
+    <link rel="stylesheet" href="<?php echo $basePath; ?>/css/main.css">
 </head>
 
 <body>
@@ -106,6 +107,8 @@ if ($possuiPermissao) {
     <script src="<?php echo $basePath; ?>/js/quixnav-init.js"></script>
     <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
 	<script src="<?php echo $basePath; ?>/js/logout.js"></script>
+
+    <script src="<?php echo $basePath; ?>/js/main.js"></script>
     
     <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
     <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>

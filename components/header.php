@@ -1,4 +1,10 @@
-<link rel="stylesheet" href="<?php echo $basePath; ?>/css/main.css">
+<?php 
+
+$urlBase = '/'
+
+?>
+
+<link rel="stylesheet" href="<?php echo $urlBase; ?>css/main.css">
 
 <div id="header-wrap">
     <div class="nav-header">
@@ -69,4 +75,4 @@
     </div>
 </div>
 
-<script src="<?php echo $basePath; ?>/js/main.js"></script>
+<script src="<?php echo $urlBase; ?>js/main.js"></script>

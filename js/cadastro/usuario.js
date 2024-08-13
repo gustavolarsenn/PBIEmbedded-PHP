@@ -28,20 +28,10 @@ async function gerarTabelaUsuarios(){
     filtros.tiposUsuariosLista.forEach(tipo => {
         selectTipo.innerHTML += `<option value="${tipo.id}">${tipo.tipo}</option>`;
     });
-    
-    // const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista.map(item => ({
-    //     0: item.id,
-    //     tipo: item.tipo
-    // }));
-    // const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}].map(item => ({
-    //     0: item.id,
-    //     status: item.status
-    // }));
 
     const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista
     const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}]
 
-    console.log(tiposUsuariosListaFormatada, listaStatusFormatada)
     filtros.jaFiltradoTipo = tiposUsuariosListaFormatada
     filtros.jaFiltradoStatus = listaStatusFormatada
     
@@ -112,6 +102,81 @@ async function buscarUsuario(){
     return data;
 }
 
+async function excluirUsuario(email){
+    /* Exclui usuário do Banco de Dados */
+    const response = await fetch('/controllers/UsuarioController.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            action: 'excluir',
+            email: email,
+            csrf_token: document.querySelector('input[name="csrf_token"]').value
+        }),
+    })
+
+    const data = await response.json();
+
+    const usuarios = await buscarUsuario();
+    await carregarUsuarios(usuarios);
+}
+
+async function editarUsuario(email, nome, tipo){
+    /* Edita usuário no Banco de Dados*/
+    const formEditar = document.getElementById('formulario-editar-usuario');
+
+    const formData = new FormData(formEditar);
+    const actionURL = formEditar.getAttribute('action');
+
+    formData.get('email-editar') || formData.set('email-editar', email);
+    formData.get('nome-editar') || formData.set('nome-editar', nome);
+    formData.get('tipo-editar') || formData.set('tipo-editar', tipo);
+
+    console.log(formData.forEach((value, key) => console.log(key, value)));
+    const response = await fetch(actionURL, {
+        method: 'POST',
+        body: formData,
+    })
+
+    const data = await response.json();
+}
+
+async function abrirModalEditar(email, nome, tipo){
+    /* Abre modal de edição de usuário */
+    $('#modalEditar').modal('show');
+
+    document.getElementById('email-editar').value = email;
+    document.getElementById('nome-editar').value = nome;
+    const select = document.getElementById('tipo-editar')//.value = tipo;
+    select.innerHTML = '';
+
+    filtros.tiposUsuariosLista.forEach(tipoUsuario => {
+        let option = document.createElement('option');
+        option.value = tipoUsuario.id;
+        option.innerText = tipoUsuario.tipo;
+
+        if (tipoUsuario.tipo === tipo) {
+            option.selected = true;
+        }
+        select.appendChild(option);
+    });
+
+    botaoConfirmarEdicao.onclick = async function(event){
+        const email = document.getElementById('email-editar').value;
+        const nome = document.getElementById('nome-editar').value;
+        const tipo = document.getElementById('tipo-editar').value;
+        event.preventDefault();
+    
+        await editarUsuario(email, nome, tipo);
+        $('#modalEditar').modal('hide');
+
+        const usuarios = await buscarUsuario();
+        await carregarUsuarios(usuarios);
+    }
+}
+
+
 async function carregarUsuarios(dadosUsuarios){
     /* Carrega usuários nas linhas da tabela */
     tabelaUsuariosBody.innerHTML = '';
@@ -165,80 +230,6 @@ async function criarUsuario(){
             console.error('Houve algum problema com a requisição:', error);
         }
     }
-
-async function excluirUsuario(email){
-    /* Exclui usuário do Banco de Dados */
-    const response = await fetch('/controllers/UsuarioController.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams({
-            action: 'excluir',
-            email: email,
-            csrf_token: document.querySelector('input[name="csrf_token"]').value
-        }),
-    })
-
-    const data = await response.json();
-
-    const usuarios = await buscarUsuario();
-    await carregarUsuarios(usuarios);
-}
-
-async function abrirModalEditar(email, nome, tipo){
-    /* Abre modal de edição de usuário */
-    $('#modalEditar').modal('show');
-
-    document.getElementById('email-editar').value = email;
-    document.getElementById('nome-editar').value = nome;
-    const select = document.getElementById('tipo-editar')//.value = tipo;
-    select.innerHTML = '';
-
-    filtros.tiposUsuariosLista.forEach(tipoUsuario => {
-        let option = document.createElement('option');
-        option.value = tipoUsuario.id;
-        option.innerText = tipoUsuario.tipo;
-
-        if (tipoUsuario.tipo === tipo) {
-            option.selected = true;
-        }
-        select.appendChild(option);
-    });
-
-    botaoConfirmarEdicao.onclick = async function(event){
-        const email = document.getElementById('email-editar').value;
-        const nome = document.getElementById('nome-editar').value;
-        const tipo = document.getElementById('tipo-editar').value;
-        event.preventDefault();
-    
-        await editarUsuario(email, nome, tipo);
-        $('#modalEditar').modal('hide');
-
-        const usuarios = await buscarUsuario();
-        await carregarUsuarios(usuarios);
-    }
-}
-
-async function editarUsuario(email, nome, tipo){
-    /* Edita usuário no Banco de Dados*/
-    const formEditar = document.getElementById('formulario-editar-usuario');
-
-    const formData = new FormData(formEditar);
-    const actionURL = formEditar.getAttribute('action');
-
-    formData.get('email-editar') || formData.set('email-editar', email);
-    formData.get('nome-editar') || formData.set('nome-editar', nome);
-    formData.get('tipo-editar') || formData.set('tipo-editar', tipo);
-
-    console.log(formData.forEach((value, key) => console.log(key, value)));
-    const response = await fetch(actionURL, {
-        method: 'POST',
-        body: formData,
-    })
-
-    const data = await response.json();
-}
 
 (async function() {
     await gerarTabelaUsuarios()
