@@ -19407,6 +19407,27 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
       color: #fff; }
 
 
+/* Mudanças para remover header ao rolar, controle de largura da tela feito pelo JS */
+.header, .nav-header {
+    transition: cubic-bezier(0.455, 0.03, 0.515, 0.955) 0.3s;
+}
 
+.hidden {
+  transform: translateY(-100%)
+}
 
+@media(max-width: 768px) {
+  h2{
+      font-size: 1.5em;
+  }
+}
+
+@media (min-width: 1200px) {
+  #logo-mobile {
+      display: none;
+  }
+  #logo-desktop {
+      display: block;
+  }
+}
 /*# sourceMappingURL=style.css.map */

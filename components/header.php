@@ -4,8 +4,6 @@ $urlBase = '/'
 
 ?>
 
-<link rel="stylesheet" href="<?php echo $urlBase; ?>css/main.css">
-
 <div id="header-wrap">
     <div class="nav-header">
         <a href="/views/index.php" class="brand-logo">
