@@ -126,22 +126,22 @@ if ($possuiPermissao) {
                         <div class="container" id="tabela-filtro-container">
                             <div class="card" id="container-filtro">
                                 <div class="subcontainer-filtro">
-                                    <div class="input-label">
+                                    <div class="form-group mt-3 input-label">
                                         <label>Nome</label>
-                                        <input type="text" id="nome-usuario">
+                                        <input type="text" class="form-control" id="nome-usuario">
                                     </div>
-                                    <div class="input-label">
+                                    <div class="form-group mt-3 input-label">
                                         <label>Email</label>
-                                        <input type="text" id="email-usuario">
+                                        <input type="text" class="form-control" id="email-usuario">
                                     </div>
                                 </div>
                                 <div class="subcontainer-filtro">
-                                    <div class="input-label">
+                                    <div class="form-group mt-3 input-label">
                                         <label>Tipo de usuário</label>
                                         <select id='lista-tipo' multiple data-multi-select>
                                         </select>
                                     </div>
-                                    <div class="input-label">
+                                    <div class="form-group mt-3 input-label">
                                         <label>Status</label>
                                         <select id='lista-status' multiple data-multi-select>
                                         </select>

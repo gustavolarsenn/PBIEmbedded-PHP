@@ -5,12 +5,12 @@
 
 #formulario-registro {
     width: 30%;
+    max-height: fit-content;
 }
 
 .container {
     margin: 10px;
     height: auto;
-    max-height: 75vh;
     display: flex;
     flex-direction: column;
     padding: 0px;
@@ -32,6 +32,7 @@
     overflow: auto;
     margin-bottom: 0px !important;
     height: 100%;
+    max-height: 75vh;
 }
 
 #tabela-usuarios-container thead th{
@@ -126,9 +127,11 @@
         right: calc(50% - 45%);
     }
 
-    #tabela-usuarios-body tr th {
-        font-size: 0.8em;
-        width: 10px !important;
+    #tabela-usuarios-body td{
+        font-size: 0.9em;
+        max-width: 2px;
     }
-
+    #tabela-usuarios-body td button{
+        font-size: 0.8em;
+    }
 }

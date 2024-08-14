@@ -151,16 +151,16 @@ async function carregarUsuarios(dadosUsuarios) {
         const actionsCell = document.createElement('td');
 
         const editButton = document.createElement('button');
-        editButton.textContent = 'Editar';
-        editButton.className = 'btn btn-warning';
+        // editButton.textContent = 'Editar';
+        editButton.className = 'btn btn-outline-dark icon icon-edit-72';
         editButton.addEventListener('click', () => {
             abrirModalEditar(usuario.email, usuario.nome, usuario.tipo);
         });
         actionsCell.appendChild(editButton);
 
         const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Excluir';
-        deleteButton.className = 'btn btn-danger';
+        // deleteButton.textContent = 'Excluir';
+        deleteButton.className = 'btn btn-outline-danger icon icon-circle-remove';
         deleteButton.addEventListener('click', () => {
             excluirUsuario(usuario.email);
         });

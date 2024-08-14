@@ -1,29 +1,11 @@
-#logo-mobile {
-    display: none;
+.header, .nav-header {
+    transition: cubic-bezier(0.455, 0.03, 0.515, 0.955) 0.3s;
 }
 
-#logo-desktop {
-    display: block;
+.hidden {
+    transform: translateY(-100%)
 }
 
-@media (max-width: 768px) {
-    #logo-mobile {
-        display: block;
-    }
-
-    #logo-desktop {
-        display: none;
-    }
-
-    #header-wrap {
-        transition: ease-in-out 1s;
-    }
-
-    .hidden {
-        transform: translateY(-100%)
-    }
-
-    h2{
-        font-size: 1.5em;
-    }
+h2{
+    font-size: 1.5em;
 }
