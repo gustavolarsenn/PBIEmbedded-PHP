@@ -54,6 +54,7 @@ if ($possuiPermissao) {
 
             <div class="content-body">
                 <div class="container-fluid">
+    				<h2>Relatório de balança (prévia)</h2>
                     <h1 id="nome-navio"></h1>
                     <div class="filter-container">
                         <div class="input-label">

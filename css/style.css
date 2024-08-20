@@ -8162,6 +8162,11 @@ a {
 .hamburger:hover .line {
   width: 26px; }
 
+
+    .hamburger.is-active#logo-mobile{
+      display: none;
+    }
+   
 /*
     .hamburger.is-active {
       left: 60px;
@@ -19430,4 +19435,6 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
       display: block;
   }
 }
+
 /*# sourceMappingURL=style.css.map */
+

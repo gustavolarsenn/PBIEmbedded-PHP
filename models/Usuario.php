@@ -38,7 +38,6 @@ class Usuario
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
-            // header('Content-Type: application/json');
             $stmt = $this->pdo->prepare('
             SELECT 
                 u.nome, u.email, tu.id, tu.tipo, u.ativo 
@@ -75,12 +74,11 @@ class Usuario
 
     public function editar(){
         /* Edita usuários no Banco de Dados */
-        
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
-            $stmt = $this->pdo->prepare('UPDATE usuario SET nome = ?, tipo = ? WHERE email = ?');
-            $stmt->execute([$this->nome, $this->tipo, $this->email]);
+            $stmt = $this->pdo->prepare('UPDATE usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
+            $stmt->execute([$this->nome, $this->tipo, $this->ativo, $this->email]);
     
             $log->info('Usuário editado com sucesso', ['user' => $_SESSION['id_usuario']]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Usuário editado com sucesso', 'email' => $this->email]);
@@ -120,21 +118,41 @@ class Usuario
 
     public function login()
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
-        $stmt->execute([$this->email]);
-        $usuario = $stmt->fetch();
-        
-        if (!$usuario) {
-            return json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado']);
-        }
-        // Verifique se o usuário existe e a senha está correta
-        if ($this->email && password_verify($this->senha, $usuario['senha'])) {
-            SessionManager::iniciarSessao($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['tipo']);
-
-            return json_encode(['sucesso' => true, 'mensagem' => 'Login bem-sucedido']);
-        } else {
-            return json_encode(['sucesso' => false, 'mensagem' => 'Nome de usuário ou senha inválidos']);
+        /* Realiza login de usuários a partir de tela de login */
+        try {
+            $stmt = $this->pdo->prepare('
+                SELECT 
+                    u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao 
+                FROM 
+                    usuario u
+                LEFT JOIN 
+                    tipo_usuario tu
+                ON
+                    u.tipo = tu.id
+                LEFT JOIN
+                    pagina p
+                ON
+                    tu.pagina_padrao = p.id
+                WHERE 
+                    u.email = ?
+            ');
+            $stmt->execute([$this->email]);
+            $usuario = $stmt->fetch();
+            
+            if (!$usuario) {
+                return json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado']);
             }
+            // Verifique se o usuário existe e a senha está correta
+            if ($this->email && password_verify($this->senha, $usuario['senha'])) {
+                SessionManager::iniciarSessao($usuario['id'], $usuario['nome'], $usuario['email'], $usuario['tipo']);
+    
+                return json_encode(['sucesso' => true, 'mensagem' => 'Login bem-sucedido', 'pagina_padrao' => $usuario['pagina_padrao']]);
+            } else {
+                return json_encode(['sucesso' => false, 'mensagem' => 'Nome de usuário ou senha inválidos']);
+            }
+        } catch (Exception $e) {
+            return json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
+        }
         }
         
         public function logout()

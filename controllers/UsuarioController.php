@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $senha = isset($_POST['senha']) ? htmlspecialchars($_POST['senha'], ENT_QUOTES, 'UTF-8') : null;
     $nome = isset($_POST['nome']) ? htmlspecialchars($_POST['nome'], ENT_QUOTES, 'UTF-8') : null;
     $tipo = isset($_POST['tipo']) ? htmlspecialchars($_POST['tipo'], ENT_QUOTES, 'UTF-8') : null;
+    $status = isset($_POST['status']) ? htmlspecialchars($_POST['status'], ENT_QUOTES, 'UTF-8') : null;
     
     if ($action === 'register') {
         try {
@@ -68,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = htmlspecialchars($_POST['email-editar'], ENT_QUOTES, 'UTF-8');
         $nome = htmlspecialchars($_POST['nome-editar'], ENT_QUOTES, 'UTF-8');
         $tipo = htmlspecialchars($_POST['tipo-editar'], ENT_QUOTES, 'UTF-8');
-        $usuario = new Usuario($pdo, $nome, $email, null, $tipo);
+        $status = htmlspecialchars($_POST['status-editar'], ENT_QUOTES, 'UTF-8');
+        $usuario = new Usuario($pdo, $nome, $email, null, $tipo, $status);
         $message = $usuario->editar();
         echo $message;
         return;

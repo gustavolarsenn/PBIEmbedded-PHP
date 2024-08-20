@@ -41,7 +41,7 @@ $urlBase = '/'
 	
         <div class="content-body">
             <div class="container-fluid">
-				<h2>Acompanhamento da Operação <?php echo $_SESSION['nome'];?></h2>
+				<h2>Bem-vindo, <?php echo $_SESSION['nome'];?>!</h2>
     </div>
 
     <!-- Required vendors -->

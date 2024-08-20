@@ -8,24 +8,24 @@ const erroRegistro = document.getElementById('erro-registro');
 // Altera entre form de login e registro
 let toggleLogin = true;
 
-botaoRegistroLogin.addEventListener('click', function() {
-    if (toggleLogin) {
-        formLogin.style.display = 'none';
-        formRegistro.style.display = 'block';
+// botaoRegistroLogin.addEventListener('click', function() {
+//     if (toggleLogin) {
+//         formLogin.style.display = 'none';
+//         formRegistro.style.display = 'block';
     
-        botaoRegistroLogin.innerText = 'Já possui uma conta? Faça login!';
+//         botaoRegistroLogin.innerText = 'Já possui uma conta? Faça login!';
 
-        tituloForm.innerText = 'Registro';
-    } else {
-        formRegistro.style.display = 'none';
-        formLogin.style.display = 'block';
+//         tituloForm.innerText = 'Registro';
+//     } else {
+//         formRegistro.style.display = 'none';
+//         formLogin.style.display = 'block';
     
-        botaoRegistroLogin.innerText = 'Não possui uma conta? Registre-se!';
+//         botaoRegistroLogin.innerText = 'Não possui uma conta? Registre-se!';
 
-        tituloForm.innerText = 'Login';
-    }
-    toggleLogin = !toggleLogin;
-});
+//         tituloForm.innerText = 'Login';
+//     }
+//     toggleLogin = !toggleLogin;
+// });
 
 formLogin.addEventListener('submit', function(event) {
     event.preventDefault();
@@ -48,6 +48,10 @@ formLogin.addEventListener('submit', function(event) {
         if (!data.sucesso) {
             erroLogin.innerText = data.mensagem;
             return 
+        }
+        if(data.pagina_padrao){
+            window.location.assign('/' + data.pagina_padrao);
+            return
         }
         window.location.assign('/views/index.php');
     })
@@ -77,10 +81,9 @@ formRegistro.addEventListener('submit', function(event) {
     .then(data => {
         if (!data.sucesso) {
             erroRegistro.innerText = data.mensagem;
-            console.log(data);
             return 
         }
-        window.location.assign('/views/index.php');
+        window.location.assign('/views/login.php');
     })
     .catch(error => {
         console.error('Houve algum problema com a requisição:', error);

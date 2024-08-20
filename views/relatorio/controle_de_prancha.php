@@ -58,7 +58,7 @@ if ($possuiPermissao) {
 
             <div class="content-body">
                 <div class="container-fluid">
-
+				<h2>Controle de Prancha (prévia)</h2>
                     <div class="filter-container">
                         <div class="input-label">
                             <label>Navio</label>

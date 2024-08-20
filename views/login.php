@@ -49,7 +49,6 @@ $urlBase = '/'
                     <div class="authincation-content">
                         <div class="row no-gutters">
                             <div class="col-xl-12">
-								<!-- <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>"> -->
 								<div class="auth-form">
 									<h2 id="titulo-form">Login</h2>
                                     <form id="form-login" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
@@ -78,7 +77,7 @@ $urlBase = '/'
                                         <div class="mensagem-login-registro" id="erro-registro"></div>
                                     </form>
 
-                                    <div class="form-group">
+                                    <!-- <div class="form-group">
                                         <div class="form-check ml-2">
                                             <input class="form-check-input" type="checkbox" id="basic_checkbox_1">
                                             <label class="form-check-label" for="basic_checkbox_1">Lembre-me</label>
@@ -90,7 +89,7 @@ $urlBase = '/'
                                     </div>
                                     <div class="form-group">
                                         <a href="#" id="botao-registro-login">Não possui conta? Registre-se!</a>
-                                    </div>
+                                    </div> -->
                             </div>
 								</form>
                             </div>

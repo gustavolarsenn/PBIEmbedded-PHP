@@ -12,6 +12,7 @@ const botaoConfirmarEdicao = document.getElementById('botao-confirmar-edicao');
 
 const filtros = {
     tiposUsuariosLista: [],
+    statusUsuariosLista: [{'id': 1, 'status': 'Ativo'}, {'id': 0, 'status': 'Inativo'}],
     jaFiltradoTipo: [],
     jaFiltradoStatus: [],
     count: 0
@@ -50,11 +51,12 @@ async function gerarTabelaUsuarios(){
         usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
     }
 
+
     await carregarUsuarios(usuarios)
     
     if (filtros.count < 1) {
-        await generateFilters('tipo', tiposUsuariosListaFormatada, [], usuarios, async function() { await gerarTabelaUsuarios();}, false);
-        await generateFilters('status', listaStatusFormatada, [], usuarios, async function() { await gerarTabelaUsuarios();}, false);    
+        await generateFilters('tipo', tiposUsuariosListaFormatada, [], async function() { await gerarTabelaUsuarios() }, false);
+        await generateFilters('status', listaStatusFormatada, [], async function() { await gerarTabelaUsuarios() }, false);    
     } else {
         await updateFilters('tipo', tiposUsuariosListaFormatada, filtros.jaFiltradoTipo);
         await updateFilters('status', listaStatusFormatada, filtros.jaFiltradoStatus);
@@ -102,9 +104,7 @@ async function buscarUsuario(){
     return data;
 }
 
-
-
-async function editarUsuario(email, nome, tipo){
+async function editarUsuario(email, nome, tipo, status){
     /* Edita usuário no Banco de Dados*/
     const formEditar = document.getElementById('formulario-editar-usuario');
 
@@ -114,8 +114,8 @@ async function editarUsuario(email, nome, tipo){
     formData.get('email-editar') || formData.set('email-editar', email);
     formData.get('nome-editar') || formData.set('nome-editar', nome);
     formData.get('tipo-editar') || formData.set('tipo-editar', tipo);
+    formData.get('status-editar') || formData.set('status-editar', status);
 
-    console.log(formData.forEach((value, key) => console.log(key, value)));
     const response = await fetch(actionURL, {
         method: 'POST',
         body: formData,
@@ -154,7 +154,7 @@ async function carregarUsuarios(dadosUsuarios) {
         // editButton.textContent = 'Editar';
         editButton.className = 'btn btn-outline-dark icon icon-edit-72';
         editButton.addEventListener('click', () => {
-            abrirModalEditar(usuario.email, usuario.nome, usuario.tipo);
+            abrirModalEditar(usuario.email, usuario.nome, usuario.tipo, usuario.ativo);
         });
         actionsCell.appendChild(editButton);
 
@@ -172,53 +172,51 @@ async function carregarUsuarios(dadosUsuarios) {
     });
 }
 
-
-// async function carregarUsuarios(dadosUsuarios){
-//     /* Carrega usuários nas linhas da tabela */
-//     tabelaUsuariosBody.innerHTML = '';
-//     dadosUsuarios.forEach(usuario => {
-//         tabelaUsuariosBody.innerHTML += `
-//             <tr>
-//                 <td>${usuario.nome}</td>
-//                 <td>${usuario.email}</td>
-//                 <td>${usuario.tipo}</td>
-//                 <td style="color: ${usuario.ativo ? 'green' : 'red'}; font-weight: bold">${usuario.ativo ? 'Sim' : 'Não'}</td>
-//                 <td>
-//                     <button onclick="abrirModalEditar('${usuario.email}', '${usuario.nome}', '${usuario.tipo}')" class="btn btn-warning">Editar</button>
-//                     <button onclick="excluirUsuario('${usuario.email}')" class="btn btn-danger">Excluir</button>
-//                 </td>
-//             </tr>
-//         `;
-//     });
-// }
-
-async function abrirModalEditar(email, nome, tipo){
+async function abrirModalEditar(email, nome, tipo, status){
     /* Abre modal de edição de usuário */
     $('#modalEditar').modal('show');
 
     document.getElementById('email-editar').value = email;
     document.getElementById('nome-editar').value = nome;
-    const select = document.getElementById('tipo-editar')//.value = tipo;
-    select.innerHTML = '';
+    const selectTipo = document.getElementById('tipo-editar')//.value = tipo;
+    const selectStatus = document.getElementById('status-editar')
+    selectTipo.innerHTML = '';
+    selectStatus.innerHTML = '';
 
     filtros.tiposUsuariosLista.forEach(tipoUsuario => {
-        let option = document.createElement('option');
-        option.value = tipoUsuario.id;
-        option.innerText = tipoUsuario.tipo;
+        let optionTipo = document.createElement('option');
+        optionTipo.value = tipoUsuario.id;
+        optionTipo.innerText = tipoUsuario.tipo;
 
         if (tipoUsuario.tipo === tipo) {
-            option.selected = true;
+            optionTipo.selected = true;
         }
-        select.appendChild(option);
+        selectTipo.appendChild(optionTipo);
     });
+
+    filtros.statusUsuariosLista.forEach(statusUsuario => {
+        let optionStatus = document.createElement('option');
+        optionStatus.value = statusUsuario.id;
+        optionStatus.innerText = statusUsuario.status;
+
+        if (statusUsuario.id === status) {
+            optionStatus.selected = true;
+        }
+
+        selectStatus.appendChild(optionStatus);
+    })
+        
 
     botaoConfirmarEdicao.onclick = async function(event){
         const email = document.getElementById('email-editar').value;
         const nome = document.getElementById('nome-editar').value;
         const tipo = document.getElementById('tipo-editar').value;
+        const status = document.getElementById('status-editar').value;
+        console.log(email, nome, tipo, status)
+
         event.preventDefault();
     
-        await editarUsuario(email, nome, tipo);
+        await editarUsuario(email, nome, tipo, status);
         $('#modalEditar').modal('hide');
 
         const usuarios = await buscarUsuario();

@@ -70,6 +70,7 @@ async function generateFilters(campo, dados, condicao, updateFunction, listaSimp
         onUnselect: updateFunction
     } 
     
+    console.log(dadosRenomeados)
     if (condicao.includes(campo)) {
         multiSelectOptions['max'] = 1;
         multiSelectOptions['multiple'] = false;

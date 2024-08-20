@@ -13,7 +13,7 @@ $urlBase = '/'
         </a>
 
         <div class="nav-control">
-            <div class="hamburger">
+            <div class="hamburger" id="botao-hamburger">
                 <span class="line"></span><span class="line"></span><span class="line"></span>
             </div>
         </div>
@@ -52,14 +52,14 @@ $urlBase = '/'
                                 <i class="mdi mdi-account"></i>
                             </a> -->
                             <div class="dropdown-menu-right">
-                                <a href="./app-profile.html" class="dropdown-item">
+                                <!-- <a href="./app-profile.html" class="dropdown-item">
                                     <i class="icon-user"></i>
                                     <span class="ml-2">Profile</span>
                                 </a>
                                 <a href="./email-inbox.html" class="dropdown-item">
                                     <i class="icon-envelope-open"></i>
                                     <span class="ml-2">Inbox</span>
-                                </a>
+                                </a> -->
                                 <a href="#" class="dropdown-item" onclick="logoutConfirmation()" >
                                     <i class="icon-key"></i>
                                     <span class="ml-2">Logout</span>

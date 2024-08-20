@@ -63,9 +63,19 @@ body h2{
     width: 100%;
 }
 
+#fullscreen{
+    display: flex;
+}
+
 @media (max-width: 768px){
     .report-container{
         height: 60vh !important;
         width: 100% !important;
     }
+
+    #fullscreen{
+        display: none;
+    }
 }
+
+

@@ -33,15 +33,19 @@ class PermissoesPagina {
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
-                pagina 
+                p.pagina 
             FROM 
-                permissoes_pagina
+                permissoes_pagina pp
+            LEFT JOIN 
+                pagina p
+            ON 
+                pp.id_pagina = p.id
             WHERE 
-                id_tipo_usuario = ? 
+                pp.id_tipo_usuario = ? 
             AND 
-                pagina_clean = ?
+                p.pagina_clean = ?
             AND 
-                ativo = 1
+                pp.ativo = 1
             ');
             $stmt->execute([$this->id_tipo_usuario, $this->titulo]);
             $permissoes = $stmt->fetchAll();
@@ -66,14 +70,18 @@ class PermissoesPagina {
             $stmt = $this->pdo->prepare('
             SELECT 
                 cp.categoria,
-                pp.pagina,
-                pp.caminho_pagina
+                p.pagina,
+                p.caminho_pagina
             FROM 
                 permissoes_pagina pp
             LEFT JOIN
                 categorias_pagina cp
             ON
                 pp.id_categoria = cp.id
+            LEFT JOIN 
+                pagina p
+            ON
+                pp.id_pagina = p.id
             LEFT JOIN 
                 usuario u 
             ON 

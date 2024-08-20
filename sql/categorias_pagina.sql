@@ -2,7 +2,9 @@ CREATE TABLE categorias_pagina (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     categoria VARCHAR(255),
     categoria_clean VARCHAR(255),
-    icon VARCHAR(255)
+    icon VARCHAR(255),
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 INSERT INTO categorias_pagina (categoria, categoria_clean, icon)

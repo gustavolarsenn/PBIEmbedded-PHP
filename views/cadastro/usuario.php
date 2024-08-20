@@ -81,6 +81,11 @@ if ($possuiPermissao) {
                                         <select class="form-control" id="tipo-editar" name="tipo-editar" required>
                                         </select>
                                     </div>
+                                    <div class="form-group mt-3">
+                                        <label for="status-editar">Status</label>
+                                        <select class="form-control" id="status-editar" name="status-editar" required>
+                                        </select>
+                                    </div>
                                     <div class="modal-botoes">
                                         <button type="button" data-dismiss='modal' class="btn mt-3 btn-danger" id="botao-cancelar-edicao">Cancelar</button>
                                         <button type="submit" class="btn btn-primary mt-3" id="botao-confirmar-edicao">Confirmar</button>
