@@ -12,7 +12,7 @@ const botaoConfirmarEdicao = document.getElementById('botao-confirmar-edicao');
 
 const filtros = {
     tiposUsuariosLista: [],
-    statusUsuariosLista: [{'id': 1, 'status': 'Ativo'}, {'id': 0, 'status': 'Inativo'}],
+    statusUsuariosLista: [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}],
     jaFiltradoTipo: [],
     jaFiltradoStatus: [],
     count: 0
@@ -24,6 +24,7 @@ async function gerarTabelaUsuarios(){
     const filtroTipo = Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroStatus = Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     
+    console.log(filtroStatus)
     filtros.tiposUsuariosLista = await buscarTipoUsuario();
     
     filtros.tiposUsuariosLista.forEach(tipo => {
@@ -31,13 +32,13 @@ async function gerarTabelaUsuarios(){
     });
 
     const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista
-    const listaStatusFormatada = [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}]
 
     filtros.jaFiltradoTipo = tiposUsuariosListaFormatada
-    filtros.jaFiltradoStatus = listaStatusFormatada
+    filtros.jaFiltradoStatus = filtros.statusUsuariosLista
     
     let usuarios = await buscarUsuario();
 
+    console.log(filtroStatus)
     if (filtroNome) {
         usuarios = usuarios.filter(usuario => usuario.nome.toLowerCase().includes(filtroNome.toLowerCase()));
     }
@@ -51,15 +52,15 @@ async function gerarTabelaUsuarios(){
         usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
     }
 
-
+    console.log(filtros.statusUsuariosLista)
     await carregarUsuarios(usuarios)
     
     if (filtros.count < 1) {
         await generateFilters('tipo', tiposUsuariosListaFormatada, [], async function() { await gerarTabelaUsuarios() }, false);
-        await generateFilters('status', listaStatusFormatada, [], async function() { await gerarTabelaUsuarios() }, false);    
+        await generateFilters('status', filtros.statusUsuariosLista, [], async function() { await gerarTabelaUsuarios() }, false);    
     } else {
         await updateFilters('tipo', tiposUsuariosListaFormatada, filtros.jaFiltradoTipo);
-        await updateFilters('status', listaStatusFormatada, filtros.jaFiltradoStatus);
+        await updateFilters('status', filtros.statusUsuariosLista, filtros.jaFiltradoStatus);
     }
 
     filtros.count++;
@@ -212,7 +213,6 @@ async function abrirModalEditar(email, nome, tipo, status){
         const nome = document.getElementById('nome-editar').value;
         const tipo = document.getElementById('tipo-editar').value;
         const status = document.getElementById('status-editar').value;
-        console.log(email, nome, tipo, status)
 
         event.preventDefault();
     
