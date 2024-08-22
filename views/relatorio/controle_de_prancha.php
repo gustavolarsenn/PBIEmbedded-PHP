@@ -238,4 +238,6 @@ if ($possuiPermissao) {
         </body>
     </html>
     <?php
+} else {
+    include_once CAMINHO_BASE . '\\components\\pagina_desconhecida.php';
 }

@@ -70,6 +70,7 @@ function loadReport(reportLinkFix, report) {
                 tratarErro(embedData.mensagem);
                 return;
             }
+            
             const reportContainer_ = document.querySelector('#report-container')
             const loaderContainer_= document.querySelector('#preloader-report')
             

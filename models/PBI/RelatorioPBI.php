@@ -73,14 +73,16 @@ class RelatorioPBI {
             $powerBISession->criarSessaoPBI();
             
             $azureAPI = new AzureAPI();
-    
+            
+            $log->info('Ligando Capacity', ['user' => $_SESSION['id_usuario']]);
             $capacidadeAtiva = $capacidade->ligarCapacity($powerBISession->sessoesAtivasPBI(), $azureAPI);
     
             if (!json_decode($capacidadeAtiva)->sucesso){
                 $log->error('Não foi possível gerar relatório, capacidade não iniciada', ['user' => $_SESSION['id_usuario'], 'relatorio' => $actualLink]);
                 return $capacidadeAtiva;
             }
-    
+            
+            $log->info('Buscando parâmetros de Embed', ['user' => $_SESSION['id_usuario']]);
             $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['id_relatorio'], $currentReport['id_dataset'], null);
             $conn = null;
     

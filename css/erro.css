@@ -1,0 +1,28 @@
+body{
+    overflow: hidden;
+}
+
+.error-container{
+    display: flex;
+    flex-direction: column;
+    margin: 10%;
+    align-items: center;
+    height: 100vh;
+    background-color: #f8f9fa;
+}
+.error-container img{
+    margin: 30px;
+}
+
+.error-container p{
+    font-size: 1.25em;
+}
+
+.error-container p a{
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.error-container div{
+    width: 50%;
+}

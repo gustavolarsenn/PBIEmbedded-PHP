@@ -12,7 +12,6 @@ $pdo = (new Database())->getConnection();
 $permissaoPagina = new PermissoesPagina($pdo, basename(__FILE__, ".php"), $_SESSION['tipo_usuario'], null, $_SESSION['id_usuario']);
 $possuiPermissao = $permissaoPagina->verificarPermissao();
 
-// TODO: Somente ADMIN pode acessar essa página
 $urlBase = '/';
 
 if ($possuiPermissao) {
@@ -199,4 +198,6 @@ if ($possuiPermissao) {
 
 </html>
 <?php
+} else {
+    include_once CAMINHO_BASE . '\\components\\pagina_desconhecida.php';
 }

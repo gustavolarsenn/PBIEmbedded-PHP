@@ -2,11 +2,19 @@
 require_once __DIR__ . '\\..\\config.php'; 
 
 require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\config\\database.php';
+require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
 
-$urlBase = '/'
+$pdo = (new Database())->getConnection();
+$permissaoPagina = new PermissoesPagina($pdo, basename(__FILE__, ".php"), $_SESSION['tipo_usuario'], null, $_SESSION['id_usuario']);
+$possuiPermissao = $permissaoPagina->verificarPermissao();
+
+$urlBase = '/';
+
+if ($possuiPermissao) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +37,7 @@ $urlBase = '/'
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
 <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
 <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
     <?php include_once CAMINHO_BASE . '\\components\\loader.php'?>
@@ -69,5 +77,9 @@ $urlBase = '/'
     <script src="<?php echo $urlBase; ?>js/plugins-init/jquery-steps-init.js"></script>
 
 </body>
-
 </html>
+
+<?php
+} else {
+    include_once CAMINHO_BASE . '\\components\\pagina_desconhecida.php';
+}

@@ -12,19 +12,22 @@ const botaoConfirmarEdicao = document.getElementById('botao-confirmar-edicao');
 
 const filtros = {
     tiposUsuariosLista: [],
-    statusUsuariosLista: [{id: 1, status: 'Ativo'}, {id: 0, status: 'Inativo'}],
+    statusUsuariosLista: [{1: 'Ativo', value: 1, id: 1, status: 'Ativo'}, {1: 'Inativo', value: 0, id: 0, status: 'Inativo'}],
     jaFiltradoTipo: [],
     jaFiltradoStatus: [],
     count: 0
 }
 
+function removerUndefinedString(array) {
+    return array.filter(item => item !== "'undefined'");
+}
+
 async function gerarTabelaUsuarios(){
     const filtroNome = nomeUsuarioFilter.value;
     const filtroEmail = emailUsuarioFilter.value;
-    const filtroTipo = Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
-    const filtroStatus = Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
+    const filtroTipo = removerUndefinedString(Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
+    const filtroStatus = removerUndefinedString(Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
     
-    console.log(filtroStatus)
     filtros.tiposUsuariosLista = await buscarTipoUsuario();
     
     filtros.tiposUsuariosLista.forEach(tipo => {
@@ -38,7 +41,7 @@ async function gerarTabelaUsuarios(){
     
     let usuarios = await buscarUsuario();
 
-    console.log(filtroStatus)
+    console.log(usuarios)
     if (filtroNome) {
         usuarios = usuarios.filter(usuario => usuario.nome.toLowerCase().includes(filtroNome.toLowerCase()));
     }
@@ -52,7 +55,6 @@ async function gerarTabelaUsuarios(){
         usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
     }
 
-    console.log(filtros.statusUsuariosLista)
     await carregarUsuarios(usuarios)
     
     if (filtros.count < 1) {

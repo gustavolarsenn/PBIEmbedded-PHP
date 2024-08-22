@@ -11,7 +11,10 @@ class Database {
             $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
-            echo json_encode(["mensagem" => `Connection failed: ` . $e->getMessage()]);
+            // LOGAR ERRO
+            // echo json_encode(["mensagem" => "Falha ao conectar com banco de dados: " . $e->getMessage()]); 
+            header('Location: /views/erro/erro_db.php');
+            // echo json_encode(["mensagem" => "Falha ao conectar com banco de dados: " . $e->getMessage()]);
         }
     }
 

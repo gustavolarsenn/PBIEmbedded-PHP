@@ -31,6 +31,8 @@ $categorias = array_filter($categorias, function($categoria) use ($categoriasPer
         <ul class="metismenu" id="menu">
             <li class="nav-label first">Módulo Operacional</li>
             <?php foreach ($categorias as $categoria): ?>
+                <?php if ($categoria['categoria'] === 'Página inicial'): continue; endif ?>
+
                 <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                         <i class="<?php echo $categoria['icon']?>"></i>

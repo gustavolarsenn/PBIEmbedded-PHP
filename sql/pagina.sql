@@ -50,4 +50,6 @@ VALUES
 (3, 'Controle de Prancha', 'controle_de_prancha'),
 
 (4, 'Port Statistics', 'port_statistics'),
-(4, 'Line Up - Forecast', 'line_up_forecast');
+(4, 'Line Up - Forecast', 'line_up_forecast'),
+
+(5, 'Página inicial', 'index');

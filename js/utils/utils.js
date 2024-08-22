@@ -56,7 +56,7 @@ async function ajustarListaFiltro (lista, campo, listaSimplesBool) {
 
 async function generateFilters(campo, dados, condicao, updateFunction, listaSimplesBool){
     let dadosRenomeados = await ajustarListaFiltro(dados, campo, listaSimplesBool);
-    
+
     let multiSelectOptions = {
         data: dadosRenomeados,
         placeholder: 'Todos',

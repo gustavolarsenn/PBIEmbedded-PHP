@@ -60,7 +60,7 @@ $urlBase = '/'
                                     <i class="icon-envelope-open"></i>
                                     <span class="ml-2">Inbox</span>
                                 </a> -->
-                                <a href="#" class="dropdown-item" onclick="logoutConfirmation()" >
+                                <a href="#" class="dropdown-item" onclick="logoutConfirmation()">
                                     <i class="icon-key"></i>
                                     <span class="ml-2">Logout</span>
                                 </a>
