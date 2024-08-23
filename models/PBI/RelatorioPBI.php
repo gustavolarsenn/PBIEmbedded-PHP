@@ -56,7 +56,6 @@ class RelatorioPBI {
     
         $log->info('Gerando relatório PowerBI', ['user' => $_SESSION['id_usuario']]);
         try {
-            $capacidade->criarTarefaChecarCapacidade();
             $conn = (new Database())->getConnection();
             
             $reports = self::pegarRelatoriosAtivos();

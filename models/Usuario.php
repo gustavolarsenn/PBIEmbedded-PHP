@@ -160,9 +160,6 @@ class Usuario
             $sessao_pbi = new PowerBISession($this->pdo, $_SESSION['id_usuario']);
             $sessao_pbi->inativarSessaoPBI();
 
-            $capacidade = new Capacidade();
-            $capacidade->gatilhoTarefa();
-
             SessionManager::sessaoIniciada();
             session_destroy();
 

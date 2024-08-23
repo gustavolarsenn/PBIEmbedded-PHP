@@ -1,7 +1,19 @@
 <?php
 
+require_once __DIR__ . '\\..\\..\\config.php';
+
+require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 class ApiCalls{
+    private const LOG_FILE = 'ApiCalls';
+    private const LOG = 'api';
+    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
     public static function apiCall($method, $url, $params, $requestHeader) {
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
             $ch = curl_init();
     
