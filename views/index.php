@@ -50,7 +50,10 @@ if ($possuiPermissao) {
         <div class="content-body">
             <div class="container-fluid">
 				<h2>Bem-vindo, <?php echo $_SESSION['nome'];?>!</h2>
-    </div>
+
+                
+            </div>
+        <?php include_once CAMINHO_BASE . '\\components\\footer.php'?>
 
     <!-- Required vendors -->
     <script src="<?php echo $urlBase; ?>vendor/global/global.min.js"></script>
@@ -61,10 +64,6 @@ if ($possuiPermissao) {
     <script src="<?php echo $urlBase; ?>js/pbi/links_pbi.js"></script>
     <script src="<?php echo $urlBase; ?>js/pbi/embed.js"></script>
 
-
-    <!-- <script src="./vendor/jquery-steps/build/jquery.steps.min.js"></script>
-    <script src="./vendor/jquery-validation/jquery.validate.min.js"></script> -->
-    
 	<!-- Form validate init -->
     <script src="<?php echo $urlBase; ?>js/plugins-init/jquery.validate-init.js"></script>
 

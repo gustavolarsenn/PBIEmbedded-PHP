@@ -47,18 +47,18 @@ if ($possuiPermissao) {
 </head>
 
 <body>
-    <?php include_once $basePath . '/components/loader.php'?>
+    <?php include_once CAMINHO_BASE . '\\components\\loader.php'?>
 
     <div id="main-wrapper">
 
-        <?php include_once $basePath . '/components/header.php'?>
+        <?php include_once CAMINHO_BASE . '\\components\\header.php'?>
 
-        <?php include_once $basePath . '/components/sidebar.php'?>
+        <?php include_once CAMINHO_BASE . '\\components\\sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
                 <div id="report-action-buttons">
-                    <h2 id="report-title"></h2>
+                    <h2 id="report-title">Line Up - Forecast</h2>
                     <div class="report-buttons">
                         <svg xmlns="http://www.w3.org/2000/svg"  id="fullscreen" title="Tela cheia" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707m4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707m0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707m-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707"/>
@@ -87,10 +87,11 @@ if ($possuiPermissao) {
                     <div class="error-container"></div>
                 </section>
                 </div>
-                <!-- <section class="report-container" id="report-container">
+                <section class="report-container" id="report-container">
                     <div class="error-container"></div>
-                </section> -->
-    </div>
+                </section>
+            </div>
+        <?php include_once CAMINHO_BASE . '\\components\\footer.php'?>
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
@@ -99,7 +100,7 @@ if ($possuiPermissao) {
     <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.23.1/dist/powerbi.js"></script>
 
 	<script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
-    <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
+    <!-- <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script> -->
 
     <!-- Required vendors -->
     <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>
@@ -122,8 +123,7 @@ if ($possuiPermissao) {
 
     <!-- Form step init -->
     <script src="<?php echo $basePath; ?>/js/plugins-init/jquery-steps-init.js"></script>
-
-    </body>
+</body>
 </html>
 <?php
 } else {

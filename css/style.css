@@ -8033,15 +8033,25 @@ a {
     transform: scale(1); } }
 
 .footer {
-  padding-left: 17.1875rem;
-  background-color: rgba(88, 115, 254, 0.04); }
+  background-color: rgba(88, 115, 254, 0.04);
+  width: 100%;
+  /* padding: 20px 0; 
+  margin: 20px 0; */
+  background-color: transparent;
+  @media(max-width: 768px){
+    background-color: rgba(61, 68, 101, 1);
+  }
+ }
   .footer .copyright {
-    padding: 0.9375rem; }
+    padding: 0.9375rem; 
+  }
     .footer .copyright p {
       text-align: center;
-      margin: 0; }
+      margin: 0; 
+    }
     .footer .copyright a {
-      color: #593bdb; }
+      color: #593bdb; 
+    }
 
 [data-sidebar-style="mini"] .nav-control,
 [data-layout="horizontal"] .nav-control {
@@ -19413,7 +19423,7 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
 
 
 /* Mudanças para remover header ao rolar, controle de largura da tela feito pelo JS */
-.header, .nav-header {
+.header, .nav-header, .quixnav {
     transition: cubic-bezier(0.455, 0.03, 0.515, 0.955) 0.3s;
 }
 

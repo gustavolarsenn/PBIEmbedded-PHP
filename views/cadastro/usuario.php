@@ -173,8 +173,8 @@ if ($possuiPermissao) {
                         </div>
                     </div>
                 </div>
-                                        
-    </div>
+            </div>
+        <?php include_once CAMINHO_BASE . '\\components\\footer.php'?>
 
     <!-- Filtros -->
     <script src="<?php echo $urlBase; ?>js/relatorios/MultiSelect.js"></script>

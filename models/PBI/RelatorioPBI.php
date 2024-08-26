@@ -46,7 +46,6 @@ class RelatorioPBI {
     }
 
     function gerarRelatorioPBI($actualLink){
-
         $capacidade = new Capacidade();
     
         $log = new Logger(self::LOG);

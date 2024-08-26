@@ -44,13 +44,13 @@ if ($possuiPermissao) {
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
 
-        <?php include_once $basePath . 'components/loader.php'; ?>
+        <?php include_once CAMINHO_BASE . '\\components\\loader.php'; ?>
 
         <div id="main-wrapper">
 
-            <?php include_once $basePath . 'components/header.php'; ?>
+            <?php include_once CAMINHO_BASE . '\\components\\header.php'; ?>
             
-            <?php include_once $basePath . 'components/sidebar.php'; ?>
+            <?php include_once CAMINHO_BASE . '\\components\\sidebar.php'; ?>
 
             <div class="content-body">
                 <div class="container-fluid">
@@ -152,7 +152,8 @@ if ($possuiPermissao) {
                                     </div>
                                 </div>
                     </section>
-        </div>
+                </div>
+            <?php include_once CAMINHO_BASE . '\\components\\footer.php'?>
 
         <!-- Filtros -->
         <script src="<?php echo $basePath; ?>/js/relatorios/MultiSelect.js"></script>
