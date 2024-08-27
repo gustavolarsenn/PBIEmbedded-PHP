@@ -2,9 +2,9 @@
 
 $basePath = '../../';
 
-require_once __DIR__ . '\\..\\..\\config.php'; 
+require_once __DIR__ . '\\..\\..\\config\\config.php'; 
 
-require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
 require_once CAMINHO_BASE . '\\config\\database.php';
 
@@ -58,8 +58,10 @@ if ($possuiPermissao) {
 
             <div class="content-body">
                 <div class="container-fluid">
-				<h2>Controle de Prancha (prévia)</h2>
-                    <div class="filter-container">
+                <div class="title-container">
+                    <h2>Controle de Prancha (prévia)</h2>
+                </div>	
+                    <div class="filter-container filter-container-bg">
                         <div class="input-label">
                             <label>Navio</label>
                             <select id='lista-navio' data-multi-select>
@@ -194,7 +196,7 @@ if ($possuiPermissao) {
                                         </div>
                                     </div>
                             </div>
-                            <div class="chart" style="margin-bottom: 30%">
+                            <div class="chart">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
                                 <div id="descarregado-dia-periodo-container" class="chart">
                                     <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block">

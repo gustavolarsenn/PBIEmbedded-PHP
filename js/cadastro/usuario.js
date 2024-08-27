@@ -23,11 +23,7 @@ function removerUndefinedString(array) {
 }
 
 async function gerarTabelaUsuarios(){
-    const filtroNome = nomeUsuarioFilter.value;
-    const filtroEmail = emailUsuarioFilter.value;
-    const filtroTipo = removerUndefinedString(Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
-    const filtroStatus = removerUndefinedString(Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
-    
+
     filtros.tiposUsuariosLista = await buscarTipoUsuario();
     
     filtros.tiposUsuariosLista.forEach(tipo => {
@@ -41,25 +37,32 @@ async function gerarTabelaUsuarios(){
     
     let usuarios = await buscarUsuario();
 
-    console.log(usuarios)
-    if (filtroNome) {
-        usuarios = usuarios.filter(usuario => usuario.nome.toLowerCase().includes(filtroNome.toLowerCase()));
-    }
-    if (filtroEmail) {
-        usuarios = usuarios.filter(usuario => usuario.email.toLowerCase().includes(filtroEmail.toLowerCase()));
-    }
-    if (filtroTipo.length > 0) {
-        usuarios = usuarios.filter(usuario => filtroTipo.includes(`'${usuario.id}'`));
-    }
-    if (filtroStatus.length > 0) {
-        usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
-    }
-
     await carregarUsuarios(usuarios)
     
     if (filtros.count < 1) {
         await generateFilters('tipo', tiposUsuariosListaFormatada, [], async function() { await gerarTabelaUsuarios() }, false);
         await generateFilters('status', filtros.statusUsuariosLista, [], async function() { await gerarTabelaUsuarios() }, false);    
+
+        /* Seleciona o filtro de status ativo por padrão */
+        const filtroStatusList = document.querySelectorAll('#lista-status .multi-select-options .multi-select-option')
+        const filtroStatusElement = document.getElementById('lista-status')
+        const filtroStatusHeader = document.querySelector('#lista-status .multi-select-header')
+        const filtroStatusPlaceholder = filtroStatusHeader.querySelector('.multi-select-header-placeholder')
+
+        filtroStatusList.forEach(filtroStatus => {
+            if (filtroStatus.dataset.value === '1') {
+                filtroStatus.classList.add('multi-select-selected');
+                const inputElement = document.createElement('input');
+                inputElement.type = 'hidden';
+                inputElement.value = '1'
+                filtroStatusElement.appendChild(inputElement);
+                filtroStatusPlaceholder.innerText = '1 selecionado';
+                filtroStatusPlaceholder.classList.add('multi-select-header-option');
+                filtroStatusPlaceholder.classList.remove('multi-select-header-placeholder');
+            }
+        })
+        /* Seleciona o filtro de status ativo por padrão */
+
     } else {
         await updateFilters('tipo', tiposUsuariosListaFormatada, filtros.jaFiltradoTipo);
         await updateFilters('status', filtros.statusUsuariosLista, filtros.jaFiltradoStatus);
@@ -102,9 +105,34 @@ async function buscarUsuario(){
         }
     })
 
-    const data = await response.json();
+    const filtroNome = nomeUsuarioFilter.value;
+    const filtroEmail = emailUsuarioFilter.value;
+    const filtroTipo = removerUndefinedString(Array.from(document.getElementById('lista-tipo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
+    const filtroStatus = removerUndefinedString(Array.from(document.getElementById('lista-status').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`))
 
-    return data;
+    /* Seleciona o filtro de status ativo por padrão */
+    if (filtros.count < 1) {
+        filtroStatus.push("'1'");
+    }
+
+    const data = await response.json();
+    
+    let usuarios = data;
+
+    if (filtroNome) {
+        usuarios = usuarios.filter(usuario => usuario.nome.toLowerCase().includes(filtroNome.toLowerCase()));
+    }
+    if (filtroEmail) {
+        usuarios = usuarios.filter(usuario => usuario.email.toLowerCase().includes(filtroEmail.toLowerCase()));
+    }
+    if (filtroTipo.length > 0) {
+        usuarios = usuarios.filter(usuario => filtroTipo.includes(`'${usuario.id}'`));
+    }
+    if (filtroStatus.length > 0) {
+        usuarios = usuarios.filter(usuario => filtroStatus.includes(`'${usuario.ativo}'`));
+    }
+
+    return usuarios;
 }
 
 async function editarUsuario(email, nome, tipo, status){
@@ -154,7 +182,6 @@ async function carregarUsuarios(dadosUsuarios) {
         const actionsCell = document.createElement('td');
 
         const editButton = document.createElement('button');
-        // editButton.textContent = 'Editar';
         editButton.className = 'btn btn-outline-dark icon icon-edit-72';
         editButton.addEventListener('click', () => {
             abrirModalEditar(usuario.email, usuario.nome, usuario.tipo, usuario.ativo);
@@ -162,7 +189,6 @@ async function carregarUsuarios(dadosUsuarios) {
         actionsCell.appendChild(editButton);
 
         const deleteButton = document.createElement('button');
-        // deleteButton.textContent = 'Excluir';
         deleteButton.className = 'btn btn-outline-danger icon icon-circle-remove';
         deleteButton.addEventListener('click', () => {
             excluirUsuario(usuario.email);

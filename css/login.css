@@ -1,0 +1,34 @@
+#form-registro{
+    display: none;
+}
+
+#form-login{
+    display: block;
+}
+
+.mensagem-login-registro{
+    padding: 20px;
+    text-align: center;
+}
+
+video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+.logo-container{
+    width: 100%; 
+    display: flex
+}
+
+.logo{
+    margin: auto;
+    padding: 30px;
+    width: 100%;
+    max-width: 300px;
+}

@@ -23,10 +23,10 @@ $urlBase = '/'
         <img class="logo-compact" src="/img/zport-logo-3x.png" width="30%">
         <br>
         <div>
-            <h1>Erro:</h1>
-            <p>Não foi possível conectar com <strong>banco de dados</strong>. Favor entrar em contato com <a href="mailto:pctvzport@gmail.com">suporte</a>.</p>
+            <h1>Sessão expirada.</h1>
+            <p>Faça login novamente.</p>
             <br>
-            <a href="/views/index.php">Voltar para página inicial</a>
+            <a href="/views/login.php">Ir para página de Login</a>
         </div>
     </div>
 </body>

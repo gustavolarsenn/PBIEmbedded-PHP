@@ -2,9 +2,9 @@
 
 $basePath = '../../'; // Adjust this path as needed 
 
-require_once __DIR__ . '\\..\\..\\config.php'; 
+require_once __DIR__ . '\\..\\..\\config\\config.php'; 
 
-require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
 require_once CAMINHO_BASE . '\\config\\database.php';
 
@@ -54,52 +54,58 @@ if ($possuiPermissao) {
 
             <div class="content-body">
                 <div class="container-fluid">
-    				<h2>Relatório de balança (prévia)</h2>
-                    <h1 id="nome-navio"></h1>
-                    <div class="filter-container">
-                        <div class="input-label">
-                            <label>Navio</label>
-                            <select id='lista-navio' data-multi-select>
-                            </select>
+                    <div class="title-container">
+                        <h2>Relatório de balança (prévia)</h2>
+                    </div>	
+                    <div class="title-container">
+                        <div>
+                            <h1 id="nome-navio"></h1>
                         </div>
-                        <div class="input-label" >
-                            <label>Data</label>
-                            <input type="date" id='data'>
-                        </div>
-                        <div class="input-label">
-                            <label>Período</label>
-                            <select id='lista-periodo' multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div class="input-label">
-                            <label>Porão</label>
-                            <select id="lista-porao" multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div class="input-label">
-                            <label>Cliente</label>
-                            <select id="lista-cliente" multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div class="input-label">
-                            <label>Armazém</label>
-                            <select id="lista-armazem" multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div class="input-label">
-                            <label>Produto</label>
-                            <select id="lista-produto" multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div class="input-label">
-                            <label>DI</label>
-                            <select id="lista-di"  data-placeholder="Selecione DIs" multiple data-multi-select>
-                            </select>
-                        </div>
-                        <div id='clean-filters' class="input-label" style="width: 5%" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'porao', 'cliente', 'armazem', 'produto', 'di']); cleanFiltersData();">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto 10px;">
-                                <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
-                            </svg>
+                        <div class="filter-container">
+                            <div class="input-label">
+                                <label>Navio</label>
+                                <select id='lista-navio' data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label" >
+                                <label>Data</label>
+                                <input type="date" id='data'>
+                            </div>
+                            <div class="input-label">
+                                <label>Período</label>
+                                <select id='lista-periodo' multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label">
+                                <label>Porão</label>
+                                <select id="lista-porao" multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label">
+                                <label>Cliente</label>
+                                <select id="lista-cliente" multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label">
+                                <label>Armazém</label>
+                                <select id="lista-armazem" multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label">
+                                <label>Produto</label>
+                                <select id="lista-produto" multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div class="input-label">
+                                <label>DI</label>
+                                <select id="lista-di"  data-placeholder="Selecione DIs" multiple data-multi-select>
+                                </select>
+                            </div>
+                            <div id='clean-filters' class="input-label" style="width: 5%" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'porao', 'cliente', 'armazem', 'produto', 'di']); cleanFiltersData();">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16" style="margin: auto 10px;">
+                                    <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                     <section>

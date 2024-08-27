@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config.php';
+require_once __DIR__ . '\\..\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\config\\database.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';    
@@ -22,7 +22,7 @@ class Capacidade {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
     
-        $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario']]);
+        $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
     
         if ($possuiSessoesAtivasPBI){
             try {
@@ -40,17 +40,17 @@ class Capacidade {
     
                 }
                 if ($statusCapacity != 'Succeeded'){
-                    $log->error('10 tentativas de ligar sem sucesso! Verificar o que está impedindo!', ['user' => $_SESSION['id_usuario']]);
+                    $log->error('10 tentativas de ligar sem sucesso! Verificar o que está impedindo!', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
                     
                     return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível iniciar capacidade para gerar o relatório! Reinicie a página e tente novamente.']);
                 }
     
-                $log->info('Capacidade iniciada com sucesso!', ['user' => $_SESSION['id_usuario']]);
+                $log->info('Capacidade iniciada com sucesso!', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
         
                 return json_encode(['sucesso' => true, 'mensagem' => 'Capacidade iniciada com sucesso!']);
     
             } catch (Exception $e) {
-                $log->error('Erro ao iniciar capacidade: ' . $e->getMessage(),  ['user' => $_SESSION['id_usuario']]);
+                $log->error('Erro ao iniciar capacidade', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
     
                 return json_encode(['sucesso' => false, 'mensagem' => 'Erro ao iniciar capacidade: ' . $e->getMessage()]);
             }

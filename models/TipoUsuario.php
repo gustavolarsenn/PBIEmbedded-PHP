@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\config.php';
+require_once __DIR__ . '\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
@@ -30,11 +30,11 @@ class TipoUsuario{
             $stmt->execute();
             $tipo_usuarios =  $stmt->fetchAll();
 
-            $log->info('Tipos de usuário listados', ['user' => $_SESSION['id_usuario']]);
+            $log->info('Tipos de usuário listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
 
             return json_encode($tipo_usuarios);
         } catch (Exception $e) {
-            $log->error('Erro ao listar tipos de usuário', ['user' => $_SESSION['id_usuario'], 'erro' => $e->getMessage()]);
+            $log->error('Erro ao listar tipos de usuário', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'erro' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }

@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config.php';
+require_once __DIR__ . '\\..\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
@@ -25,7 +25,7 @@ class PowerBISession {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
-            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario]);
+            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
             $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
             $powerbi = $stmt->fetch();
@@ -36,11 +36,11 @@ class PowerBISession {
                 $stmt->execute([$this->id_usuario]);
                 return;
             }
-            $log->info('Renovando sessão de PowerBI', ['user' => $this->id_usuario]);
+            $log->info('Renovando sessão de PowerBI', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
             $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
         } catch (Exception $e) {
-            $log->error('Erro ao criar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario]);
+            $log->error('Erro ao criar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
         }
     }
 
@@ -50,14 +50,12 @@ class PowerBISession {
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
 
         try {
-            $log->info('Inativando sessão de PowerBI', ['user' => $this->id_usuario]);
-            
             $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = NOW() WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
 
-            $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario]);
+            $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
         } catch (Exception $e) {
-            $log->error('Erro ao inativar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario]);
+            $log->error('Erro ao inativar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
         }
     }
     
@@ -67,19 +65,19 @@ class PowerBISession {
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
 
         try {
-            $log->info('Verificando se existem sessões ativas de PowerBI', ['user' => $this->id_usuario]);
+            $log->info('Verificando se existem sessões ativas de PowerBI', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
             $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE data_validade > NOW()');
             $stmt->execute();
             $powerbi = $stmt->fetch();
             
             if ($powerbi) {
-                $log->info('Sessão de PowerBI ativa encontrada', ['user' => $this->id_usuario]);
+                $log->info('Sessão de PowerBI ativa encontrada', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
                 return true;
             }
-            $log->info('Nenhuma sessão de PowerBI ativa', ['user' => $this->id_usuario]);
+            $log->info('Nenhuma sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
             return false;
         } catch (Exception $e) {
-            $log->error('Erro ao buscar sessões de PowerBI ativas: ' . $e->getMessage(), ['user' => $this->id_usuario]);
+            $log->error('Erro ao buscar sessões de PowerBI ativas: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['HTTP_REFERER']]);
         }
     }
 }

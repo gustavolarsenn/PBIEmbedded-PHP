@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\config.php';
+require_once __DIR__ . '\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
@@ -50,14 +50,14 @@ class PermissoesPagina {
             $stmt->execute([$this->id_tipo_usuario, $this->titulo]);
             $permissoes = $stmt->fetchAll();
             if (count($permissoes) > 0) {
-                $log->info('Permissão concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario']]);
+                $log->info('Permissão concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
                 return true;
             } else {
-                $log->info('Permissão não concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario']]);
+                $log->info('Permissão não concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
                 return false;
             }
         } catch (Exception $e) {
-            $log->error('Erro ao verificar permissão na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao verificar permissão na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -93,10 +93,10 @@ class PermissoesPagina {
             ');
             $stmt->execute([$this->id_usuario]);
             $permissoes = $stmt->fetchAll();
-            $log->info('Busca por páginas permitadas realizada com sucesso', ['user' => $_SESSION['id_usuario']]);
+            $log->info('Busca por páginas permitadas realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
             return $permissoes;
         } catch (Exception $e) {
-            $log->error('Erro ao verificar permissões', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao verificar permissões', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
             return [];
         }
     }
@@ -113,10 +113,10 @@ class PermissoesPagina {
             ');
             $stmt->execute();
             $categorias = $stmt->fetchAll();
-            $log->info('Busca por categorias realizada com sucesso', ['user' => $_SESSION['id_usuario']]);
+            $log->info('Busca por categorias realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
             return $categorias;
         } catch (Exception $e) {
-            $log->error('Erro ao buscar categorias', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao buscar categorias', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
             return [];
         }
     }

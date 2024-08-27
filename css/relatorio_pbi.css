@@ -2,6 +2,10 @@ body{
     overflow: auto;
 }
 
+body .content-body{
+    min-height: fit-content !important;
+}
+
 body h2{
     margin: auto 0px;
 }
@@ -47,7 +51,6 @@ body h2{
 .report-container{
     height: 75vh !important;
     width: 100% !important;
-    max-height: 100vh;
     background-color: transparent;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 }

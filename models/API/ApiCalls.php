@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config.php';
+require_once __DIR__ . '\\..\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
@@ -15,8 +15,9 @@ class ApiCalls{
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
+            $log->info("Inicio de chamada em API", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url]);
             $ch = curl_init();
-    
+            
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
@@ -40,28 +41,33 @@ class ApiCalls{
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
                     break;
                 default:
-                    throw new Exception('Unsupported method: ' . $method);
+                    $log->error("Tipo de requisição não suportada", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url]);
+                    throw new Exception('Método não suportado: ' . $method);
             }
     
             $response = curl_exec($ch);
     
             if (curl_errno($ch)) {
-                throw new Exception('cURL error: ' . curl_error($ch) . ', URL: ' . $url . ', Method: ' . $method);
+                $log->error("Erro ao fazer exceção", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url, 'error' => curl_error($ch)]);
+                throw new Exception('Erro cURL: ' . curl_error($ch) . ', URL: ' . $url . ', Method: ' . $method);
             }
     
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             if ($httpCode >= 400) {
-                throw new Exception('HTTP error: ' . $httpCode . ', URL: ' . $url . ', Method: ' . $method);
+                $log->error("Requisição não pôde ser finalizada", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url, 'httpCode' => $httpCode]);
+                throw new Exception('Erro HTTP: ' . $httpCode . ', URL: ' . $url . ', Method: ' . $method);
             }
     
             curl_close($ch);
     
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new Exception('Invalid JSON in response: ' . json_last_error_msg());
+                $log->error("JSON inválido na resposta da requisição", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url, 'json' => json_last_error_msg()]);
+                throw new Exception('JSON inválido na resposta da requisição: ' . json_last_error_msg());
             }
     
             return $response;
         } catch (Exception $e) {
+            $log->error("Exceção encontrado ao fazer chamada em API", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url, 'error' => $e->getMessage(), 'line' => $e->getLine()]);
             throw new Exception('Error in apiCall: ' . $e->getMessage() . 'Line:' . $e->getLine());
         }
     }

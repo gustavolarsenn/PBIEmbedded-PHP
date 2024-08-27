@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__ . '\\..\\..\\config.php'; 
+require_once __DIR__ . '\\..\\..\\config\\config.php'; 
 
-require_once CAMINHO_BASE . '\\SessionManager.php';
+require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
 require_once CAMINHO_BASE . '\\config\\database.php';
 
@@ -56,11 +56,11 @@ if ($possuiPermissao) {
 	
         <div class="content-body">
             <div class="container-fluid">
-				<h2>Cadastro usuários</h2>
-
+                <div class="title-container">
+                    <h2>Cadastro usuários</h2>
+                </div>	
                 <div class="row">
                     <div class="col-lg-12 main-container">
-                        
                         <div class="card container" id="modalEditar" tabindex="1900" role="dialog">
                             <h2>Editar usuário</h2>
                             <div class="card-body">
@@ -97,7 +97,7 @@ if ($possuiPermissao) {
                             <div class="card-body">
                                     <form id="formulario-registro-usuario" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
                                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                    <input type="hidden" name="action" value="register">
+                                    <input type="hidden" name="action" value="registrarComoAdmin">
                                     <div class="form-group">
                                         <label for="nome">Nome</label>
                                         <input type="text" class="form-control" id="nome" name="nome" required>

@@ -9,8 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var lastScrollTop = 0;
     var header = document.querySelector('.header');
     var headerCornerLeft = document.querySelector('.nav-header');
-    const footer = document.querySelector('.footer .copyright'); 
+    const footer = document.querySelector('.footer'); 
 
+    console.log(footer)
     // var fullHeader = document.querySelector('#header-wrap');
 
     sidebarFechado = true;
@@ -20,10 +21,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 logoMobile.style.display = 'block';
                 logoDesktop.style.display = 'none';
                 sidebarFechado = false;
+
+                footer.style.left = '0';
             } else {
                 logoDesktop.style.display = 'block'
                 logoMobile.style.display = 'none';
                 sidebarFechado = true;
+
+                footer.style.left = '9rem';
             }
         }
     });

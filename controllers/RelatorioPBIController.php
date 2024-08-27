@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\config.php';
+require_once __DIR__ . '\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\models\\PBI\\RelatorioPBI.php';
 require_once CAMINHO_BASE . '\\config\\database.php';

@@ -6,14 +6,17 @@
 #formulario-registro {
     width: 30%;
     max-height: fit-content;
+    margin-bottom: 0px !important;
+    margin-top: 0px !important;
 }
 
 .container {
-    margin: 10px;
     height: auto;
     display: flex;
     flex-direction: column;
     padding: 0px;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+
 }
 
 #card-body-table{
@@ -27,12 +30,15 @@
     flex-direction: column;
     flex: 1 1 auto; /* Allow the table to grow and shrink */
     overflow: auto;
+    margin-left: 10px;
+    margin-top: 0px !important;
 }
 #tabela-usuarios-container {
     overflow: auto;
     margin-bottom: 0px !important;
     height: 100%;
     max-height: 75vh;
+    
 }
 
 #tabela-usuarios-container thead th{
@@ -74,7 +80,9 @@
 #container-filtro{
     display: flex !important; 
     flex-direction: row;
+    margin-top: 0px;
     margin-bottom: 10px;
+    
 }
 
 .subcontainer-filtro{
@@ -102,10 +110,12 @@
 
     #tabela-filtro-container {
         width: 100%;
+        margin-left: 0px;
     }
 
     #container-filtro{
         flex-direction: column;
+        margin-top: 10px;
     }
     
     #container-filtro .input-label label{

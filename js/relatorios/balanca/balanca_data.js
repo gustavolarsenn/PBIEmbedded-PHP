@@ -54,7 +54,6 @@ async function getVesselData($type, $vessel){
             const error = document.getElementById('error-message');
             if(response.error) {
                 error.innerHTML = response.error;
-                console.log(response.message)
                 reject(response.error);
             } else {
                 resolve(response.data);

@@ -39,8 +39,8 @@ $urlBase = '/'
                     <ul class="navbar-nav header-right">
                         <li class="nav-item dropdown notification_dropdown">
                             <a class="nav-link" href="#" role="button" data-toggle="dropdown">
-                                <i class="mdi mdi-bell"></i>
-                                <div class="pulse-css"></div>
+                                <i class="mdi mdi-account"></i>
+                                <!-- <div class="pulse-css"></div> -->
                             </a>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <ul class="list-unstyled">
@@ -61,8 +61,8 @@ $urlBase = '/'
                                     <span class="ml-2">Inbox</span>
                                 </a> -->
                                 <a href="#" class="dropdown-item" onclick="logoutConfirmation()">
-                                    <i class="icon-key"></i>
-                                    <span class="ml-2">Logout</span>
+                                    <i class="mdi mdi-exit-to-app"></i>
+                                    <span class="ml-2">Sair</span>
                                 </a>
                             </div>
                         </li>
