@@ -38,6 +38,7 @@ class Usuario
         /* Busca listagem de todos os usuários*/
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
