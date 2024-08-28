@@ -100,7 +100,7 @@ if ($possuiPermissao) {
     <script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.23.1/dist/powerbi.js"></script>
 
 	<script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
-    <!-- <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script> -->
+    <script src="<?php echo $basePath; ?>/js/pbi/embed.js"></script>
 
     <!-- Required vendors -->
     <script src="<?php echo $basePath; ?>/vendor/global/global.min.js"></script>

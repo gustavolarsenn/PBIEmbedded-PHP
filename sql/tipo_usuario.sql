@@ -9,4 +9,4 @@ CREATE TABLE tipo_usuario (
     FOREIGN KEY (pagina_padrao) REFERENCES pagina(id)
 );
 
-INSERT INTO tipo_usuario (tipo, descricao) VALUES ('ADMIN', 'Administrador'), ('COLABORADOR', 'Colaborador'), ('CLIENTE', 'Cliente');
+INSERT INTO tipo_usuario (tipo, descricao, pagina_padrao) VALUES ('ADMIN', 'Administrador', 15), ('COLABORADOR', 'Colaborador', 15), ('CLIENTE', 'Cliente', 15);

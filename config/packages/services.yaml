@@ -1,0 +1,16 @@
+# config/services.yaml
+services:
+    # Add your own service configuration here
+    Symfony\Bridge\Monolog\Handler\SwiftMailerHandler:
+        arguments:
+            - '@mailer'
+            - 'error@example.com'
+            - 'Error Log'
+            - ['error']
+
+    Symfony\Bridge\Monolog\Handler\SwiftMailerHandler:
+        arguments:
+            - '@mailer'
+            - 'exception@example.com'
+            - 'Exception Log'
+            - ['critical']

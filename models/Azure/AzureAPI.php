@@ -40,8 +40,6 @@ class AzureAPI {
         Pega token para fazer chamadas em API do PowerBI.
         Utiliza informações de login, senha e id do cliente (Azure).
         */
-
-        
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
 

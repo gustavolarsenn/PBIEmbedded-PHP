@@ -20,12 +20,11 @@ class Database {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
-            $log->info("Contecando-se ao banco de dados", ['user' => isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] :  null, 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info("Contecando-se ao banco de dados", ['user' => isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] :  null, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch(PDOException $e) {
-            // LOGAR ERRO
-            $log->info("Exceção ao conectar com o banco de dados", ['user' => isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] :  null, 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error("Exceção ao conectar com o banco de dados", ['user' => isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] :  null, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             header('Location: /views/erro/erro_db.php');
         }
     }

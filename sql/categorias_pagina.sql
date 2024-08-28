@@ -12,5 +12,5 @@ VALUES
 ('Cadastro', 'cadastro', 'icon icon-single-04'),
 ('Inclusão', 'inclusao', 'icon icon-form'),
 ('Relatórios', 'relatorio', 'icon icon-layout-25'),
-('Relatórios - BI', 'relatorio_bi', 'icon icon-chart-bar-33'),
+('Relatórios - BI', 'PBI/relatorio_pbi.php?reportName=', 'icon icon-chart-bar-33'),
 ('Página inicial', 'pagina_inicial', NULL);

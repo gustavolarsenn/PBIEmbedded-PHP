@@ -117,7 +117,7 @@ class Usuario
             }
         } catch (Exception $e) {
             $log->error('Erro ao registrar usuário', ['error' => $e->getMessage(), 'nome' => $this->nome, 'email' => $this->email, 'page' => $_SERVER['HTTP_REFERER']]);
-            return json_encode(['sucesso' => false, 'erro' => 'Erro: ' . $e->getMessage(), 'nome' => $this->nome, 'email' => $this->email]);
+            return json_encode(['sucesso' => false, 'erro' => 'Não foi possível registrar, tente novamente mais tarde.', 'nome' => $this->nome, 'email' => $this->email]);
         }
     }
     public function registrarComoAdmin() {
@@ -152,6 +152,7 @@ class Usuario
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
+            throw new Exception('Erro ao realizar login');
             $stmt = $this->pdo->prepare('
                 SELECT 
                     u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao, u.ativo
@@ -190,8 +191,9 @@ class Usuario
                 return json_encode(['sucesso' => false, 'mensagem' => 'Nome de usuário ou senha inválidos']);
             }
         } catch (Exception $e) {
-            $log->error("Exceção ao realizar login", ['error' => $e->getMessage()]);
-            return json_encode(['sucesso' => false, 'mensagem' => 'Erro: ' . $e->getMessage()]);
+            $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
+            error_log("Oh no! We are out of FOOs!", 1, "gustavo.larsen@zport.com.br");
+            return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível fazer login, tente novamente mais tarde.']);
         }
         }
         
