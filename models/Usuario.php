@@ -7,7 +7,6 @@ require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
 
 require_once CAMINHO_BASE . '\\config\\LogEmailController.php';
-require_once CAMINHO_BASE . '\\config\\MailerService.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
@@ -155,7 +154,10 @@ class Usuario
         /* Realiza login de usuários a partir de tela de login */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+
+        $mail = new LogEmailController($log);
         try {
+            throw new Exception('Erro ao realizar login');
             $stmt = $this->pdo->prepare('
                 SELECT 
                     u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao, u.ativo
@@ -195,6 +197,7 @@ class Usuario
             }
         } catch (Exception $e) {
             $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
+            $mail->emailOnLog("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
             return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível fazer login, tente novamente mais tarde.']);
         }
         }
