@@ -6,8 +6,12 @@ require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
 
+require_once CAMINHO_BASE . '\\config\\LogEmailController.php';
+require_once CAMINHO_BASE . '\\config\\MailerService.php';
+
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
+use App\Service\MailerService;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -152,7 +156,6 @@ class Usuario
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
         try {
-            throw new Exception('Erro ao realizar login');
             $stmt = $this->pdo->prepare('
                 SELECT 
                     u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao, u.ativo
@@ -192,7 +195,6 @@ class Usuario
             }
         } catch (Exception $e) {
             $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
-            error_log("Oh no! We are out of FOOs!", 1, "gustavo.larsen@zport.com.br");
             return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível fazer login, tente novamente mais tarde.']);
         }
         }

@@ -1,4 +1,0 @@
-# config/packages/mailer.yaml
-framework:
-    mailer:
-        dsn: 'smtp://gustavolarsen10@gmail.com:vemr edsl lmqb cphr@smtp.gmail.com:587?encryption=tls'
