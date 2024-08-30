@@ -30,7 +30,7 @@ class MailerService
     public function sendErrorEmail(string $to, string $subject, string $body): void
     {
         $email = (new Email())
-            ->from('gustavolarsen10@gmail.com')
+            ->from($this->mailer_user)
             ->to($to)
             ->subject($subject)
             ->text($body);
