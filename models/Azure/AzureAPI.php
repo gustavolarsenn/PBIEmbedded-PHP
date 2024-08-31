@@ -4,6 +4,7 @@ require_once __DIR__ . '\\..\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\models\\API\\ApiCalls.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBiReportDetails.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\EmbedConfig.php';
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 use Monolog\Logger;
@@ -42,7 +43,8 @@ class AzureAPI {
         */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $params = [
                 'grant_type' => 'password',
@@ -74,7 +76,8 @@ class AzureAPI {
         
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $header = [
                 'Content-Type: application/json',
@@ -125,7 +128,8 @@ class AzureAPI {
         
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $token = $this->pegarAuthToken();
             $embedToken = $this->pegarEmbedToken($token, $report_id,  $dataset_id, $rlsInfo);
@@ -168,7 +172,8 @@ class AzureAPI {
 
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $url = "https://login.windows.net/" . $this->tenant_id . "/oauth2/token";
     
@@ -202,7 +207,8 @@ class AzureAPI {
         
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $actionApi = $action ? 'resume' : 'suspend';
 
@@ -236,7 +242,8 @@ class AzureAPI {
 
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $token = $this->pegarTokenAzureCapacity();
     

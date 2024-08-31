@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
+
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
 use Monolog\Logger;
@@ -45,6 +47,8 @@ use Monolog\Handler\StreamHandler;
         public function criarRegistro(){
             $log = new Logger(self::LOG);
             $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+            $emailErrorHandler = new EmailErrorHandler();
+            $log->pushHandler($emailErrorHandler);
             try {
                 $stmt = $this->pdo->prepare('INSERT INTO shipdischarging (navio, ticket, placa, peso, data, periodo, cliente, porao, armazem, cliente_armazem_lote_di_produto, produto, observacao) VALUES (:ticket, :placa, :peso, :data, :periodo, :cliente, :porao, :armazem, :cliente_armazem_lote_di_produto, :produto, :observacao)');
                 $stmt->execute([
@@ -71,6 +75,8 @@ use Monolog\Handler\StreamHandler;
     public static function buscarTodosDados($pdo){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipdischarging');
             $stmt->execute();
@@ -85,6 +91,8 @@ use Monolog\Handler\StreamHandler;
     public function buscarRegistroPorNum(){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM shipdischarging WHERE no = :no');
             $stmt->execute([':no' => $this->no]);
@@ -99,6 +107,8 @@ use Monolog\Handler\StreamHandler;
     public function pegarDadosNavioRealizado($pdo, $navio){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipdischarging WHERE navio = :navio');
             $stmt->bindParam(':navio', $navio);

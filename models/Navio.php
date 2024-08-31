@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '\\..\config\\config.php';
 
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
+
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
 use Monolog\Logger;
@@ -32,6 +34,8 @@ class Navio {
     public function pegarInfoNavio($pdo, $navio){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try{
             $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM navio WHERE navio = :navio");
             $stmt->execute([':navio' => $navio]);

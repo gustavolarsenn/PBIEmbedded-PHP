@@ -5,12 +5,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
-
-require_once CAMINHO_BASE . '\\config\\LogEmailController.php';
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
-use App\Service\MailerService;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -41,7 +39,8 @@ class Usuario
         /* Busca listagem de todos os usuários*/
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -69,6 +68,8 @@ class Usuario
         /* Inativa usuários (não exclui, somente coloca um flag no registro dizendo que está inativo) */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('UPDATE usuario SET ativo = 0 WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -85,6 +86,8 @@ class Usuario
         /* Edita usuários no Banco de Dados */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('UPDATE usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
             $stmt->execute([$this->nome, $this->tipo, $this->ativo, $this->email]);
@@ -102,7 +105,8 @@ class Usuario
         /* Registra novos usuários a partir de tela de login */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -127,7 +131,8 @@ class Usuario
         /* Registra novos usuários a partir de tela de cadastro de usuários (necessário estar logado) */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -154,10 +159,9 @@ class Usuario
         /* Realiza login de usuários a partir de tela de login */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-
-        $mail = new LogEmailController($log);
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
-            throw new Exception('Erro ao realizar login');
             $stmt = $this->pdo->prepare('
                 SELECT 
                     u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao, u.ativo
@@ -197,7 +201,6 @@ class Usuario
             }
         } catch (Exception $e) {
             $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
-            $mail->emailOnLog("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['HTTP_REFERER']]);
             return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível fazer login, tente novamente mais tarde.']);
         }
         }
@@ -207,6 +210,8 @@ class Usuario
         {
             $log = new Logger(self::LOG);
             $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+            $emailErrorHandler = new EmailErrorHandler();
+            $log->pushHandler($emailErrorHandler);
             try {
                 $sessao_pbi = new PowerBISession($this->pdo, $_SESSION['id_usuario']);
                 $sessao_pbi->inativarSessaoPBI();

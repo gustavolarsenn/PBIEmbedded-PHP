@@ -5,6 +5,7 @@ require_once __DIR__ . '\\..\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\config\\database.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';    
 require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 use Monolog\Logger;
@@ -21,7 +22,9 @@ class Capacidade {
         /* Gerencia capacidade (cluster), e liga quando tiver usuário acessando */
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-    
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
+        
         $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
     
         if ($possuiSessoesAtivasPBI){

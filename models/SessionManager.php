@@ -4,6 +4,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
 
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 require_once CAMINHO_BASE . '\\models\\Usuario.php';
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -22,6 +23,8 @@ class SessionManager{
     public static function iniciarSessao($id_usuario, $nome, $email, $tipo_usuario){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try{
             $log->info('Inicando sessão de', ['user' => $id_usuario]);
             self::sessaoIniciada();
@@ -44,6 +47,8 @@ class SessionManager{
     public static function validarCsrfToken() {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             self::sessaoIniciada();
             if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
@@ -67,6 +72,8 @@ class SessionManager{
     public static function destruindoSessao() {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             self::sessaoIniciada();
             $pdo = (new Database())->getConnection();
@@ -83,6 +90,8 @@ class SessionManager{
     public static function renovarSessao(){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             self::sessaoIniciada();
             $_SESSION['sessao_validade'] = time();
@@ -95,6 +104,8 @@ class SessionManager{
     public static function checarCsrfToken() {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $log->info('Checando CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
             self::sessaoIniciada();
@@ -111,6 +122,8 @@ class SessionManager{
     public static function checarSessao() {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try{
             self::sessaoIniciada();
             if (empty($_SESSION['id_usuario'])){

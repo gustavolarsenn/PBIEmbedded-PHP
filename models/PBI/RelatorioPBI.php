@@ -11,6 +11,8 @@ require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 
 require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
+
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -26,23 +28,34 @@ class RelatorioPBI {
     }
 
     public function pegarRelatoriosAtivos(){
-        $sql = "SELECT * FROM relatorio_pbi WHERE ativo = 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        $stmt->closeCursor();
+        $log = new Logger(self::LOG);
+        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
+        try {
+            $sql = "SELECT * FROM relatorio_pbi WHERE ativo = 1";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute();
+            $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt->closeCursor();
+    
+            $reportsArray = array_reduce($reports, function($carry, $report) {
+            $carry[$report['relatorio_clean']] = [
+                "relatorio" => $report['relatorio'],
+                "id_relatorio" => $report['id_relatorio'],
+                "id_dataset" => $report['id_dataset'],
+                "rls" => $report['rls']
+            ];
+                return $carry;
+            }, []);
+            
+            $log->info('Relatórios ativos listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
 
-        $reportsArray = array_reduce($reports, function($carry, $report) {
-        $carry[$report['relatorio_clean']] = [
-            "relatorio" => $report['relatorio'],
-            "id_relatorio" => $report['id_relatorio'],
-            "id_dataset" => $report['id_dataset'],
-            "rls" => $report['rls']
-        ];
-            return $carry;
-        }, []);
-
-        return $reportsArray;
+            return $reportsArray;
+        } catch (Exception $e) {
+            $log->error('Erro ao listar relatórios ativos', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'erro' => $e->getMessage()]);
+            return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
+        }
     }
 
     function gerarRelatorioPBI($actualLink){
@@ -50,7 +63,9 @@ class RelatorioPBI {
     
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-    
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
+
         SessionManager::checarSessao();
     
         $log->info('Gerando relatório PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);

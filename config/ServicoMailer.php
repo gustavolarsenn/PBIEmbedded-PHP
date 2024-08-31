@@ -1,11 +1,9 @@
 <?php
 
-// namespace App\Service;
-
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
-class MailerService
+class ServicoMailer
 {
     private $mailer;
     private $mailer_driver;
@@ -27,7 +25,7 @@ class MailerService
         $this->mailer = new Mailer($this->transport);
     }
 
-    public function sendErrorEmail(string $to, string $subject, string $body): void
+    public function enviarEmailErro(string $to, string $subject, string $body): void
     {
         $email = (new Email())
             ->from($this->mailer_user)

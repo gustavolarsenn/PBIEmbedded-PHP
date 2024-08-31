@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
+require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
+
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
 
 use Monolog\Logger;
@@ -30,6 +32,8 @@ class PermissoesPagina {
     {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -66,6 +70,8 @@ class PermissoesPagina {
     {
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -104,6 +110,8 @@ class PermissoesPagina {
     public function pegarCategorias(){
         $log = new Logger(self::LOG);
         $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $emailErrorHandler = new EmailErrorHandler();
+        $log->pushHandler($emailErrorHandler);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
