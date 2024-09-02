@@ -3,5 +3,5 @@ CREATE TABLE SessaoPBI (
     id_usuario BIGINT,
     data_entrada TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
     data_validade DATETIME DEFAULT (CURRENT_TIMESTAMP + INTERVAL 1 HOUR) ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id)
 );

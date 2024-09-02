@@ -35,7 +35,7 @@ END//
 
 DELIMITER ;
 
-INSERT INTO pagina (id_categoria, pagina, pagina_clean)
+INSERT INTO Pagina (id_categoria, pagina, pagina_clean)
 VALUES
 (1, 'Navio', 'navio'),
 (1, 'Cliente', 'cliente'),

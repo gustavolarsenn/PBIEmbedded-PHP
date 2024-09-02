@@ -137,7 +137,7 @@ END//
 
 DELIMITER ;
 
-INSERT INTO pagina (id_categoria, pagina, pagina_clean)
+INSERT INTO Pagina (id_categoria, pagina, pagina_clean)
 VALUES
 (1, 'Navio', 'navio'),
 (1, 'Cliente', 'cliente'),
@@ -186,7 +186,7 @@ CREATE TABLE Usuario (
 
 DELIMITER //
 
-CREATE TRIGGER set_default_tipo BEFORE INSERT ON usuario
+CREATE TRIGGER set_default_tipo BEFORE INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     IF NEW.tipo IS NULL THEN
@@ -201,7 +201,7 @@ CREATE TABLE SessaoPBI (
     id_usuario BIGINT,
     data_entrada TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
     data_validade DATETIME DEFAULT (CURRENT_TIMESTAMP + INTERVAL 1 HOUR) ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+    FOREIGN KEY (id_usuario) REFERENCES Usuario(id)
 );
 
 DROP TABLE IF EXISTS PermissoesPagina;

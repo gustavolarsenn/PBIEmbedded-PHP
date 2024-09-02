@@ -12,7 +12,7 @@ CREATE TABLE Usuario (
 
 DELIMITER //
 
-CREATE TRIGGER set_default_tipo BEFORE INSERT ON usuario
+CREATE TRIGGER set_default_tipo BEFORE INSERT ON Usuario
 FOR EACH ROW
 BEGIN
     IF NEW.tipo IS NULL THEN
