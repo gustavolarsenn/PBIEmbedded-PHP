@@ -1,4 +1,4 @@
-CREATE TABLE categorias_pagina (
+CREATE TABLE CategoriasPagina (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     categoria VARCHAR(255),
     categoria_clean VARCHAR(255),
@@ -7,7 +7,7 @@ CREATE TABLE categorias_pagina (
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
-INSERT INTO categorias_pagina (categoria, categoria_clean, icon)
+INSERT INTO CategoriasPagina (categoria, categoria_clean, icon)
 VALUES
 ('Cadastro', 'cadastro', 'icon icon-single-04'),
 ('Inclusão', 'inclusao', 'icon icon-form'),

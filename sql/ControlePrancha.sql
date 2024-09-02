@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS pranchaReports;
-CREATE TABLE pranchaReports (
+DROP TABLE IF EXISTS ControlePrancha;
+CREATE TABLE ControlePrancha (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     navio VARCHAR(255),
     relatorio_no VARCHAR(20),

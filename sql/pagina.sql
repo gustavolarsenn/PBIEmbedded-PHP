@@ -1,4 +1,4 @@
-CREATE TABLE pagina (
+CREATE TABLE Pagina (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     pagina VARCHAR(100),
     pagina_clean VARCHAR(100),
@@ -6,27 +6,31 @@ CREATE TABLE pagina (
     caminho_pagina VARCHAR(255),
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_categoria) REFERENCES categorias_pagina(id)
+    FOREIGN KEY (id_categoria) REFERENCES CategoriasPagina(id)
 );
 
 DELIMITER //
 
 DROP TRIGGER IF EXISTS before_insert_permissoes_pagina//
 CREATE TRIGGER before_insert_permissoes_pagina
-BEFORE INSERT ON pagina
+BEFORE INSERT ON Pagina
 FOR EACH ROW
 BEGIN
     DECLARE categoria_clean_value VARCHAR(255);
     
     SELECT categoria_clean INTO categoria_clean_value
-    FROM categorias_pagina
+    FROM CategoriasPagina
     WHERE id = NEW.id_categoria;
     
     IF categoria_clean_value IS NULL THEN
         SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'categoria_clean_value is NULL';
     END IF;
     
-    SET NEW.caminho_pagina = CONCAT('views/', categoria_clean_value, '/', NEW.pagina_clean, '.php');
+    IF categoria_clean_value = 'PBI/relatorio_pbi.php?reportName=' THEN
+        SET NEW.caminho_pagina = CONCAT('views/', categoria_clean_value, NEW.pagina_clean);
+    ELSE
+        SET NEW.caminho_pagina = CONCAT('views/', categoria_clean_value, '/', NEW.pagina_clean, '.php');
+    END IF;
 END//
 
 DELIMITER ;

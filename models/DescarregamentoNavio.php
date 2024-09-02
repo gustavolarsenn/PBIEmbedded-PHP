@@ -38,7 +38,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
         public function criarRegistro(){
             $log = AppLogger::getInstance(self::LOG_FILE);
             try {
-                $stmt = $this->pdo->prepare('INSERT INTO shipdischarging (navio, ticket, placa, peso, data, periodo, cliente, porao, armazem, cliente_armazem_lote_di_produto, produto, observacao) VALUES (:ticket, :placa, :peso, :data, :periodo, :cliente, :porao, :armazem, :cliente_armazem_lote_di_produto, :produto, :observacao)');
+                $stmt = $this->pdo->prepare('INSERT INTO DescarregamentoNavio (navio, ticket, placa, peso, data, periodo, cliente, porao, armazem, cliente_armazem_lote_di_produto, produto, observacao) VALUES (:ticket, :placa, :peso, :data, :periodo, :cliente, :porao, :armazem, :cliente_armazem_lote_di_produto, :produto, :observacao)');
                 $stmt->execute([
                     'navio' => $this->navio,
                     'ticket' => $this->ticket,
@@ -63,7 +63,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
     public static function buscarTodosDados($pdo){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $pdo->prepare('SELECT * FROM shipdischarging');
+            $stmt = $pdo->prepare('SELECT * FROM DescarregamentoNavio');
             $stmt->execute();
             $log->info('Todos os registros de Descarregamento de Navio listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $stmt->fetchAll()]);
@@ -76,7 +76,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
     public function buscarRegistroPorNum(){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('SELECT * FROM shipdischarging WHERE no = :no');
+            $stmt = $this->pdo->prepare('SELECT * FROM DescarregamentoNavio WHERE no = :no');
             $stmt->execute([':no' => $this->no]);
             $log->info('Registro ' . $this->no . ' de Descarregamento de Navio listado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $stmt->fetch();
@@ -89,7 +89,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
     public function pegarDadosNavioRealizado($pdo, $navio){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $pdo->prepare('SELECT * FROM shipdischarging WHERE navio = :navio');
+            $stmt = $pdo->prepare('SELECT * FROM DescarregamentoNavio WHERE navio = :navio');
             $stmt->bindParam(':navio', $navio);
             $stmt->execute();
             $navioRealizado = $stmt->fetchAll();
@@ -104,7 +104,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
     public function pegarDadosNavioPlanejado($pdo, $navio){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $pdo->prepare('SELECT * FROM shipplanned WHERE navio = :navio');
+            $stmt = $pdo->prepare('SELECT * FROM DescarregamentoNavioPlanejado WHERE navio = :navio');
             $stmt->bindParam(':navio', $navio);
             $stmt->execute();
             $navioPlanejado = $stmt->fetchAll();
@@ -119,7 +119,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
     public function pegarNaviosUnicos($pdo){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
+            $stmt = $pdo->prepare('SELECT DISTINCT navio FROM DescarregamentoNavio ORDER BY CAST(data AS date) DESC');
             $stmt->execute();
             $naviosUnicos = $stmt->fetchAll();
             $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);

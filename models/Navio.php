@@ -25,7 +25,7 @@ class Navio {
     public function pegarInfoNavio($pdo, $navio){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try{
-            $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM navio WHERE navio = :navio");
+            $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM Navio WHERE navio = :navio");
             $stmt->execute([':navio' => $navio]);
             $log->info('Informações do navio listadas', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $stmt->fetchAll()]);

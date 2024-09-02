@@ -1,18 +1,18 @@
-DROP TABLE IF EXISTS permissoes_pagina;
-CREATE TABLE permissoes_pagina (
+DROP TABLE IF EXISTS PermissoesPagina;
+CREATE TABLE PermissoesPagina (
     id_categoria BIGINT,
     id_pagina BIGINT,
     id_tipo_usuario BIGINT,
     ativo BOOLEAN DEFAULT TRUE,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_categoria) REFERENCES categorias_pagina(id),
-    FOREIGN KEY (id_tipo_usuario) REFERENCES tipo_usuario(id),
-    FOREIGN KEY (id_pagina) REFERENCES pagina(id),
+    FOREIGN KEY (id_categoria) REFERENCES CategoriasPagina(id),
+    FOREIGN KEY (id_tipo_usuario) REFERENCES TipoUsuario(id),
+    FOREIGN KEY (id_pagina) REFERENCES Pagina(id),
     PRIMARY KEY (id_pagina, id_tipo_usuario)
 );
 
-INSERT INTO permissoes_pagina (id_categoria, id_pagina, id_tipo_usuario)
+INSERT INTO PermissoesPagina (id_categoria, id_pagina, id_tipo_usuario)
 VALUES
 (1, 1, 1),
 (1, 1, 2),

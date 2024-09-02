@@ -21,7 +21,7 @@ class RelatorioPBI {
 
         SessionManager::checarSessao();
         try {
-            $sql = "SELECT * FROM relatorio_pbi WHERE ativo = 1";
+            $sql = "SELECT * FROM RelatorioPBI WHERE ativo = 1";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute();
             $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -96,7 +96,7 @@ class RelatorioPBI {
 
         SessionManager::checarSessao();
         try {
-            $sql = 'SELECT relatorio, relatorio_clean FROM relatorio_pbi WHERE ativo = 1 AND relatorio_clean = :relatorio_clean';
+            $sql = 'SELECT relatorio, relatorio_clean FROM RelatorioPBI WHERE ativo = 1 AND relatorio_clean = :relatorio_clean';
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindValue(':relatorio_clean', $relatorioClean);
             $stmt->execute();

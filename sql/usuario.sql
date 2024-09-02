@@ -1,4 +1,4 @@
-CREATE TABLE usuario (
+CREATE TABLE Usuario (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     nome VARCHAR(255),
     email VARCHAR(255),
@@ -7,7 +7,7 @@ CREATE TABLE usuario (
     ativo BOOLEAN DEFAULT TRUE,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     data_atualizacao DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (tipo) REFERENCES tipo_usuario(id)
+    FOREIGN KEY (tipo) REFERENCES TipoUsuario(id)
 );
 
 DELIMITER //
@@ -16,7 +16,7 @@ CREATE TRIGGER set_default_tipo BEFORE INSERT ON usuario
 FOR EACH ROW
 BEGIN
     IF NEW.tipo IS NULL THEN
-        SET NEW.tipo = (SELECT id FROM tipo_usuario WHERE tipo = 'CLIENTE');
+        SET NEW.tipo = (SELECT id FROM TipoUsuario WHERE tipo = 'CLIENTE');
     END IF;
 END //
 

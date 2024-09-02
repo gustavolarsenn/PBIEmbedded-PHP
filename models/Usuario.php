@@ -36,9 +36,9 @@ class Usuario
             SELECT 
                 u.nome, u.email, tu.id, tu.tipo, u.ativo 
             FROM 
-                usuario u 
+                Usuario u 
             LEFT JOIN 
-                tipo_usuario tu 
+                TipoUsuario tu 
             ON 
                 u.tipo = tu.id 
             ');
@@ -58,7 +58,7 @@ class Usuario
         /* Inativa usuários (não exclui, somente coloca um flag no registro dizendo que está inativo) */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('UPDATE usuario SET ativo = 0 WHERE email = ?');
+            $stmt = $this->pdo->prepare('UPDATE Usuario SET ativo = 0 WHERE email = ?');
             $stmt->execute([$this->email]);
     
             $log->info('Usuário' . $this->email . 'excluído (inativado) com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -73,7 +73,7 @@ class Usuario
         /* Edita usuários no Banco de Dados */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('UPDATE usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
+            $stmt = $this->pdo->prepare('UPDATE Usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
             $stmt->execute([$this->nome, $this->tipo, $this->ativo, $this->email]);
     
             $log->info('Usuário editado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -89,7 +89,7 @@ class Usuario
         /* Registra novos usuários a partir de tela de login */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
+            $stmt = $this->pdo->prepare('SELECT * FROM Usuario WHERE email = ?');
             $stmt->execute([$this->email]);
             $usuario = $stmt->fetch();
 
@@ -97,7 +97,7 @@ class Usuario
                 $log->info('Usuário com esse email (' . $this->email .') já existe', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
-                $stmt = $this->pdo->prepare('INSERT INTO usuario (nome, email, senha) VALUES (?, ?, ?)');
+                $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)');
                 $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT)]);
                 
                 $log->info('Usuário ' . $this->email .' registrado com sucesso', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -112,7 +112,7 @@ class Usuario
         /* Registra novos usuários a partir de tela de cadastro de usuários (necessário estar logado) */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
+            $stmt = $this->pdo->prepare('SELECT * FROM Usuario WHERE email = ?');
             $stmt->execute([$this->email]);
             $usuario = $stmt->fetch();
 
@@ -120,7 +120,7 @@ class Usuario
                 $log->info('Usuário com esse email (' . $this->email .') já existe', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
-                $stmt = $this->pdo->prepare('INSERT INTO usuario (nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
+                $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
                 $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT), $this->tipo]);
                 
                 $log->info('Usuário ' . $this->email .' registrado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -141,13 +141,13 @@ class Usuario
                 SELECT 
                     u.id, u.nome, u.email, u.tipo, u.senha, p.caminho_pagina AS pagina_padrao, u.ativo
                 FROM 
-                    usuario u
+                    Usuario u
                 LEFT JOIN 
-                    tipo_usuario tu
+                    TipoUsuario tu
                 ON
                     u.tipo = tu.id
                 LEFT JOIN
-                    pagina p
+                    Pagina p
                 ON
                     tu.pagina_padrao = p.id
                 WHERE 

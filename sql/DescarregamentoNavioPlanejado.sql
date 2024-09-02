@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS shipplanned;
-CREATE TABLE shipplanned (
+DROP TABLE IF EXISTS DescarregamentoNavioPlanejado;
+CREATE TABLE DescarregamentoNavioPlanejado (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     navio VARCHAR(100),
     cliente VARCHAR(100),

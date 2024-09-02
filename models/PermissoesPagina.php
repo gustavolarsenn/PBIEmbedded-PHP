@@ -26,9 +26,9 @@ class PermissoesPagina {
             SELECT 
                 p.pagina 
             FROM 
-                permissoes_pagina pp
+                PermissoesPagina pp
             LEFT JOIN 
-                pagina p
+                Pagina p
             ON 
                 pp.id_pagina = p.id
             WHERE 
@@ -63,17 +63,17 @@ class PermissoesPagina {
                 p.pagina,
                 p.caminho_pagina
             FROM 
-                permissoes_pagina pp
+                PermissoesPagina pp
             LEFT JOIN
-                categorias_pagina cp
+                CategoriasPagina cp
             ON
                 pp.id_categoria = cp.id
             LEFT JOIN 
-                pagina p
+                Pagina p
             ON
                 pp.id_pagina = p.id
             LEFT JOIN 
-                usuario u 
+                Usuario u 
             ON 
                 pp.id_tipo_usuario = u.tipo 
             WHERE 
@@ -98,7 +98,7 @@ class PermissoesPagina {
             SELECT 
                 DISTINCT categoria, icon
             FROM 
-                categorias_pagina
+                CategoriasPagina
             ');
             $stmt->execute();
             $categorias = $stmt->fetchAll();

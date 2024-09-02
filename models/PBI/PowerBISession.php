@@ -17,18 +17,18 @@ class PowerBISession {
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE id_usuario = ? AND data_validade > NOW()');
+            $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
             $powerbi = $stmt->fetch();
     
             if (!$powerbi) {
                 $log->info('Criando sessão de PowerBI', ['user' => $this->id_usuario]);
-                $stmt = $this->pdo->prepare('INSERT INTO sessao_pbi (id_usuario) VALUES (?)');
+                $stmt = $this->pdo->prepare('INSERT INTO SessaoPBI (id_usuario) VALUES (?)');
                 $stmt->execute([$this->id_usuario]);
                 return;
             }
             $log->info('Renovando sessão de PowerBI', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id_usuario = ? AND data_validade > NOW()');
+            $stmt = $this->pdo->prepare('UPDATE SessaoPBI SET data_validade = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
         } catch (Exception $e) {
             $log->error('Erro ao criar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -39,7 +39,7 @@ class PowerBISession {
         /* Caso usuário deslogar, sua sessão de PowerBI será inativada. */ 
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('UPDATE sessao_pbi SET data_validade = NOW() WHERE id_usuario = ? AND data_validade > NOW()');
+            $stmt = $this->pdo->prepare('UPDATE SessaoPBI SET data_validade = NOW() WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->execute([$this->id_usuario]);
 
             $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
@@ -53,7 +53,7 @@ class PowerBISession {
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $log->info('Verificando se existem sessões ativas de PowerBI', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            $stmt = $this->pdo->prepare('SELECT * FROM sessao_pbi WHERE data_validade > NOW()');
+            $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE data_validade > NOW()');
             $stmt->execute();
             $powerbi = $stmt->fetch();
             

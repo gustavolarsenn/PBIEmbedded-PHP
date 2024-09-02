@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS shipdischarging;
-CREATE TABLE shipdischarging (
+DROP TABLE IF EXISTS DescarregamentoNavio;
+CREATE TABLE DescarregamentoNavio (
     no BIGINT,
     navio VARCHAR(50),
     ticket VARCHAR(50),
