@@ -53,9 +53,9 @@ require_once __DIR__ . '\\..\\config\\config.php';
                     'produto' => $this->produto,
                     'observacao' => $this->observacao
                 ]);
-                $log->info('Registro de Descarregamento de Navio criado', ['user' => $_SESSION['id_usuario'], 'navio' => $this->navio, 'ticket' => $this->ticket, 'page' => $_SERVER['HTTP_REFERER']]);
+                $log->info('Registro de Descarregamento de Navio criado', ['user' => $_SESSION['id_usuario'], 'navio' => $this->navio, 'ticket' => $this->ticket, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             } catch (Exception $e) {
-                $log->error('Exceção ao criar registro de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'navio' => $this->navio, 'ticket' => $this->ticket, 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+                $log->error('Exceção ao criar registro de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'navio' => $this->navio, 'ticket' => $this->ticket, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
                 return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
             }
     }
@@ -65,10 +65,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipdischarging');
             $stmt->execute();
-            $log->info('Todos os registros de Descarregamento de Navio listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Todos os registros de Descarregamento de Navio listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $stmt->fetchAll()]);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar todos os registros de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar todos os registros de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }
@@ -78,10 +78,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM shipdischarging WHERE no = :no');
             $stmt->execute([':no' => $this->no]);
-            $log->info('Registro ' . $this->no . ' de Descarregamento de Navio listado', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Registro ' . $this->no . ' de Descarregamento de Navio listado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $stmt->fetch();
         } catch (Exception $e) {
-            $log->error('Exceção ao listar registro ' . $this->no . ' de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar registro ' . $this->no . ' de Descarregamento de Navio', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }
@@ -93,10 +93,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
             $stmt->bindParam(':navio', $navio);
             $stmt->execute();
             $navioRealizado = $stmt->fetchAll();
-            $log->info('Dados do navio de Realizado listados', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Dados do navio de Realizado listados', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $navioRealizado, 'mensagem' => 'Dados do navio realizado']);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar dados de Realizado do navio', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar dados de Realizado do navio', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }
@@ -108,10 +108,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
             $stmt->bindParam(':navio', $navio);
             $stmt->execute();
             $navioPlanejado = $stmt->fetchAll();
-            $log->info('Dados do navio de Planejado listados', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Dados do navio de Planejado listados', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $navioPlanejado, 'mensagem' => 'Dados do navio planejado']);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar dados de Planejado do navio', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar dados de Planejado do navio', ['user' => $_SESSION['id_usuario'], 'navio' => $navio, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }
@@ -122,10 +122,10 @@ require_once __DIR__ . '\\..\\config\\config.php';
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
             $stmt->execute();
             $naviosUnicos = $stmt->fetchAll();
-            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $naviosUnicos, 'message' => 'Navios únicos']);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }

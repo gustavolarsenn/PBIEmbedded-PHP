@@ -28,7 +28,7 @@ class SessionManager{
             $log->info('Sessão iniciada', ['user' => $id_usuario]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Sessão iniciada']);
         } catch (Exception $e) {
-            $log->error('Erro ao iniciar sessão', ['user' => $id_usuario, 'page' => $_SERVER['HTTP_REFERER'],'error' => $e->getMessage()]);
+            $log->error('Erro ao iniciar sessão', ['user' => $id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'],'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
 
@@ -39,7 +39,7 @@ class SessionManager{
         try {
             self::sessaoIniciada();
             if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-                $log->error('CSRF token Inválido', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'token' => $_POST['csrf_token'], 'session_token' => $_SESSION['csrf_token']]);
+                $log->error('CSRF token Inválido', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'token' => $_POST['csrf_token'], 'session_token' => $_SESSION['csrf_token']]);
                 die('CSRF token Inválido!');
             }
             $_SESSION['sessao_validade'] = time();
@@ -49,9 +49,9 @@ class SessionManager{
             // $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             // //TIRAR
 
-            $log->info('CSRF token validado e renovado até '. time(), ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('CSRF token validado e renovado até '. time(), ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
         } catch (Exception $e) {
-            $log->error('Erro ao validar CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'],'error' => $e->getMessage()]);
+            $log->error('Erro ao validar CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'],'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -63,10 +63,10 @@ class SessionManager{
             $pdo = (new Database())->getConnection();
             $usuario = new Usuario($pdo, null, null, null);
             $usuario->logout();
-            $log->info('Sessão destruída', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Sessão destruída', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             header('Location: /views/erro/sessao_expirada.php');
         } catch (Exception $e){
-            $log->error('Erro ao checar validade da sessao', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'],'error' => $e->getMessage()]);
+            $log->error('Erro ao checar validade da sessao', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'],'error' => $e->getMessage()]);
         }
 
     }
@@ -77,15 +77,15 @@ class SessionManager{
             self::sessaoIniciada();
             $_SESSION['sessao_validade'] = time();
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-            $log->info('Sessão renovada', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Sessão renovada', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
         } catch (Exception $e){
-            $log->error('Erro ao renovar sessao', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'],'error' => $e->getMessage()]);
+            $log->error('Erro ao renovar sessao', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'],'error' => $e->getMessage()]);
         }
     }
     public static function checarCsrfToken() {
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $log->info('Checando CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Checando CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             self::sessaoIniciada();
             if (time() - $_SESSION['sessao_validade'] < 3600) {
                 self::renovarSessao();
@@ -93,7 +93,7 @@ class SessionManager{
                 self::destruindoSessao();
             }
         } catch(Exception $e){
-            $log->error('Erro ao checar CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'],'error' => $e->getMessage()]);
+            $log->error('Erro ao checar CSRF token', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'],'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -105,9 +105,9 @@ class SessionManager{
                 header('Location: /views/login.php');
                 exit;
             }
-            $log->info('Possui sessão, acesso liberado.', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Possui sessão, acesso liberado.', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
         } catch (Exception $e){
-            $log->error('Erro ao verificar se usuário possui sessão', ['page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao verificar se usuário possui sessão', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
         }
     }
 }

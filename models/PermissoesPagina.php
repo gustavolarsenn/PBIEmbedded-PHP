@@ -41,14 +41,14 @@ class PermissoesPagina {
             $stmt->execute([$this->id_tipo_usuario, $this->titulo]);
             $permissoes = $stmt->fetchAll();
             if (count($permissoes) > 0) {
-                $log->info('Permissão concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+                $log->info('Permissão concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return true;
             } else {
-                $log->info('Permissão não concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+                $log->info('Permissão não concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return false;
             }
         } catch (Exception $e) {
-            $log->error('Erro ao verificar permissão na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao verificar permissão na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return false;
         }
     }
@@ -83,10 +83,10 @@ class PermissoesPagina {
             ');
             $stmt->execute([$this->id_usuario]);
             $permissoes = $stmt->fetchAll();
-            $log->info('Busca por páginas permitadas realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Busca por páginas permitadas realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $permissoes;
         } catch (Exception $e) {
-            $log->error('Erro ao verificar permissões', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao verificar permissões', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return [];
         }
     }
@@ -102,10 +102,10 @@ class PermissoesPagina {
             ');
             $stmt->execute();
             $categorias = $stmt->fetchAll();
-            $log->info('Busca por categorias realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Busca por categorias realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $categorias;
         } catch (Exception $e) {
-            $log->error('Erro ao buscar categorias', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao buscar categorias', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return [];
         }
     }

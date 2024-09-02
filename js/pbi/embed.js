@@ -2,50 +2,78 @@ let models = window["powerbi-client"].models;
 let reportContainer = $("#report-container").get(0);
 
 $(document).ready(function() {
-    $(document).ready(function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const relatorioAtual = document.querySelector('.report-link.mm-active').innerText
-        const reportName = urlParams.get('reportName');
-        const reportTitle = document.getElementById('report-title');
-        reportTitle.innerText = relatorioAtual;
-        loadReport("/controllers/RelatorioPBIController.php?reportName=" + encodeURIComponent(reportName), reportName);
+    $(document).ready(async function() {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportName = urlParams.get('reportName');
+
+            const response = await fetch('/controllers/RelatorioPBIController.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'buscarInformacoesRelatorio',
+                    reportName: reportName
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+
+            const reportTitle = document.getElementById('report-title');
+            reportTitle.innerText = data.relatorio;
+            loadReport("/controllers/RelatorioPBIController.php?reportName=" + encodeURIComponent(reportName), reportName);
+
+        } catch (error) {
+            tratarErro(error);
+        }
     });
 });
 
-function tratarErro(erro) {
+function tratarErro(erro = "Erro ao carregar relatório. Recarregue a página ou contate o administrador do sistema."){
     // Show error container
     $(".embed-container").hide();
     $(".embed-section").hide();
     let errorContainer = $(".error-container");
 
     errorContainer.show();
-
     // Split the message with \r\n delimiter to get the errors from the error message
-    let errorLines = erro.split("\r\n");
-    
-    // "Erro ao puxar dados em API da Azure e carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
-    // Create error header
-    let errHeader = document.createElement("p");
-    let strong = document.createElement("strong");
-    let node = document.createTextNode(
-        "Erro"
-    );
+    try {
+        let errorLines = erro.split("\r\n");
+        
+        // "Erro ao puxar dados em API da Azure e carregar relatório. Recarregue a página ou contate o administrador do sistema. Detalhes do erro:\n"
+        // Create error header
+        let errHeader = document.createElement("p");
+        let strong = document.createElement("strong");
+        let node = document.createTextNode(
+            "Erro"
+        );
 
-    // Get the error container
-    let errContainer = errorContainer.get(0);
+        // Get the error container
+        let errContainer = errorContainer.get(0);
 
-    // Add the error header in the container
-    strong.appendChild(node);
-    errHeader.appendChild(strong);
-    errContainer.appendChild(errHeader);
+        // Add the error header in the container
+        strong.appendChild(node);
+        errHeader.appendChild(strong);
+        errContainer.appendChild(errHeader);
 
-    // Create <p> as per the length of the array and append them to the container
-    errorLines.forEach((element) => {
+        // Create <p> as per the length of the array and append them to the container
+        errorLines.forEach((element) => {
+            let errorContent = document.createElement("p");
+            let node = document.createTextNode(element);
+            errorContent.appendChild(node);
+            errContainer.appendChild(errorContent);
+        });
+    } catch (error) {
         let errorContent = document.createElement("p");
-        let node = document.createTextNode(element);
+        let node = document.createTextNode(erro);
         errorContent.appendChild(node);
-        errContainer.appendChild(errorContent);
-    });
+        errorContainer.get(0).appendChild(errorContent);
+    }
     const reportContainer_ = document.querySelector('#report-container')
     const loaderContainer_= document.querySelector('#preloader-report')
     reportContainer_.style.display = "flex";
@@ -73,7 +101,7 @@ function loadReport(reportLinkFix, report) {
             
             const reportContainer_ = document.querySelector('#report-container')
             const loaderContainer_= document.querySelector('#preloader-report')
-            
+
             embedInfo = JSON.parse(embedData.dados);
 
             let reportLoadConfig = {

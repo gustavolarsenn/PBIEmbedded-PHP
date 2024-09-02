@@ -117,7 +117,7 @@ async function generateCharts() {
     const filtroPeriodo = Array.from(document.getElementById('lista-periodo').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroRelatorio = Array.from(document.getElementById('lista-relatorio_no').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
     const filtroMotivoParalisacao = Array.from(document.getElementById('lista-motivo_paralisacao').querySelectorAll('.multi-select-selected')).map((item) => `'${item.dataset.value}'`)
-
+    
     const filtroNavioLimpo = filtroNavio.map(item => item.replace(/^'(.*)'$/, '$1'));
 
     jaFiltradoPeriodo = filtroPeriodo;
@@ -220,10 +220,12 @@ async function generateCharts() {
     infoPranchaAferida.innerText = floatParaFloatFormatado(pranchaAferidaValor)
     infoMetaAlcancada.innerHTML = metaAlcancadaHTML;
 
-    jaFiltradoParalisacao.forEach(item => { 
+    paralisacaoSelecionada.innerHTML = '';
+    jaFiltradoParalisacao.forEach(item => {
         if (item == "'undefined'") return;
         paralisacaoSelecionada.innerHTML += `<li class="listagem-paralisacao">- ${item.slice(1, -1)}</li>`;
     })
+
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
 
     if(totalVolumeDiaPeriodoLabels > 10){
@@ -237,5 +239,5 @@ async function generateCharts() {
             tagGraficoDiaPeriodo.style.width = ''
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
             tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
-    }
+        }
     }

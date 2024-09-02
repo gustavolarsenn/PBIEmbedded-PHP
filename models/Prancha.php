@@ -44,10 +44,10 @@ class Prancha {
         try{
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM pranchareports ORDER BY CAST(periodo_inicial AS date) DESC');
             $stmt->execute();
-            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $stmt->fetchAll()]);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['erro' => $e->getMessage()]);
         }
     }
@@ -59,10 +59,10 @@ class Prancha {
             CONCAT(LPAD(HOUR(periodo_inicial), 2, 0), ':' ,RPAD(MINUTE(periodo_inicial), 2, 0), ' x ', LPAD(HOUR(periodo_final), 2, 0), ':' ,RPAD(MINUTE(periodo_final), 2, 0)) AS periodo,
             data, TIME_TO_SEC(duracao) AS duracao, TIME_TO_SEC(chuva) AS chuva, TIME_TO_SEC(transporte) AS transporte, TIME_TO_SEC(forca_maior) AS forca_maior, TIME_TO_SEC(outros) AS outros, TIME_TO_SEC(horas_operacionais) AS horas_operacionais, volume, meta, observacao FROM pranchareports WHERE navio = :navio");
             $stmt->execute([':navio' => $navio]);
-            $log->info('Dados do navio listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Dados do navio listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $stmt->fetchAll()]);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar dados do navio', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar dados do navio', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['message' => $e->getMessage()]);
         }
     }

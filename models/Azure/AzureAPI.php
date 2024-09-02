@@ -45,11 +45,11 @@ class AzureAPI {
     
             $response = ApiCalls::apiCall('POST', 'https://login.microsoftonline.com/' . $this->tenant_id . '/oauth2/v2.0/token', $params, []);
     
-            $log->info('Token de autenticação do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Token de autenticação do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return json_decode($response)->access_token;
         } catch (Exception $e) {
-            $log->error('Erro ao obter token de autenticação do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao obter token de autenticação do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
@@ -94,11 +94,11 @@ class AzureAPI {
     
             $embedToken = json_decode(ApiCalls::apiCall('POST', "https://api.powerbi.com/v1.0/myorg/GenerateToken", $embedTokenParams, $header))->token;
     
-            $log->info('Token de Embed do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Token de Embed do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return $embedToken;
         } catch (Exception $e) {
-            $log->error('Erro ao obter token de Embed do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao obter token de Embed do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
@@ -122,7 +122,7 @@ class AzureAPI {
     
             $parametrosEmbed = ApiCalls::apiCall('GET', $embedParamsAPI, [], $header);
     
-            $log->info('Parâmetros para Embed do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Parâmetros para Embed do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             $parametros_json = json_decode($parametrosEmbed);
 
@@ -138,7 +138,7 @@ class AzureAPI {
         
             return $reportEmbedConfig;
         } catch (Exception $e) {
-            $log->error('Erro ao obter parâmetros para Embed do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao obter parâmetros para Embed do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
@@ -165,11 +165,11 @@ class AzureAPI {
     
             $response = ApiCalls::apiCall('POST', $url, $params, $header);
 
-            $log->info('Token de autenticação da Azure obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Token de autenticação da Azure obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return json_decode($response)->access_token;
         } catch (Exception $e) {
-            $log->error('Erro ao obter token de autenticação da Azure', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao obter token de autenticação da Azure', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
@@ -196,11 +196,11 @@ class AzureAPI {
 
             $response = ApiCalls::apiCall('POST', $url, [], $header);
 
-            $log->info('Capacidade do PowerBI ' . ($action ? 'ligada' : 'desligada') . ' com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Capacidade do PowerBI ' . ($action ? 'ligada' : 'desligada') . ' com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return $response;
         } catch (Exception $e) {
-            $log->error('Erro ao ' . ($action ? 'ligar' : 'desligar') . ' capacidade do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao ' . ($action ? 'ligar' : 'desligar') . ' capacidade do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
@@ -224,11 +224,11 @@ class AzureAPI {
             ];
                 $response = ApiCalls::apiCall('GET', $url, [], $header);
     
-            $log->info('Status da capacidade do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
+            $log->info('Status da capacidade do PowerBI obtido com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return json_decode($response)->properties->state;
         } catch (Exception $e) {
-            $log->error('Erro ao obter status da capacidade do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao obter status da capacidade do PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_decode($e->getMessage());
         }
     }
