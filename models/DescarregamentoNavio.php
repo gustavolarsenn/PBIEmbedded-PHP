@@ -2,13 +2,6 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
     class DescarregamentoNavio{
         private $pdo;
         private $no;
@@ -24,9 +17,7 @@ use Monolog\Handler\StreamHandler;
         private $cliente_armazem_lote_di_produto;
         private $produto;
         private $observacao;
-        private const LOG = 'descarregamento_navio';
         private const LOG_FILE = 'DescarregamentoNavio';
-        private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
         public function __construct($pdo, $no, $navio, $ticket, $placa, $peso, $data, $periodo, $cliente, $porao, $armazem, $cliente_armazem_lote_di_produto, $produto, $observacao){
             $this->pdo = $pdo;
             $this->no = $no;
@@ -45,10 +36,7 @@ use Monolog\Handler\StreamHandler;
         }
 
         public function criarRegistro(){
-            $log = new Logger(self::LOG);
-            $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-            $emailErrorHandler = new EmailErrorHandler();
-            $log->pushHandler($emailErrorHandler);
+            $log = AppLogger::getInstance(self::LOG_FILE);
             try {
                 $stmt = $this->pdo->prepare('INSERT INTO shipdischarging (navio, ticket, placa, peso, data, periodo, cliente, porao, armazem, cliente_armazem_lote_di_produto, produto, observacao) VALUES (:ticket, :placa, :peso, :data, :periodo, :cliente, :porao, :armazem, :cliente_armazem_lote_di_produto, :produto, :observacao)');
                 $stmt->execute([
@@ -73,10 +61,7 @@ use Monolog\Handler\StreamHandler;
     }
 
     public static function buscarTodosDados($pdo){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipdischarging');
             $stmt->execute();
@@ -89,10 +74,7 @@ use Monolog\Handler\StreamHandler;
     }
 
     public function buscarRegistroPorNum(){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM shipdischarging WHERE no = :no');
             $stmt->execute([':no' => $this->no]);
@@ -105,10 +87,7 @@ use Monolog\Handler\StreamHandler;
     }
 
     public function pegarDadosNavioRealizado($pdo, $navio){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipdischarging WHERE navio = :navio');
             $stmt->bindParam(':navio', $navio);
@@ -123,8 +102,7 @@ use Monolog\Handler\StreamHandler;
     }
 
     public function pegarDadosNavioPlanejado($pdo, $navio){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $pdo->prepare('SELECT * FROM shipplanned WHERE navio = :navio');
             $stmt->bindParam(':navio', $navio);
@@ -139,8 +117,7 @@ use Monolog\Handler\StreamHandler;
     }
 
     public function pegarNaviosUnicos($pdo){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM shipdischarging ORDER BY CAST(data AS date) DESC');
             $stmt->execute();

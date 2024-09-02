@@ -1,7 +1,4 @@
 <?php
-
-
-
 require_once __DIR__ . '\\..\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
@@ -11,27 +8,16 @@ require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 
 require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class RelatorioPBI {
     private $pdo;
     private const LOG_FILE = 'PowerBI';
-    private const LOG = 'relatorio_pbi';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
     }
 
     public function pegarRelatoriosAtivos(){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $sql = "SELECT * FROM relatorio_pbi WHERE ativo = 1";
             $stmt = $this->pdo->prepare($sql);
@@ -61,10 +47,7 @@ class RelatorioPBI {
     function gerarRelatorioPBI($actualLink){
         $capacidade = new Capacidade();
     
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
 
         SessionManager::checarSessao();
     

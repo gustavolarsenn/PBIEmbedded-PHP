@@ -1,9 +1,8 @@
 <?php
 
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+require_once __DIR__ . '\\config.php';
 
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+require_once CAMINHO_BASE . '\\config\\AppLogger.php';
 
 class Database {
     private $servername = "localhost";
@@ -12,13 +11,9 @@ class Database {
     private $dbname = "zport-db";
     private $conn;
     private const LOG_FILE = 'Database';
-    private const LOG = 'database';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
-
 
     public function __construct() {
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $log->info("Contecando-se ao banco de dados", ['user' => isset($_SESSION['id_usuario']) ? $_SESSION['id_usuario'] :  null, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             $this->conn = new PDO("mysql:host=$this->servername;dbname=$this->dbname", $this->username, $this->password);

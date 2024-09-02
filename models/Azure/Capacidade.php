@@ -5,25 +5,14 @@ require_once __DIR__ . '\\..\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\config\\database.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';    
 require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class Capacidade {
-    private const LOG = 'capacidade';
     private const LOG_FILE = 'Capacidade';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
     private const TENTATIVA_MAX = 10;
     private const TEMPO_ESPERA = 7;
 
     function ligarCapacity($possuiSessoesAtivasPBI, $azureAPI){
         /* Gerencia capacidade (cluster), e liga quando tiver usuário acessando */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         
         $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER']]);
     

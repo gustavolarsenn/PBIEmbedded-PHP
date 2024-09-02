@@ -2,21 +2,13 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
 require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 
 class TipoUsuario{
     private $pdo;
     private $tipo;
     private $descricao;
-    private const LOG = 'TipoUsuario';
     private const LOG_FILE = 'tipo_usuario';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
-    
     public function __construct($pdo, $tipo, $descricao){
         $this->pdo = $pdo;
         $this->tipo = $tipo;
@@ -24,10 +16,7 @@ class TipoUsuario{
     }
 
     public function pegarTipos(){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT DISTINCT id, tipo FROM tipo_usuario');
             $stmt->execute();

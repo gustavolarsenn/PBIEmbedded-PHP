@@ -2,13 +2,6 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class PermissoesPagina {
     private $pdo;
     private $titulo;
@@ -16,9 +9,6 @@ class PermissoesPagina {
     private $id_pagina;
     private $id_usuario;
     private const LOG_FILE = 'PermissoesPagina';
-    private const LOG = 'permissoes_pagina';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
-
     public function __construct($pdo, $titulo, $id_tipo_usuario, $id_pagina, $id_usuario)
     {
         $this->pdo = $pdo;
@@ -30,10 +20,7 @@ class PermissoesPagina {
 
     public function verificarPermissao()
     {
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -68,10 +55,7 @@ class PermissoesPagina {
 
     public function paginasPermitidas()
     {
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -108,10 +92,7 @@ class PermissoesPagina {
     }
 
     public function pegarCategorias(){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 

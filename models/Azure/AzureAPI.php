@@ -4,12 +4,6 @@ require_once __DIR__ . '\\..\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\models\\API\\ApiCalls.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBiReportDetails.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\EmbedConfig.php';
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class AzureAPI {
     private $username;
     private $password;
@@ -21,8 +15,6 @@ class AzureAPI {
     private $resource_group;
     private $capacity_name;
     private const LOG_FILE = 'AzureAPI';
-    private const LOG = 'azure_api';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
 
     public function __construct() {
         $this->username = getenv('PBI_USERNAME');
@@ -41,10 +33,7 @@ class AzureAPI {
         Pega token para fazer chamadas em API do PowerBI.
         Utiliza informações de login, senha e id do cliente (Azure).
         */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $params = [
                 'grant_type' => 'password',
@@ -72,12 +61,7 @@ class AzureAPI {
 
         TODO: Adicionar informações de RLS (Row Level Security) para permitir visualização de dados específicos.
         */
-
-        
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $header = [
                 'Content-Type: application/json',
@@ -124,12 +108,7 @@ class AzureAPI {
         Gera link para realizar o "embed" e permitir a visualizar o relatório.
         Usa o embed token e id do relatório e dataset.
         */
-
-        
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $token = $this->pegarAuthToken();
             $embedToken = $this->pegarEmbedToken($token, $report_id,  $dataset_id, $rlsInfo);
@@ -169,11 +148,7 @@ class AzureAPI {
         Gera token para poder usar API da Azure e manipular capacidade (cluster) de PowerBI.
         Usando id do cliente, segredo do cliente.
         */
-
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $url = "https://login.windows.net/" . $this->tenant_id . "/oauth2/token";
     
@@ -204,11 +179,7 @@ class AzureAPI {
         Liga ou desliga a capacidade (cluster) de PowerBI.
         Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
         */
-        
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $actionApi = $action ? 'resume' : 'suspend';
 
@@ -239,11 +210,7 @@ class AzureAPI {
         Pega status atual da capacidade (cluster) de PowerBI.
         Utiliza token da Azure para fazer chamada na API da Azure e informações da capacidade.
         */
-
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $token = $this->pegarTokenAzureCapacity();
     

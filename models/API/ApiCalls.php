@@ -1,23 +1,10 @@
 <?php
 
 require_once __DIR__ . '\\..\\..\\config\\config.php';
-
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class ApiCalls{
     private const LOG_FILE = 'ApiCalls';
-    private const LOG = 'api';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
     public static function apiCall($method, $url, $params, $requestHeader) {
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $log->info("Inicio de chamada em API", ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['HTTP_REFERER'], 'method' => $method, 'url' => $url]);
             $ch = curl_init();

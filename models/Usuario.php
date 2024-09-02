@@ -5,12 +5,7 @@ require_once __DIR__ . '\\..\\config\\config.php';
 require_once CAMINHO_BASE . '\\models\\SessionManager.php';
 require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
 require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
+require_once CAMINHO_BASE . '\\config\\AppLogger.php';
 
 class Usuario
 {
@@ -21,8 +16,6 @@ class Usuario
     private $tipo;
     private $ativo;
     private const LOG_FILE = 'Usuario';
-    private const LOG = 'usuario';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
 
     public function __construct($pdo, $nome, $email, $senha, $tipo = 'cliente', $ativo = 1)
     {
@@ -37,10 +30,7 @@ class Usuario
     public function pegarUsuarios()
     {
         /* Busca listagem de todos os usuários*/
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
@@ -66,10 +56,7 @@ class Usuario
 
     public function excluir(){
         /* Inativa usuários (não exclui, somente coloca um flag no registro dizendo que está inativo) */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('UPDATE usuario SET ativo = 0 WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -84,10 +71,7 @@ class Usuario
 
     public function editar(){
         /* Edita usuários no Banco de Dados */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('UPDATE usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
             $stmt->execute([$this->nome, $this->tipo, $this->ativo, $this->email]);
@@ -103,10 +87,7 @@ class Usuario
 
     public function registrar() {
         /* Registra novos usuários a partir de tela de login */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -129,10 +110,7 @@ class Usuario
     }
     public function registrarComoAdmin() {
         /* Registra novos usuários a partir de tela de cadastro de usuários (necessário estar logado) */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM usuario WHERE email = ?');
             $stmt->execute([$this->email]);
@@ -157,10 +135,7 @@ class Usuario
     public function login()
     {
         /* Realiza login de usuários a partir de tela de login */
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('
                 SELECT 
@@ -208,10 +183,7 @@ class Usuario
         public function logout()
         /* Faz o logout, inativndo sessão do PBI e destruindo a sessão */
         {
-            $log = new Logger(self::LOG);
-            $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-            $emailErrorHandler = new EmailErrorHandler();
-            $log->pushHandler($emailErrorHandler);
+            $log = AppLogger::getInstance(self::LOG_FILE);
             try {
                 $sessao_pbi = new PowerBISession($this->pdo, $_SESSION['id_usuario']);
                 $sessao_pbi->inativarSessaoPBI();

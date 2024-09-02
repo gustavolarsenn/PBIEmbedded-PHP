@@ -2,13 +2,6 @@
 
 require_once __DIR__ . '\\..\\config\\config.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
-
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-
 class Prancha {
     private $pdo;
     private $navio;
@@ -27,8 +20,6 @@ class Prancha {
     private $meta;
     private $observacao;
     private const LOG_FILE = 'Prancha';
-    private const LOG = 'prancha';
-    private const CAMINHO_LOG = CAMINHO_BASE . '\\logs\\' . self::LOG_FILE . '.log';
     public function __construct($pdo, $navio, $relatorio_no, $ternos, $periodo_inicial, $periodo_final, $data, $duracao, $chuva, $transporte, $forca_maior, $outros, $horas_operacionais, $volume, $meta, $observacao){
         $this->pdo = $pdo;
         $this->navio = $navio;
@@ -49,10 +40,7 @@ class Prancha {
     }
     
     public function pegarNaviosUnicos($pdo){
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try{
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM pranchareports ORDER BY CAST(periodo_inicial AS date) DESC');
             $stmt->execute();
@@ -65,10 +53,7 @@ class Prancha {
     }
 
     public function pegarDadosNavio($pdo, $navio) {
-        $log = new Logger(self::LOG);
-        $log->pushHandler(new StreamHandler(self::CAMINHO_LOG, Logger::DEBUG));
-        $emailErrorHandler = new EmailErrorHandler();
-        $log->pushHandler($emailErrorHandler);
+        $log = AppLogger::getInstance(self::LOG_FILE);
         try{
             $stmt = $pdo->prepare("SELECT navio, relatorio_no, ternos, periodo_inicial, periodo_final, 
             CONCAT(LPAD(HOUR(periodo_inicial), 2, 0), ':' ,RPAD(MINUTE(periodo_inicial), 2, 0), ' x ', LPAD(HOUR(periodo_final), 2, 0), ':' ,RPAD(MINUTE(periodo_final), 2, 0)) AS periodo,
