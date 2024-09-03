@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '\\config.php';
-require_once CAMINHO_BASE . '\\config\\ServicoMailer.php';
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+require_once __DIR__ . '/config.php';
+require_once CAMINHO_BASE . '/config/ServicoMailer.php';
+require_once CAMINHO_BASE . '/vendor/autoload.php';
 
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;

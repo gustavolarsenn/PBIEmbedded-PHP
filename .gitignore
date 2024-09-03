@@ -1,3 +1,4 @@
 *.mp4
 *.log
 *.bat
+./config/last_email_sent_times.json

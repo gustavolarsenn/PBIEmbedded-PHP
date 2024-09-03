@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '\\..\\..\\config\\config.php'; 
+require_once __DIR__ . '/../../config/config.php'; 
 
-require_once CAMINHO_BASE . '\\models\\SessionManager.php';
-require_once CAMINHO_BASE . '\\models\\PermissoesPagina.php';
-require_once CAMINHO_BASE . '\\config\\database.php';
+require_once CAMINHO_BASE . '/models/SessionManager.php';
+require_once CAMINHO_BASE . '/models/PermissoesPagina.php';
+require_once CAMINHO_BASE . '/config/database.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -47,12 +47,12 @@ if ($possuiPermissao) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-    <?php include_once CAMINHO_BASE . '\\components\\loader.php'?>
+    <?php include_once CAMINHO_BASE . '/components/loader.php'?>
 
     <div id="main-wrapper">
-        <?php include_once CAMINHO_BASE . '\\components\\header.php'?>
+        <?php include_once CAMINHO_BASE . '/components/header.php'?>
 
-        <?php include_once CAMINHO_BASE . '\\components\\sidebar.php'?>
+        <?php include_once CAMINHO_BASE . '/components/sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
@@ -174,7 +174,7 @@ if ($possuiPermissao) {
                     </div>
                 </div>
             </div>
-        <?php include_once CAMINHO_BASE . '\\components\\footer.php'?>
+        <?php include_once CAMINHO_BASE . '/components/footer.php'?>
 
     <!-- Filtros -->
     <script src="<?php echo $urlBase; ?>js/relatorios/MultiSelect.js"></script>
@@ -199,5 +199,5 @@ if ($possuiPermissao) {
 </html>
 <?php
 } else {
-    include_once CAMINHO_BASE . '\\components\\pagina_desconhecida.php';
+    include_once CAMINHO_BASE . '/components/pagina_desconhecida.php';
 }

@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '\\..\\config\\config.php';
+require_once __DIR__ . '/../config/config.php';
 
-require_once CAMINHO_BASE . '\\models\\Usuario.php';
+require_once CAMINHO_BASE . '/models/Usuario.php';
 
 class SessionManager{
     private const LOG_FILE = 'GerenciadorSessao';

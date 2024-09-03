@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '\\config.php';
+require_once __DIR__ . '/config.php';
 
-require_once CAMINHO_BASE . '\\config\\EmailErrorHandler.php';
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+require_once CAMINHO_BASE . '/config/EmailErrorHandler.php';
+require_once CAMINHO_BASE . '/vendor/autoload.php';
 
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
@@ -16,7 +16,7 @@ class AppLogger
     private $emailErrorHandler;
     private $nome_log;
     private static $loggers = [];
-    private function __construct($nome_log, $caminho_log = CAMINHO_BASE . '\\logs\\', $emailErrorHandler = null)
+    private function __construct($nome_log, $caminho_log = CAMINHO_BASE . '/logs/', $emailErrorHandler = null)
     {
         $this->caminho_log = $caminho_log;
         $this->logger = new Logger('app');
@@ -25,14 +25,14 @@ class AppLogger
         // $this->iniciarLogger();
     }
 
-    public static function getInstance($nome_log, $caminho_log = CAMINHO_BASE . '\\logs\\', $emailErrorHandler = null)
+    public static function getInstance($nome_log, $caminho_log = CAMINHO_BASE . '/logs/', $emailErrorHandler = null)
     {
         $log_key = $nome_log;
         
         if (!isset(self::$loggers[$log_key])) {
             $emailErrorHandler = $emailErrorHandler ?? new EmailErrorHandler();
             $logger = new Logger($nome_log);
-            $logger->pushHandler(new StreamHandler($caminho_log . date('Y') . '\\' . date('m') . '\\' . $nome_log . '.log',Logger::DEBUG));
+            $logger->pushHandler(new StreamHandler($caminho_log . date('Y') . '/' . date('m') . '/' . $nome_log . '.log',Logger::DEBUG));
             $logger->pushHandler($emailErrorHandler);
 
             self::$loggers[$log_key] = $logger;

@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '\\..\\config\\config.php';
+require_once __DIR__ . '/../config/config.php';
 
-require_once CAMINHO_BASE . '\\models\\SessionManager.php';
-require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';
-require_once CAMINHO_BASE . '\\models\\Azure\\Capacidade.php';
-require_once CAMINHO_BASE . '\\config\\AppLogger.php';
+require_once CAMINHO_BASE . '/models/SessionManager.php';
+require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';
+require_once CAMINHO_BASE . '/models/Azure/Capacidade.php';
+require_once CAMINHO_BASE . '/config/AppLogger.php';
 
 class Usuario
 {

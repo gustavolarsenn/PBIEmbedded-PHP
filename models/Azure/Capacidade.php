@@ -1,10 +1,10 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config\\config.php';
+require_once __DIR__ . '/../../config/config.php';
 
-require_once CAMINHO_BASE . '\\config\\database.php';
-require_once CAMINHO_BASE . '\\models\\PBI\\PowerBISession.php';    
-require_once CAMINHO_BASE . '\\models\\Azure\\AzureAPI.php';
+require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';    
+require_once CAMINHO_BASE . '/models/Azure/AzureAPI.php';
 class Capacidade {
     private const LOG_FILE = 'Capacidade';
     private const TENTATIVA_MAX = 10;

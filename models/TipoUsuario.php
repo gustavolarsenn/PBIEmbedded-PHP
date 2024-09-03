@@ -1,8 +1,8 @@
 <?php
 
-require_once __DIR__ . '\\..\\config\\config.php';
+require_once __DIR__ . '/../config/config.php';
 
-require_once CAMINHO_BASE . '\\vendor\\autoload.php';
+require_once CAMINHO_BASE . '/vendor/autoload.php';
 
 class TipoUsuario{
     private $pdo;

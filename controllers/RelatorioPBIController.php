@@ -1,11 +1,11 @@
 <?php
 
-require_once __DIR__ . '\\..\\config\\config.php';
+require_once __DIR__ . '/../config/config.php';
 
-require_once CAMINHO_BASE . '\\models\\PBI\\RelatorioPBI.php';
-require_once CAMINHO_BASE . '\\config\\database.php';
+require_once CAMINHO_BASE . '/models/PBI/RelatorioPBI.php';
+require_once CAMINHO_BASE . '/config/database.php';
 
-require_once CAMINHO_BASE . '\\config\\AppLogger.php';
+require_once CAMINHO_BASE . '/config/AppLogger.php';
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
 

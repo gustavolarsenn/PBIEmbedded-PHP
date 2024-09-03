@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config\\config.php';
-require_once CAMINHO_BASE . '\\models\\API\\ApiCalls.php';
-require_once CAMINHO_BASE . '\\models\\PBI\\PowerBiReportDetails.php';
-require_once CAMINHO_BASE . '\\models\\PBI\\EmbedConfig.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once CAMINHO_BASE . '/models/API/ApiCalls.php';
+require_once CAMINHO_BASE . '/models/PBI/PowerBiReportDetails.php';
+require_once CAMINHO_BASE . '/models/PBI/EmbedConfig.php';
 class AzureAPI {
     private $username;
     private $password;

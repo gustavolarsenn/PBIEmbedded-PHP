@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '\\..\\..\\config\\config.php';
+require_once __DIR__ . '/../../config/config.php';
 class ApiCalls{
     private const LOG_FILE = 'ApiCalls';
     public static function apiCall($method, $url, $params, $requestHeader) {
