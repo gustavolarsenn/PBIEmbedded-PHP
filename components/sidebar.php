@@ -24,6 +24,7 @@ $categoriasPermitidas = array_map(function($pagina) {
 $categorias = array_filter($categorias, function($categoria) use ($categoriasPermitidas) {
     return in_array($categoria['categoria'], $categoriasPermitidas);
 });
+
 ?>
 
 <div class="quixnav">

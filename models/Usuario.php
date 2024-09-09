@@ -6,6 +6,7 @@ require_once CAMINHO_BASE . '/models/SessionManager.php';
 require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';
 require_once CAMINHO_BASE . '/models/Azure/Capacidade.php';
 require_once CAMINHO_BASE . '/config/AppLogger.php';
+require_once CAMINHO_BASE . '/config/Database.php';
 
 class Usuario
 {
@@ -19,6 +20,7 @@ class Usuario
 
     public function __construct($pdo, $nome, $email, $senha, $tipo = 'cliente', $ativo = 1)
     {
+        // $this->pdo = $pdo;
         $this->pdo = $pdo;
         $this->nome = $nome;
         $this->email = $email;
@@ -43,8 +45,14 @@ class Usuario
                 u.tipo = tu.id 
             ');
             $stmt->execute();
-            $usuarios = $stmt->fetchAll();
-    
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $usuarios[] = $row;
+            }
+
+            $stmt->close();
+            
             $log->info('Usuários listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 
             return json_encode($usuarios);
@@ -59,8 +67,10 @@ class Usuario
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('UPDATE Usuario SET ativo = 0 WHERE email = ?');
-            $stmt->execute([$this->email]);
-    
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $stmt->close();
+
             $log->info('Usuário' . $this->email . 'excluído (inativado) com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Usuário excluído com sucesso', 'email' => $this->email]);
         } catch (Exception $e) {
@@ -74,8 +84,9 @@ class Usuario
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('UPDATE Usuario SET nome = ?, tipo = ?, ativo = ? WHERE email = ?');
-            $stmt->execute([$this->nome, $this->tipo, $this->ativo, $this->email]);
-    
+            $stmt->bind_param('siis', $this->nome, $this->tipo, $this->ativo, $this->email);
+            $stmt->execute();
+            $stmt->close();
             $log->info('Usuário editado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Usuário editado com sucesso', 'email' => $this->email]);
         } catch (Exception $e) {
@@ -90,15 +101,24 @@ class Usuario
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM Usuario WHERE email = ?');
-            $stmt->execute([$this->email]);
-            $usuario = $stmt->fetch();
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $usuario[] = $row;
+            }
+            $stmt->close();
 
             if ($usuario) {
                 $log->info('Usuário com esse email (' . $this->email .') já existe', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
                 $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)');
-                $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT)]);
+                $hashedPassword = password_hash($this->senha, PASSWORD_DEFAULT);
+                $stmt->bind_param('sss', $this->nome, $this->email, $hashedPassword);
+                $stmt->execute();
+                $stmt->close();
                 
                 $log->info('Usuário ' . $this->email .' registrado com sucesso', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
@@ -113,16 +133,28 @@ class Usuario
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
             $stmt = $this->pdo->prepare('SELECT * FROM Usuario WHERE email = ?');
-            $stmt->execute([$this->email]);
-            $usuario = $stmt->fetch();
+
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $usuario[] = $row;
+            }
+
+            $stmt->close();
 
             if ($usuario) {
                 $log->info('Usuário com esse email (' . $this->email .') já existe', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
                 $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
-                $stmt->execute([$this->nome, $this->email, password_hash($this->senha, PASSWORD_DEFAULT), $this->tipo]);
-                
+                $hashedPassword = password_hash($this->senha, PASSWORD_DEFAULT);
+                $log->info('Registrando usuário ', ['nome' => $this->nome, 'email' => $this->email, 'tipo' => $this->tipo]);
+                $stmt->bind_param('ssss', $this->nome, $this->email, $hashedPassword, $this->tipo);
+                $stmt->execute();
+                $stmt->close();
+
                 $log->info('Usuário ' . $this->email .' registrado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
             }
@@ -153,10 +185,25 @@ class Usuario
                 WHERE 
                     u.email = ?
             ');
-            $stmt->execute([$this->email]);
-            $usuario = $stmt->fetch();
-            
-            if (!$usuario) {
+
+            $stmt->bind_param('s', $this->email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $usuario[] = $row;
+            }
+
+            $stmt->close();
+
+            if(count($usuario) > 1){
+                $log->error('Erro ao realizar login, mais de um usuário com o mesmo email', ['email' => $this->email]);
+                return json_encode(['sucesso' => false, 'mensagem' => 'Erro ao realizar login, mais de um usuário com o mesmo email']);
+            }
+
+            $usuario = $usuario[0];
+
+            if (!$usuario) {    
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado']);
             }
 

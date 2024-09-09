@@ -25,7 +25,7 @@ function removerUndefinedString(array) {
 async function gerarTabelaUsuarios(){
 
     filtros.tiposUsuariosLista = await buscarTipoUsuario();
-    
+
     filtros.tiposUsuariosLista.forEach(tipo => {
         selectTipo.innerHTML += `<option value="${tipo.id}">${tipo.tipo}</option>`;
     });
@@ -280,7 +280,6 @@ async function criarUsuario(){
     
             const formData = new FormData(formRegistroUsuario);
             const actionURL = formRegistroUsuario.getAttribute('action');
-           
             if (formData.get('senha') !== formData.get('confirmarSenha')) {
                 mensagemCadastroDiv.innerText = 'As senhas não conferem!';
                 return

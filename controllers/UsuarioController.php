@@ -7,6 +7,7 @@ require_once CAMINHO_BASE . '/models/SessionManager.php';
 
 $pdo = (new Database())->getConnection();
 
+
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {

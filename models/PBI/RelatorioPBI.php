@@ -21,11 +21,15 @@ class RelatorioPBI {
 
         SessionManager::checarSessao();
         try {
-            $sql = "SELECT * FROM RelatorioPBI WHERE ativo = 1";
-            $stmt = $this->pdo->prepare($sql);
+            $stmt = $this->pdo->prepare("SELECT * FROM RelatorioPBI WHERE ativo = 1");
             $stmt->execute();
-            $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $reports[] = $row;
+            }
+            
+            $stmt->close();
     
             $reportsArray = array_reduce($reports, function($carry, $report) {
             $carry[$report['relatorio_clean']] = [
@@ -96,12 +100,16 @@ class RelatorioPBI {
 
         SessionManager::checarSessao();
         try {
-            $sql = 'SELECT relatorio, relatorio_clean FROM RelatorioPBI WHERE ativo = 1 AND relatorio_clean = :relatorio_clean';
-            $stmt = $this->pdo->prepare($sql);
-            $stmt->bindValue(':relatorio_clean', $relatorioClean);
+            $stmt = $this->pdo->prepare('SELECT relatorio, relatorio_clean FROM RelatorioPBI WHERE ativo = 1 AND relatorio_clean = ?');
+            $stmt->bind_param('s', $relatorioClean);
             $stmt->execute();
-            $report = $stmt->fetch(PDO::FETCH_ASSOC);
-            $stmt->closeCursor();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $report[] = $row;
+            }
+
+            $stmt->close();
 
             if (!$report) {
                 $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);

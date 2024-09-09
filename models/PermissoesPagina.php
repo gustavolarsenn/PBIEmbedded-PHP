@@ -24,7 +24,7 @@ class PermissoesPagina {
         try {
             $stmt = $this->pdo->prepare('
             SELECT 
-                p.pagina 
+                p.pagina, p.pagina_clean
             FROM 
                 PermissoesPagina pp
             LEFT JOIN 
@@ -38,8 +38,16 @@ class PermissoesPagina {
             AND 
                 pp.ativo = 1
             ');
-            $stmt->execute([$this->id_tipo_usuario, $this->titulo]);
-            $permissoes = $stmt->fetchAll();
+            $stmt->bind_param('ss', $this->id_tipo_usuario, $this->titulo);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $permissoes[] = $row;
+            }
+
+            $stmt->close();
+
             if (count($permissoes) > 0) {
                 $log->info('Permissão concedida na página ' . $this->titulo, ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
                 return true;
@@ -81,8 +89,15 @@ class PermissoesPagina {
             AND
                 pp.ativo = 1;
             ');
-            $stmt->execute([$this->id_usuario]);
-            $permissoes = $stmt->fetchAll();
+            $stmt->bind_param('i', $this->id_usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $permissoes[] = $row;
+            }
+
+            $stmt->close();
             $log->info('Busca por páginas permitadas realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $permissoes;
         } catch (Exception $e) {
@@ -101,7 +116,12 @@ class PermissoesPagina {
                 CategoriasPagina
             ');
             $stmt->execute();
-            $categorias = $stmt->fetchAll();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $categorias[] = $row;
+            }
+            $stmt->close();
             $log->info('Busca por categorias realizada com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
             return $categorias;
         } catch (Exception $e) {

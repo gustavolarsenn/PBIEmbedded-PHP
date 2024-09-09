@@ -66,8 +66,6 @@ formRegistro.addEventListener('submit', function(event) {
     const formData = new FormData(formRegistro);
     const actionURL = formRegistro.getAttribute('action');
 
-    console.log(formData.forEach((value, key) => console.log(key, value)));
-
     fetch(actionURL, {
         method: 'POST',
         body: formData,

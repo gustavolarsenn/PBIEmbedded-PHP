@@ -18,9 +18,15 @@ class TipoUsuario{
     public function pegarTipos(){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('SELECT DISTINCT id, tipo FROM tipo_usuario');
+            $stmt = $this->pdo->prepare('SELECT DISTINCT id, tipo FROM tipoUsuario');
             $stmt->execute();
-            $tipo_usuarios =  $stmt->fetchAll();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $tipo_usuarios[] = $row;
+            }
+
+            $stmt->close();
 
             $log->info('Tipos de usuário listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
 

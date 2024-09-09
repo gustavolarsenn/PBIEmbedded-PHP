@@ -25,10 +25,17 @@ class Navio {
     public function pegarInfoNavio($pdo, $navio){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try{
-            $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM Navio WHERE navio = :navio");
-            $stmt->execute([':navio' => $navio]);
+            $stmt = $pdo->prepare("SELECT navio, data, produto, berco, volume_manifestado, modalidade, prancha_minima FROM Navio WHERE navio = ?");
+            $stmt->bind_param('s', $navio);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $navio_final[] = $row;
+            }
+
             $log->info('Informações do navio listadas', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            return json_encode(['data' => $stmt->fetchAll()]);
+            return json_encode(['data' => $navio_final]);
         } catch (Exception $e) {
             $log->error("Exceção ao listar informações do navio", ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['message' => $e->getMessage()]);

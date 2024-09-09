@@ -39,7 +39,8 @@ class EmailErrorHandler extends AbstractProcessingHandler
         $subject = 'Erro na aplicação ' . $record['level_name'];
         $body = $message . '<br>' . implode('<br>', $context);
 
-        $this->mailerService->enviarEmailErro($this->recipient, $subject, $body);
+        # TODO: Uncomment this line to send the email
+        // $this->mailerService->enviarEmailErro($this->recipient, $subject, $body);
 
         // Update the last email sent time
         self::$lastEmailSentTime[$errorHash] = $currentTime;

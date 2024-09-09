@@ -44,8 +44,15 @@ class Prancha {
         try{
             $stmt = $pdo->prepare('SELECT DISTINCT navio FROM ControlePrancha ORDER BY CAST(periodo_inicial AS date) DESC');
             $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $navios[] = $row;
+            }
+
+            $stmt->close();
             $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            return json_encode(['data' => $stmt->fetchAll()]);
+            return json_encode(['data' => $navios]);
         } catch (Exception $e) {
             $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['erro' => $e->getMessage()]);
@@ -57,10 +64,18 @@ class Prancha {
         try{
             $stmt = $pdo->prepare("SELECT navio, relatorio_no, ternos, periodo_inicial, periodo_final, 
             CONCAT(LPAD(HOUR(periodo_inicial), 2, 0), ':' ,RPAD(MINUTE(periodo_inicial), 2, 0), ' x ', LPAD(HOUR(periodo_final), 2, 0), ':' ,RPAD(MINUTE(periodo_final), 2, 0)) AS periodo,
-            data, TIME_TO_SEC(duracao) AS duracao, TIME_TO_SEC(chuva) AS chuva, TIME_TO_SEC(transporte) AS transporte, TIME_TO_SEC(forca_maior) AS forca_maior, TIME_TO_SEC(outros) AS outros, TIME_TO_SEC(horas_operacionais) AS horas_operacionais, volume, meta, observacao FROM ControlePrancha WHERE navio = :navio");
-            $stmt->execute([':navio' => $navio]);
+            data, TIME_TO_SEC(duracao) AS duracao, TIME_TO_SEC(chuva) AS chuva, TIME_TO_SEC(transporte) AS transporte, TIME_TO_SEC(forca_maior) AS forca_maior, TIME_TO_SEC(outros) AS outros, TIME_TO_SEC(horas_operacionais) AS horas_operacionais, volume, meta, observacao FROM ControlePrancha WHERE navio = ?");
+            $stmt->bind_param('s', $navio);
+            $stmt->execute();
+            $result = $stmt->get_result();
+
+            while ($row = $result->fetch_assoc()) {
+                $navios[] = $row;
+            }
+
+            $stmt->close();
             $log->info('Dados do navio listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
-            return json_encode(['data' => $stmt->fetchAll()]);
+            return json_encode(['data' => $navios]);
         } catch (Exception $e) {
             $log->error('Exceção ao listar dados do navio', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['message' => $e->getMessage()]);
