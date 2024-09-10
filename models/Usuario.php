@@ -104,7 +104,8 @@ class Usuario
             $stmt->bind_param('s', $this->email);
             $stmt->execute();
             $result = $stmt->get_result();
-
+            $usuario = [];
+                
             while ($row = $result->fetch_assoc()) {
                 $usuario[] = $row;
             }
@@ -189,6 +190,7 @@ class Usuario
             $stmt->bind_param('s', $this->email);
             $stmt->execute();
             $result = $stmt->get_result();
+            $usuario = [];
 
             while ($row = $result->fetch_assoc()) {
                 $usuario[] = $row;
@@ -200,12 +202,11 @@ class Usuario
                 $log->error('Erro ao realizar login, mais de um usuário com o mesmo email', ['email' => $this->email]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Erro ao realizar login, mais de um usuário com o mesmo email']);
             }
-
-            $usuario = $usuario[0];
-
             if (!$usuario) {    
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário não encontrado']);
             }
+
+            $usuario = $usuario[0];
 
             if (!$usuario['ativo']) {
                 $log->info("Tentativa de login com usuário inativo!", ['user' => $usuario['id']]);

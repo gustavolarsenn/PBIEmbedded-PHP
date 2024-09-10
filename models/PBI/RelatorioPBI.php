@@ -109,6 +109,17 @@ class RelatorioPBI {
                 $report[] = $row;
             }
 
+            if (!$report) {
+                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
+                return json_encode(['sucesso' => false, 'erro' => 'Relatório não encontrado']);
+            }
+
+            if (count($report) > 1) {
+                $log->error('Relatório duplicado. Será selecionado o primeiro.', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
+            }
+
+            $report = $report[0];
+
             $stmt->close();
 
             if (!$report) {

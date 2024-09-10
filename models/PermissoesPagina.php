@@ -41,7 +41,8 @@ class PermissoesPagina {
             $stmt->bind_param('ss', $this->id_tipo_usuario, $this->titulo);
             $stmt->execute();
             $result = $stmt->get_result();
-
+            $permissoes = [];
+            
             while ($row = $result->fetch_assoc()) {
                 $permissoes[] = $row;
             }
