@@ -30,7 +30,7 @@ async function gerarTabelaUsuarios(){
         selectTipo.innerHTML += `<option value="${tipo.id}">${tipo.tipo}</option>`;
     });
 
-    const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista
+    const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista.map(tipo => ({1: tipo.tipo, value: tipo.id, id: tipo.id, tipo: tipo.tipo}));
 
     filtros.jaFiltradoTipo = tiposUsuariosListaFormatada
     filtros.jaFiltradoStatus = filtros.statusUsuariosLista
@@ -38,7 +38,7 @@ async function gerarTabelaUsuarios(){
     let usuarios = await buscarUsuario();
 
     await carregarUsuarios(usuarios)
-    
+
     if (filtros.count < 1) {
         await generateFilters('tipo', tiposUsuariosListaFormatada, [], async function() { await gerarTabelaUsuarios() }, false);
         await generateFilters('status', filtros.statusUsuariosLista, [], async function() { await gerarTabelaUsuarios() }, false);    

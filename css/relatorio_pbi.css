@@ -53,6 +53,14 @@ body h2{
     width: 100% !important;
     background-color: transparent;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.report-container iframe{
+    border: none;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+
 }
 
 .error-container{
@@ -63,6 +71,7 @@ body h2{
     align-items: center;
     height: 100%;
     width: 100%;
+    border-radius: 5px;
 }
 
 #fullscreen{

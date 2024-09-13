@@ -21,6 +21,7 @@ class PowerBISession {
             $stmt->bind_param('i', $this->id_usuario);
             $stmt->execute();
             $result = $stmt->get_result();
+            $powerbi = [];
 
             while ($row = $result->fetch_assoc()) {
                 $powerbi[] = $row;
@@ -69,6 +70,7 @@ class PowerBISession {
             $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE data_validade > NOW()');
             $stmt->execute();
             $result = $stmt->get_result();
+            $powerbi = [];
 
             while ($row = $result->fetch_assoc()) {
                 $powerbi[] = $row;
