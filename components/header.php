@@ -6,7 +6,7 @@ $urlBase = '/'
 
 <div id="header-wrap">
     <div class="nav-header">
-        <a href="/views/index.php" class="brand-logo">
+        <a href="/index.php" class="brand-logo">
             <img class="logo-abbr" id='logo-mobile' src="/images/logo-zport-branca-3x.png" alt="">
             <!-- <img class="logo-compact" src="/images/logo-zport-branca-3x.png" alt=""> -->
             <img class="brand-title" id='logo-desktop' src="/images/logo-zport-branca-3x.png" alt="">

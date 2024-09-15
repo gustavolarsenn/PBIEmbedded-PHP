@@ -24,7 +24,7 @@ if ($possuiPermissao) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width,initial-scale=1">
-        <title>Controle de Prancha</title>
+        <title>Relatório - Controle de Prancha</title>
 
         <link rel="icon" type="image/png" href="/img/icone.png">
 
@@ -41,9 +41,9 @@ if ($possuiPermissao) {
 
     </style>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://microsoft.github.io/PowerBI-JavaScript/demo/node_modules/powerbi-client/dist/powerbi.js"></script>
-    <script src="http://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
+    <script src="https://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>

@@ -15,7 +15,7 @@ function logoutConfirmation() {
               error.innerHTML = response.error;
             } else {
               console.log("Logged out...");
-              location.assign('/views/login.php');
+              location.assign('/login.php');
             }
           });
           })

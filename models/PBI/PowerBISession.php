@@ -16,7 +16,7 @@ class PowerBISession {
         /* Cria sessão de usuário assim que ele acessa relatórios PowerBI. Caso ele já tiver sessão validar, renova por mais 1 hora */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
             $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->bind_param('i', $this->id_usuario);
             $stmt->execute();
@@ -37,13 +37,13 @@ class PowerBISession {
                 $stmt->close();
                 return;
             }
-            $log->info('Renovando sessão de PowerBI', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Renovando sessão de PowerBI', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
             $stmt = $this->pdo->prepare('UPDATE SessaoPBI SET data_validade = DATE_ADD(NOW(), INTERVAL 1 HOUR) WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->bind_param('i', $this->id_usuario);
             $stmt->execute();
             $stmt->close();
         } catch (Exception $e) {
-            $log->error('Erro ao criar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error('Erro ao criar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
         }
     }
 
@@ -56,9 +56,9 @@ class PowerBISession {
             $stmt->execute();
             $stmt->close();
 
-            $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Sessão de PowerBI inativada com sucesso', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
         } catch (Exception $e) {
-            $log->error('Erro ao inativar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error('Erro ao inativar sessão de PowerBI: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
         }
     }
     
@@ -66,7 +66,7 @@ class PowerBISession {
         /* Verifica se existe alguma sessão PowerBI ativa */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $log->info('Verificando se existem sessões ativas de PowerBI', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Verificando se existem sessões ativas de PowerBI', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
             $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE data_validade > NOW()');
             $stmt->execute();
             $result = $stmt->get_result();
@@ -79,13 +79,13 @@ class PowerBISession {
             $stmt->close();
 
             if ($powerbi) {
-                $log->info('Sessão de PowerBI ativa encontrada', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Sessão de PowerBI ativa encontrada', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
                 return true;
             }
-            $log->info('Nenhuma sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Nenhuma sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
             return false;
         } catch (Exception $e) {
-            $log->error('Erro ao buscar sessões de PowerBI ativas: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error('Erro ao buscar sessões de PowerBI ativas: ' . $e->getMessage(), ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
         }
     }
 }

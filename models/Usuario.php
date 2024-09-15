@@ -6,7 +6,7 @@ require_once CAMINHO_BASE . '/models/SessionManager.php';
 require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';
 require_once CAMINHO_BASE . '/models/Azure/Capacidade.php';
 require_once CAMINHO_BASE . '/config/AppLogger.php';
-require_once CAMINHO_BASE . '/config/Database.php';
+require_once CAMINHO_BASE . '/config/database.php';
 
 class Usuario
 {
@@ -53,11 +53,11 @@ class Usuario
 
             $stmt->close();
             
-            $log->info('Usuários listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Usuários listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
 
             return json_encode($usuarios);
         } catch (Exception $e) {
-            $log->error('Erro ao listar usuários', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao listar usuários', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -71,10 +71,10 @@ class Usuario
             $stmt->execute();
             $stmt->close();
 
-            $log->info('Usuário' . $this->email . 'excluído (inativado) com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Usuário' . $this->email . 'excluído (inativado) com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Usuário excluído com sucesso', 'email' => $this->email]);
         } catch (Exception $e) {
-            $log->error('Exceção ao excluir (inativar) usuário' . $this->email, ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao excluir (inativar) usuário' . $this->email, ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -87,11 +87,11 @@ class Usuario
             $stmt->bind_param('siis', $this->nome, $this->tipo, $this->ativo, $this->email);
             $stmt->execute();
             $stmt->close();
-            $log->info('Usuário editado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Usuário editado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => true, 'mensagem' => 'Usuário editado com sucesso', 'email' => $this->email]);
         } catch (Exception $e) {
 
-            $log->error('Erro ao editar usuário', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+            $log->error('Erro ao editar usuário', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -112,7 +112,7 @@ class Usuario
             $stmt->close();
 
             if ($usuario) {
-                $log->info('Usuário com esse email (' . $this->email .') já existe', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Usuário com esse email (' . $this->email .') já existe', ['page' => $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
                 $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha) VALUES (?, ?, ?)');
@@ -121,11 +121,11 @@ class Usuario
                 $stmt->execute();
                 $stmt->close();
                 
-                $log->info('Usuário ' . $this->email .' registrado com sucesso', ['page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Usuário ' . $this->email .' registrado com sucesso', ['page' => $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
             }
         } catch (Exception $e) {
-            $log->error('Erro ao registrar usuário', ['error' => $e->getMessage(), 'nome' => $this->nome, 'email' => $this->email, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error('Erro ao registrar usuário', ['error' => $e->getMessage(), 'nome' => $this->nome, 'email' => $this->email, 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => false, 'erro' => 'Não foi possível registrar, tente novamente mais tarde.', 'nome' => $this->nome, 'email' => $this->email]);
         }
     }
@@ -146,7 +146,7 @@ class Usuario
             $stmt->close();
 
             if ($usuario) {
-                $log->info('Usuário com esse email (' . $this->email .') já existe', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Usuário com esse email (' . $this->email .') já existe', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Usuário com esse email já existe!']);
             } else {
                 $stmt = $this->pdo->prepare('INSERT INTO Usuario (nome, email, senha, tipo) VALUES (?, ?, ?, ?)');
@@ -156,11 +156,11 @@ class Usuario
                 $stmt->execute();
                 $stmt->close();
 
-                $log->info('Usuário ' . $this->email .' registrado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Usuário ' . $this->email .' registrado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => true, 'mensagem' => 'Usuário registrado com sucesso']);
             }
         } catch (Exception $e) {
-            $log->error('Erro ao registrar usuário', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage(), 'tipo' => $this->tipo, 'nome' => $this->nome, 'email' => $this->email, 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error('Erro ao registrar usuário', ['user' => $_SESSION['id_usuario'], 'error' => $e->getMessage(), 'tipo' => $this->tipo, 'nome' => $this->nome, 'email' => $this->email, 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => false, 'erro' => 'Erro: ' . $e->getMessage(), 'tipo' => $this->tipo, 'nome' => $this->nome, 'email' => $this->email]);
         }
     }
@@ -223,7 +223,7 @@ class Usuario
                 return json_encode(['sucesso' => false, 'mensagem' => 'Nome de usuário ou senha inválidos']);
             }
         } catch (Exception $e) {
-            $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->error("Exceção ao realizar login", ['error' => $e->getMessage(), 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível fazer login, tente novamente mais tarde.']);
         }
         }
@@ -241,7 +241,7 @@ class Usuario
     
                 return json_encode(['sucesso' => true, 'message' => 'Logout bem-sucedido']);
             } catch (Exception $e) {
-                $log->error('Exceção ao realizar logout', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->error('Exceção ao realizar logout', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
                 return json_encode(['sucesso' => false, 'mensagem' => 'Exceção ao realizar logout' . $e->getMessage()]);
             }
         }

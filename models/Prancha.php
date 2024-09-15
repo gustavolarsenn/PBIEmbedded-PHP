@@ -51,10 +51,10 @@ class Prancha {
             }
 
             $stmt->close();
-            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $navios]);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['erro' => $e->getMessage()]);
         }
     }
@@ -74,10 +74,10 @@ class Prancha {
             }
 
             $stmt->close();
-            $log->info('Dados do navio listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Dados do navio listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
             return json_encode(['data' => $navios]);
         } catch (Exception $e) {
-            $log->error('Exceção ao listar dados do navio', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+            $log->error('Exceção ao listar dados do navio', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
             return json_encode(['message' => $e->getMessage()]);
         }
     }

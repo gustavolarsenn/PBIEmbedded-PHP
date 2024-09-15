@@ -28,6 +28,8 @@ BEGIN
     
     IF categoria_clean_value = 'PBI/relatorio_pbi.php?reportName=' THEN
         SET NEW.caminho_pagina = CONCAT('views/', categoria_clean_value, NEW.pagina_clean);
+    ELSE IF categoria_clean_value = 'pagina_inicial' THEN
+        SET NEW.caminho_pagina = CONCAT(categoria_clean_value, NEW.pagina_clean);
     ELSE
         SET NEW.caminho_pagina = CONCAT('views/', categoria_clean_value, '/', NEW.pagina_clean, '.php');
     END IF;

@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/config.php'; 
+require_once __DIR__ . '/config/config.php'; 
 
 require_once CAMINHO_BASE . '/models/SessionManager.php';
 require_once CAMINHO_BASE . '/config/database.php';
@@ -49,7 +49,6 @@ if ($possuiPermissao) {
 	
         <div class="content-body">
             <div class="container-fluid">
-				<h2>Bem-vindo, <?php echo $_SESSION['nome'];?>!</h2>
 
                 
             </div>

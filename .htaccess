@@ -1,1 +1,1 @@
-ErrorDocument 404 /views/index.php
+ErrorDocument 404 /index.php

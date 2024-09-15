@@ -41,11 +41,11 @@ class RelatorioPBI {
                 return $carry;
             }, []);
             
-            $log->info('Relatórios ativos listados', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Relatórios ativos listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
 
             return $reportsArray;
         } catch (Exception $e) {
-            $log->error('Erro ao listar relatórios ativos', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'erro' => $e->getMessage()]);
+            $log->error('Erro ao listar relatórios ativos', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'erro' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }
@@ -57,15 +57,15 @@ class RelatorioPBI {
 
         SessionManager::checarSessao();
     
-        $log->info('Gerando relatório PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+        $log->info('Gerando relatório PowerBI', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
         try {
             $conn = (new Database())->getConnection();
             
             $reports = self::pegarRelatoriosAtivos();
             
             if (!isset($reports[$actualLink])) {
-                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);            
-                header('Location: /views/index.php');
+                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);            
+                header('Location: /index.php');
                 exit;
             } 
     
@@ -76,11 +76,11 @@ class RelatorioPBI {
             
             $azureAPI = new AzureAPI();
             
-            $log->info('Ligando Capacity', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Ligando Capacity', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
             $capacidadeAtiva = $capacidade->ligarCapacity($powerBISession->sessoesAtivasPBI(), $azureAPI);
     
             if (!json_decode($capacidadeAtiva)->sucesso){
-                $log->error('Não foi possível gerar relatório, capacidade não iniciada', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
+                $log->error('Não foi possível gerar relatório, capacidade não iniciada', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
                 return $capacidadeAtiva;
             }
             
@@ -88,11 +88,11 @@ class RelatorioPBI {
             $reportEmbedConfig = $azureAPI->pegarEmbedParams($currentReport['id_relatorio'], $currentReport['id_dataset'], null);
             $conn = null;
     
-            $log->info('Relatório gerado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
+            $log->info('Relatório gerado com sucesso', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
             return json_encode(['sucesso' => true, 'dados' => json_encode($reportEmbedConfig)]);
     
         } catch (Exception $e) {
-            $log->error('Erro ao gerar relatório PowerBI: ' . $e->getMessage(), ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
+            $log->error('Erro ao gerar relatório PowerBI: ' . $e->getMessage(), ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $actualLink]);
         }
     }
     public function buscarInformacoesRelatorio($relatorioClean){
@@ -110,12 +110,12 @@ class RelatorioPBI {
             }
 
             if (!$report) {
-                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
+                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
                 return json_encode(['sucesso' => false, 'erro' => 'Relatório não encontrado']);
             }
 
             if (count($report) > 1) {
-                $log->error('Relatório duplicado. Será selecionado o primeiro.', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
+                $log->error('Relatório duplicado. Será selecionado o primeiro.', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
             }
 
             $report = $report[0];
@@ -123,14 +123,14 @@ class RelatorioPBI {
             $stmt->close();
 
             if (!$report) {
-                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
+                $log->error('Relatório não encontrado', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'relatorio' => $relatorioClean]);
                 return json_encode(['sucesso' => false, 'erro' => 'Relatório não encontrado']);
             }
 
-            $log->info('Informações do relatório buscadas com sucesso', ['user' => $_SESSION['id_usuario'], 'report' => $report['relatorio'],'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+            $log->info('Informações do relatório buscadas com sucesso', ['user' => $_SESSION['id_usuario'], 'report' => $report['relatorio'],'page' => $_SERVER['REQUEST_URI']]);
             return $report;
         } catch (Exception $e) {
-            $log->error('Exceção ao listar informações relatórios ativos', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'erro' => $e->getMessage()]);
+            $log->error('Exceção ao listar informações relatórios ativos', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'erro' => $e->getMessage()]);
             return json_encode(['sucesso' => false, 'erro' => `Erro:` . $e->getMessage()]);
         }
     }

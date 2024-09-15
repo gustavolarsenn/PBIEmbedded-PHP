@@ -14,7 +14,7 @@ class Capacidade {
         /* Gerencia capacidade (cluster), e liga quando tiver usuário acessando */
         $log = AppLogger::getInstance(self::LOG_FILE);
         
-        $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+        $log->info('Iniciando processo para LIGAR capacidade',  ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
     
         if ($possuiSessoesAtivasPBI){
             try {
@@ -32,17 +32,17 @@ class Capacidade {
     
                 }
                 if ($statusCapacity != 'Succeeded'){
-                    $log->error('10 tentativas de ligar sem sucesso! Verificar o que está impedindo!', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                    $log->error('10 tentativas de ligar sem sucesso! Verificar o que está impedindo!', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
                     
                     return json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível iniciar capacidade para gerar o relatório! Reinicie a página e tente novamente.']);
                 }
     
-                $log->info('Capacidade iniciada com sucesso!', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI']]);
+                $log->info('Capacidade iniciada com sucesso!', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
         
                 return json_encode(['sucesso' => true, 'mensagem' => 'Capacidade iniciada com sucesso!']);
     
             } catch (Exception $e) {
-                $log->error('Erro ao iniciar capacidade', ['user' => $_SESSION['id_usuario'], 'page' => isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
+                $log->error('Erro ao iniciar capacidade', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
     
                 return json_encode(['sucesso' => false, 'mensagem' => 'Erro ao iniciar capacidade: ' . $e->getMessage()]);
             }

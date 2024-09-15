@@ -10,7 +10,7 @@ $urlBase = '/'
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Zport</title>
+    <title>Erro</title>
 
     <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
 
@@ -26,7 +26,7 @@ $urlBase = '/'
             <h1>Erro:</h1>
             <p>Não foi possível conectar com <strong>banco de dados</strong>. Favor entrar em contato com <a href="mailto:pctvzport@gmail.com">suporte</a>.</p>
             <br>
-            <a href="/views/index.php">Voltar para página inicial</a>
+            <a href="/index.php">Voltar para página inicial</a>
         </div>
     </div>
 </body>

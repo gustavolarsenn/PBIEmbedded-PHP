@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../config/config.php'; 
+
 $urlBase = '/'
 ?>
 <!DOCTYPE html>
@@ -8,7 +10,7 @@ $urlBase = '/'
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Página desconhecida</title>
+    <title>Erro</title>
 
     <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
 
@@ -21,8 +23,8 @@ $urlBase = '/'
         <img class="logo-compact" src="/img/zport-logo-3x.png" width="30%">
         <br>
         <div>
-            <h1>Página desconhecida!</h1>
-            <p>Nenhuma página encontrada para o link <strong><?php echo isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'] ?></strong>.
+            <h1>Erro:</h1>
+            <p>Ocorreu um erro inesperado. Favor entrar em contato com <a href="mailto:pctvzport@gmail.com">suporte</a>.</p>
             <br>
             <a href="/index.php">Voltar para página inicial</a>
         </div>

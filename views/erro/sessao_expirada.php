@@ -10,7 +10,7 @@ $urlBase = '/'
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Zport</title>
+    <title>Sessão Expirada</title>
 
     <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
 
@@ -26,7 +26,7 @@ $urlBase = '/'
             <h1>Sessão expirada.</h1>
             <p>Faça login novamente.</p>
             <br>
-            <a href="/views/login.php">Ir para página de Login</a>
+            <a href="/login.php">Ir para página de Login</a>
         </div>
     </div>
 </body>
