@@ -8,7 +8,7 @@ class TipoUsuario{
     private $pdo;
     private $tipo;
     private $descricao;
-    private const LOG_FILE = 'tipo_usuario';
+    private const LOG_FILE = 'TipoUsuario';
     public function __construct($pdo, $tipo, $descricao){
         $this->pdo = $pdo;
         $this->tipo = $tipo;
@@ -18,7 +18,7 @@ class TipoUsuario{
     public function pegarTipos(){
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $stmt = $this->pdo->prepare('SELECT DISTINCT id, tipo FROM tipoUsuario');
+            $stmt = $this->pdo->prepare('SELECT DISTINCT id, tipo FROM TipoUsuario');
             $stmt->execute();
             $result = $stmt->get_result();
 
