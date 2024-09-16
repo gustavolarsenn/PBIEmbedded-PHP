@@ -15,7 +15,7 @@ class Database {
     public function __construct() {
         $this->servername = getenv('DB_HOST');
         $this->username = getenv('DB_USER');
-        $this->password = "";
+        $this->password = getenv('DB_PASSWORD') ?? "";
         $this->dbname = getenv('DB_NAME');
         $this->conn = null;
         $log = AppLogger::getInstance(self::LOG_FILE);

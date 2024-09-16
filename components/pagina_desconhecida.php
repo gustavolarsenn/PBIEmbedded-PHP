@@ -22,7 +22,7 @@ $urlBase = '/'
         <br>
         <div>
             <h1>Página desconhecida!</h1>
-            <p>Nenhuma página encontrada para o link <strong><?php echo isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : $_SERVER['REQUEST_URI'] ?></strong>.
+            <p>Nenhuma página encontrada para o link <strong><?php echo $_SERVER['REQUEST_URI'] ?></strong>.
             <br>
             <a href="/index.php">Voltar para página inicial</a>
         </div>
