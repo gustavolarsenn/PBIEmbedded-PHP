@@ -98,19 +98,45 @@
     margin: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-height: 500px) {
+    @media (max-width: 768px) {
+        #modalEditar{
+            width: 50%;
+            height: fit-content;
+            top: 1%;
+            left: 5%;
+        }
+        #modalEditar .form-group{
+            height: 30px !important;
+            width: 45% !important;
+        }
+        .subcontainer-modal{
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-between;
+            margin: 20px 0px;
+        }
+    }
+}
 
+@media (max-width: 768px) {
     .main-container{
         flex-direction: column;
+
     }
 
     #formulario-registro {
         width: 100%;
+        max-width: 100% !important;
+        margin: 0 !important;
     }
 
     #tabela-filtro-container {
         width: 100%;
         margin-left: auto;
+        max-width: 100% !important;
+        margin: 0 !important;
     }
 
     #container-filtro{

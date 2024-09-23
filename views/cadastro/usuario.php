@@ -67,23 +67,27 @@ if ($possuiPermissao) {
                                 <form id="formulario-editar-usuario" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
                                     <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                     <input type="hidden" name="action" value="editar">
-                                    <div class="form-group mt-3">
-                                        <label for="email-editar">Email</label>
-                                        <input type="email" class="form-control" id="email-editar" name="email-editar" required disabled>
+                                    <div class="subcontainer-modal">
+                                        <div class="form-group mt-3">
+                                            <label for="email-editar">Email</label>
+                                            <input type="email" class="form-control" id="email-editar" name="email-editar" required disabled>
+                                        </div>
+                                        <div class="form-group mt-3">
+                                            <label for="nome-editar">Nome</label>
+                                            <input type="text" class="form-control" id="nome-editar" name="nome-editar" required>
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="nome-editar">Nome</label>
-                                        <input type="text" class="form-control" id="nome-editar" name="nome-editar" required>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label for="tipo-editar">Tipo de usuário</label>
-                                        <select class="form-control" id="tipo-editar" name="tipo-editar" required>
-                                        </select>
-                                    </div>
-                                    <div class="form-group mt-3">
-                                        <label for="status-editar">Status</label>
-                                        <select class="form-control" id="status-editar" name="status-editar" required>
-                                        </select>
+                                    <div class="subcontainer-modal">
+                                        <div class="form-group mt-3">
+                                            <label for="tipo-editar">Tipo de usuário</label>
+                                            <select class="form-control" id="tipo-editar" name="tipo-editar" required>
+                                            </select>
+                                            </div>
+                                            <div class="form-group mt-3">
+                                                <label for="status-editar">Status</label>
+                                                <select class="form-control" id="status-editar" name="status-editar" required>
+                                                </select>
+                                            </div>
                                     </div>
                                     <div class="modal-botoes">
                                         <button type="button" data-dismiss='modal' class="btn mt-3 btn-danger" id="botao-cancelar-edicao">Cancelar</button>

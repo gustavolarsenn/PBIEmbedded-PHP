@@ -143,6 +143,10 @@ class AzureAPI {
         }
     }
 
+    #TODO - Implementar
+    public function exportarPDF(){
+        //
+    }
     public function pegarTokenAzureCapacity(){
         /*
         Gera token para poder usar API da Azure e manipular capacidade (cluster) de PowerBI.

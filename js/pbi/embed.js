@@ -136,7 +136,16 @@ function loadReport(reportLinkFix, report) {
 
             const downloadButton = document.getElementById('download');
             downloadButton.addEventListener('click', () => {
-                report.print();
+                // report.print();
+
+                report.exportToFile('PDF').then(function(pdfData) {
+                    const blob = new Blob([pdfData], { type: 'application/pdf' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'report.pdf';
+                    a.click();
+                })
             });
 
             // Clear any other loaded handler events
