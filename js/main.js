@@ -11,9 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     var headerCornerLeft = document.querySelector('.nav-header');
     const footer = document.querySelector('.footer'); 
 
-    console.log(footer)
-    // var fullHeader = document.querySelector('#header-wrap');
-
     sidebarFechado = true;
     hamburger.addEventListener('click', function() {
         if (windowWidth >= 1200){

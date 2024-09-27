@@ -20,6 +20,7 @@ var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-pe
 var tagGraficoDiaPeriodoContainerGrafico = document.getElementById('descarregado-dia-periodo-grafico');
 
 var infoVesselTag = document.getElementById('info-navio-titulo');
+var infoPortTag = document.getElementById('info-port');
 var infoBerthTag = document.getElementById('info-berth');
 var infoProductTag = document.getElementById('info-product');
 var infoModalityTag = document.getElementById('info-modality');
@@ -105,11 +106,15 @@ dataField.addEventListener('change', async function() {
 async function generateCharts() {
     const listaNavio = await getUniqueVessels();
 
+    const arrayViagensUnicas = [...new Set(listaNavio)];
+
     // Map through listaNavio, convert each object's values to a Set to remove duplicates, then convert back to array
-    const arrayNaviosUnicos = listaNavio.map(obj => [...new Set(Object.values(obj))]);
-    
+    const arrayNaviosUnicos = [...new Set(listaNavio.map(obj => obj.navio))];
+
     // Flatten the array of arrays to get a single array with all values
     const listaNaviosUnicos = arrayNaviosUnicos.flat();
+    
+    const listaNaviosUnicosFormatados = arrayViagensUnicas.map(navio => ({1: navio.navio, value: navio.id_viagem, id: navio.id_viagem, navio: navio.navio}));
 
     let filtroData = document.getElementById('data').value === '' ? null : [document.getElementById('data').value];
 
@@ -124,7 +129,7 @@ async function generateCharts() {
     jaFiltradoRelatorio = filtroRelatorio;
     jaFiltradoParalisacao = filtroMotivoParalisacao;
     
-    const navioSelecionado = filtroNavioLimpo.length > 0 ? filtroNavioLimpo[0] : listaNavio[0].navio;
+    const navioSelecionado = filtroNavioLimpo.length > 0 ? filtroNavioLimpo[0] : listaNavio[0].id_viagem;
 
     const dataDischarged = await getVesselData(navioSelecionado);
 
@@ -139,6 +144,9 @@ async function generateCharts() {
         paralisacaoSelecionada.innerHTML = '';
     }
 
+    console.log(vesselData)
+
+    infoPortTag.innerText = vesselData[0].porto;
     infoVesselTag.innerText = vesselData[0].navio;
     infoBerthTag.innerText = vesselData[0].berco;
     infoProductTag.innerText = vesselData[0].produto;
@@ -157,16 +165,21 @@ async function generateCharts() {
         }
     });
 
+    console.log(filtroNavio);
+
+
+    console.log(formattedDataDischarged)
     // Assuming the structure of each item in `data` is known and matches the filter criteria
     const filteredDataDischarged = formattedDataDischarged.filter((item) => {
         // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
-        const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
+        // const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
         const matchesData = !filtroData || filtroData.includes(item.data); // Assuming `item.data` is in the same format as `filtroData`
         const matchesPeriodo = jaFiltradoPeriodo.length === 0 || jaFiltradoPeriodo.includes(`'${item.periodo}'`);
         const matchesRelatorio = jaFiltradoRelatorio.length === 0 || jaFiltradoRelatorio.includes(`'${item.relatorio_no}'`);
 
         // A record must match all active filters to be included
-        return matchesNavio && matchesData && matchesPeriodo && matchesRelatorio;
+        // return matchesNavio && matchesData && matchesPeriodo && matchesRelatorio;
+        return matchesData && matchesPeriodo && matchesRelatorio;
     });
 
     const listaPeriodo = [...new Set(filteredDataDischarged.map(d => d.periodo))].sort();
@@ -178,9 +191,9 @@ async function generateCharts() {
     if (graficoResumoGeral) graficoResumoGeral.destroy();
     if (graficoTempoParalisado) graficoTempoParalisado.destroy();
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
-    
+
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
-        if (count < 1) generateFilters('navio', listaNaviosUnicos, ['navio'], async function() {await generateCharts();}, true);
+        if (count < 1) generateFilters('navio', listaNaviosUnicosFormatados, ['navio'], async function() {await generateCharts();}, false);
         generateFilters('periodo', listaPeriodo, ['navio'], async function() {await generateCharts();}, true);
         generateFilters('relatorio_no', listaRelatorio, ['navio'], async function() {await generateCharts();}, true);
         generateFilters('motivo_paralisacao', Object.values(filtrosParalisacao), ['navio'], async function() {await generateCharts();}, true);
@@ -209,6 +222,7 @@ async function generateCharts() {
     graficoResumoGeral = await gerarGraficoResumoGeral(filteredDataDischarged);
 
     graficoTempoParalisado = await gerarGraficoTempoParalisado(filteredDataDischarged);
+
 
     graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged);
 

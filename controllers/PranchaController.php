@@ -14,12 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'];
 
     switch($action){
-        case 'uniqueVessels':
-            $message = $prancha->pegarNaviosUnicos($pdo);
-            echo $message;
-            break;
-        case 'vesselData':
-            $message = $prancha->pegarDadosNavio($pdo, $_POST['navio']);
+        // case 'pegarNaviosUnicos':
+        //     $message = $prancha->pegarNaviosUnicos($pdo);
+        //     echo $message;
+        //     break;
+        case 'pegarDadosNavio':
+            $message = $prancha->pegarDadosNavio($pdo, $_POST['id_viagem']);
             echo $message;
             break;
         default:

@@ -7,7 +7,7 @@ require_once CAMINHO_BASE . '/config/database.php';
 require_once CAMINHO_BASE . '/models/SessionManager.php';
 
 $pdo = (new Database())->getConnection();
-$prancha = new Navio($pdo, null, null, null, null, null, null, null);
+$navio = new Navio($pdo, null, null, null, null, null, null, null);
 
 session_start();
 
@@ -15,8 +15,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'];
 
     switch($action){
-        case 'vesselInfo':
-            $message = $prancha->pegarInfoNavio($pdo, $_POST['navio']);
+        case 'pegarInfoNavio':
+            $message = $navio->pegarInfoNavio($pdo, $_POST['id_viagem']);
+            echo $message;
+            break;
+        case 'pegarNaviosUnicos':
+            $message = $navio->pegarNaviosUnicos($pdo);
             echo $message;
             break;
         default:

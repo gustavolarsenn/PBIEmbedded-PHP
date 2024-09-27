@@ -32,6 +32,8 @@ async function gerarTabelaUsuarios(){
 
     const tiposUsuariosListaFormatada = filtros.tiposUsuariosLista.map(tipo => ({1: tipo.tipo, value: tipo.id, id: tipo.id, tipo: tipo.tipo}));
 
+    console.log(filtros.tiposUsuariosLista)
+    console.log(tiposUsuariosListaFormatada)
     filtros.jaFiltradoTipo = tiposUsuariosListaFormatada
     filtros.jaFiltradoStatus = filtros.statusUsuariosLista
     

@@ -1,15 +1,15 @@
-async function getVesselInfo($vessel){
+async function getVesselInfo($id_viagem){
     var request = {
         url: "../../controllers/NavioController.php",
         method: 'POST',
         data: [
         {
             name: 'action',
-            value: 'vesselInfo'
+            value: 'pegarInfoNavio'
         },
         {
-            name: 'navio',
-            value: $vessel
+            name: 'id_viagem',
+            value: $id_viagem
         }
     ],
         dataType: 'json'
@@ -27,19 +27,19 @@ async function getVesselInfo($vessel){
                 resolve(response.data);
             }
         }).fail(function(response) {
-            console.log(response.error)
-            reject(response.error);
+            console.log(response.erro)
+            reject(response.erro);
         })
     });
 }
 async function getUniqueVessels(){
     var request = {
-        url: "../../controllers/PranchaController.php",
+        url: "../../controllers/NavioController.php",
         method: 'POST',
         data: [
         {
             name: 'action',
-            value: 'uniqueVessels'
+            value: 'pegarNaviosUnicos'
         }
     ],
         dataType: 'json'
@@ -63,18 +63,18 @@ async function getUniqueVessels(){
     });
 }
 
-async function getVesselData($vessel){
+async function getVesselData($id_viagem){
     var request = {
         url: "../../controllers/PranchaController.php",
         method: 'POST',
         data: [
         {
             name: 'action',
-            value: 'vesselData'
+            value: 'pegarDadosNavio'
         },
         {
-            name: 'navio',
-            value: $vessel
+            name: 'id_viagem',
+            value: $id_viagem
         }
     ],
         dataType: 'json'

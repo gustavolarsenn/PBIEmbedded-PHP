@@ -19,10 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = DescarregamentoNavio::buscarTodosDados($pdo);
             echo $message;
             break;
-        case 'pegarNaviosUnicos':
-            $message = $descarregamentoNavio->pegarNaviosUnicos($pdo);
-            echo $message;
-            break;
+        // case 'pegarNaviosUnicos':
+        //     $message = $descarregamentoNavio->pegarNaviosUnicos($pdo);
+        //     echo $message;
+        //     break;
         case 'pegarDadosNavioRealizado':
             $message = $descarregamentoNavio->pegarDadosNavioRealizado($pdo, $_POST['navio']);
             echo $message;

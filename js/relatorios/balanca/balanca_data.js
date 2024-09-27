@@ -1,6 +1,6 @@
 async function getUniqueVessels(){
     var request = {
-        url: "../../controllers/DescarregamentoNavioController.php",
+        url: "../../controllers/NavioController.php",
         method: 'POST',
         data: [
         {

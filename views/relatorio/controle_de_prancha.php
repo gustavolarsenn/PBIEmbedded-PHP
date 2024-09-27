@@ -94,6 +94,10 @@ if ($possuiPermissao) {
                                     <h1 id="info-navio-titulo"></h1>
                                     <div id="info-navio">
                                         <div class="info-navio-row">
+                                            <h4>Porto: </h4>
+                                            <label id="info-port"></label>
+                                        </div>
+                                        <div class="info-navio-row">
                                             <h4>Berço: </h4>
                                             <label id="info-berth"></label>
                                         </div>

@@ -132,25 +132,4 @@ require_once __DIR__ . '/../config/config.php';
             return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
         }
     }
-
-    public function pegarNaviosUnicos($pdo){
-        $log = AppLogger::getInstance(self::LOG_FILE);
-        try {
-            $stmt = $pdo->prepare('SELECT DISTINCT navio FROM DescarregamentoNavio ORDER BY CAST(data AS date) DESC');
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            while ($row = $result->fetch_assoc()) {
-                $naviosUnicos[] = $row;
-            }
-
-            $stmt->close();
-
-            $log->info('Navios listados', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI']]);
-            return json_encode(['data' => $naviosUnicos, 'message' => 'Navios únicos']);
-        } catch (Exception $e) {
-            $log->error('Exceção ao listar navios', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'error' => $e->getMessage()]);
-            return json_encode(['sucesso' => false, 'erro' => $e->getMessage()]);
-        }
-    }
 }
