@@ -87,7 +87,7 @@ if ($possuiPermissao) {
                             </svg>
                         </div>
                     </div>
-                    <section>
+                    <section id="relatorio-container">
 
                             <div class="chart-container">
                                 <div id="info-navio-container" class="chart chart-small-block">

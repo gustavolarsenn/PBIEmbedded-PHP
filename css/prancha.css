@@ -67,7 +67,6 @@
 }
 
 
-
 /* Estilo divs e gráficos */
 
 /* CONTAINER que engloba: Informações do navio, total descarregado, 
@@ -221,3 +220,155 @@ prancha aferida e descarregado por dia */
         margin: 0px 0px 10px 0px; 
         overflow-x: scroll;
     }
+
+@media (max-width: 1440px){
+    #info-navio-container{
+        width: 100%; 
+        height: auto;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    #descarregado-total-dia-prancha-aferida-container{
+        width: 100%; 
+        height: auto;
+        /* height: 100vh; */
+    }
+
+        #descarregado-total-prancha-aferida-container{
+            display: flex; 
+            flex-direction: column;
+            width: 100%;
+            height: 50%;
+        }
+
+            #descarregado-total-container{
+                width: 100%; 
+                height: 100%;
+                margin: 0 0 10px 0;
+            }
+
+                #descarregado-total{
+                    display: flex;
+                }
+
+                #descarregado-total-grafico-container{
+                    width: 100%;
+                    height: 100%
+                }
+
+
+            /* PRANCHA AFERIDA*/
+            #prancha-aferida-container{
+                width: 100%; 
+                margin: 0 0 10px 0;
+                display: flex;
+            }
+
+                #prancha-aferida-info{
+                    width: 100%; 
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                #prancha-aferida-big-numbers{
+                    height: 65%; 
+                    margin: auto auto; 
+                    width: fit-content;  
+                    display: flex; 
+                    flex-direction: column
+                }
+
+                #prancha-aferida-big-numbers div{
+                    margin: auto;
+                }
+
+                #prancha-aferida-lista-paralisacao-container{
+                    width: 100%; 
+                    height: 100%; 
+                }
+
+                #prancha-aferida-lista-paralisacao-container .input-label{
+                    width: 90%; 
+                    margin: 5% auto;
+                }
+
+        /* DESCARREGADO POR DIA */
+        #graficoDescarregadoDia{
+            display: flex;
+            visibility: visible;
+            max-height: 100%;
+        }
+        #graficoDescarregadoDiaSideBar{
+            display: none;
+            visibility: hidden;
+            max-height: 0;
+        }
+
+            #descarregado-dia-container{
+                min-width: 100%; 
+                display: flex; 
+                flex-direction: column;
+                height: 47.76%; 
+                margin: 0 0 10px 0;
+            }
+
+            #descarregado-dia-grafico{
+                margin: 0;
+                width: 100%; 
+                /* height: 50%; */
+                /* height: auto; */
+            }
+
+    /* CONTAINER que engloba: resumo geral e tempo paralisado */
+    #resumo-geral-tempo-paralisado-container{
+        min-width: 100%; 
+        display: flex; 
+        flex-direction: column;
+        height: 100%; 
+        /* margin: 0 0 10px 0; */
+    }
+
+        #resumo-geral-grafico{
+            width: 100%; 
+            height: 100%;
+            margin: 0 0 10px 0;
+        }
+
+    #tempo-paralisado-grafico{
+        width: 100%; 
+        margin: 0;
+        /* margin: 0 0 10px 0; */
+        height: 90%;
+    }
+
+    /* DESCARREGADO POR DIA E PERIODO */
+    #descarregado-dia-periodo-container{
+        box-shadow: none;
+        min-width: 100%; 
+        display: flexbox; 
+        margin: 0 0 10px 0;
+        height: 100%; 
+        overflow-x: scroll;
+    }
+
+
+
+
+
+    .chart-container{
+        display: flex; 
+        flex-direction: column; 
+        min-width: 100%; 
+        height: 100%; 
+        /* margin: 0px 0px 10px 0px; */
+        margin: 0;
+    }
+    #relatorio-container{
+        display: flex;
+        flex-direction: column;
+    }
+    #descarregado-total-dia-prancha-aferida-container{
+        display: flex !important;
+        flex-direction: column !important;
+    }
+}
