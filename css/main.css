@@ -1,0 +1,41 @@
+
+#container-filtro{
+    display: flex !important; 
+    flex-direction: row;
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+.subcontainer-filtro{
+    display: flex;
+    width: 100%;
+}
+
+.subcontainer-filtro .input-label{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    padding: 10px;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    #container-filtro{
+        flex-direction: column;
+        margin-top: 10px;
+    }
+    
+    #container-filtro .input-label label{
+        font-size: 1.0em;
+    }
+
+    #container-filtro .input-label input{
+        font-size: 1.0em;
+        height: 2.5em;
+    }
+
+    #container-filtro .input-label select{
+        font-size: 1.0em;
+        height: 2.5em;
+    }
+}

@@ -134,7 +134,7 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
                 },
             },
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
             layout: {
                 padding: {
                     top: 15,

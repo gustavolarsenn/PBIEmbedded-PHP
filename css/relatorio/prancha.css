@@ -9,6 +9,11 @@
     line-break: anywhere;
 }
 
+#vessel-discharging-info-container{
+    width: 40%;
+    margin: auto 0;
+}
+
 .info-navio-row label, .vessel-discharging-info label{
     font-size: 1.2em;
     font-weight: 400;
@@ -23,7 +28,7 @@
 
 .big-numbers{
     /* font-size: 2em; */
-    font-size: 2.5vw;
+    font-size: 2rem;
     font-weight: 600;
 }
 
@@ -83,14 +88,16 @@ prancha aferida e descarregado por dia */
         width: 30%; 
         height: auto;
         text-align: center;
+        display: flex;
+        flex-direction: column;
     }
 
         #info-navio-titulo{
-            font-size: 3vw;
+            font-size: 3rem;
             text-decoration: underline;
             padding: 20px;
             margin: 0;
-            height: 1%;
+            height: auto;
         }
 
         /* INFORMAÇÕES NAVIO */
@@ -124,6 +131,7 @@ prancha aferida e descarregado por dia */
 
                 #descarregado-total{
                     display: flex;
+                    flex-direction: row;
                 }
 
                 #descarregado-total-grafico-container{
@@ -153,7 +161,10 @@ prancha aferida e descarregado por dia */
                 }
 
                 #prancha-aferida-big-numbers div{
-                    margin: auto;
+                    margin: 20px 0;
+                }
+                #prancha-aferida-big-numbers h4{
+                    text-align: center;
                 }
 
                 #prancha-aferida-lista-paralisacao-container{
@@ -222,6 +233,12 @@ prancha aferida e descarregado por dia */
     }
 
 @media (max-width: 1440px){
+    #vessel-discharging-info-container{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+    }
+
     #info-navio-container{
         width: 100%; 
         height: auto;
@@ -250,10 +267,12 @@ prancha aferida e descarregado por dia */
 
                 #descarregado-total{
                     display: flex;
+                    flex-direction: column-reverse;
                 }
 
                 #descarregado-total-grafico-container{
-                    width: 100%;
+                    margin: auto;
+                    width: 75%;
                     height: 100%
                 }
 
@@ -261,6 +280,7 @@ prancha aferida e descarregado por dia */
             /* PRANCHA AFERIDA*/
             #prancha-aferida-container{
                 width: 100%; 
+                height: 40vh;
                 margin: 0 0 10px 0;
                 display: flex;
             }
@@ -278,9 +298,9 @@ prancha aferida e descarregado por dia */
                     flex-direction: column
                 }
 
-                #prancha-aferida-big-numbers div{
-                    margin: auto;
-                }
+                /* #prancha-aferida-big-numbers div{
+                    margin: 20px;
+                } */
 
                 #prancha-aferida-lista-paralisacao-container{
                     width: 100%; 
@@ -351,7 +371,10 @@ prancha aferida e descarregado por dia */
         overflow-x: scroll;
     }
 
-
+    #graficoTempoParalisado{
+        height: 30;
+        width: 50;
+    }
 
 
 

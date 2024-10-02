@@ -107,7 +107,7 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                 },
             },
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
         }
 
         const graficoResumoGeral = new Chart('graficoResumoGeral', {

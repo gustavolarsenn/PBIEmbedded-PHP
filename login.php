@@ -19,10 +19,10 @@ $urlBase = '/'
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Login</title>
 
-    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>config/img/icone.png">
 
     <link href="<?php echo $urlBase;?>css/style.css" rel="stylesheet">
-    <link href="<?php echo $urlBase;?>css/login.css" rel="stylesheet">
+    <link href="<?php echo $urlBase;?>css/login/login.css" rel="stylesheet">
 
 </head>
 
@@ -42,7 +42,7 @@ $urlBase = '/'
                             <div class="col-xl-12">
                                 <div class="auth-form">
                                     <div class="logo-container">
-                                        <img class="logo" src="/img/zport-logo-3x.png">
+                                        <img class="logo" src="/config/img/zport-logo-3x.png">
                                     </div>
                                     <h2 id="titulo-form">Login</h2>
                                     <form id="form-login" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">
@@ -97,7 +97,7 @@ $urlBase = '/'
         Scripts
     ***********************************-->
     <!-- Required vendors -->
-    <script src="<?php echo $urlBase;?>js/login.js"></script>
+    <script src="<?php echo $urlBase;?>js/login/login.js"></script>
 
     <script src="<?php echo $urlBase;?>vendor/global/global.min.js"></script>
     <script src="<?php echo $urlBase;?>js/quixnav-init.js"></script>

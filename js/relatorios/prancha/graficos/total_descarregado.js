@@ -50,10 +50,10 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                 const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
         
                 // Set the font properties
-                ctx.font = 'bold 1.5vw Arial';
+                ctx.font = 'bold 1.75rem Arial';
                 ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
                 ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle'; // Align vertically in the center
+                ctx.textBaseline = 'top'; // Align vertically in the center
         
                 // Draw the text in the center of the chart
                 ctx.fillText(percentDescarregado + '%', centerX, centerY);
@@ -76,9 +76,11 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                     }
                 }
             },
-            cutoutPercentage: 75,
+            rotation: 1 * Math.PI,/** This is where you need to work out where 89% is */
+            circumference: 1 * Math.PI,/** put in a much smaller amount  so it does not take up an entire semi circle */
+            cutoutPercentage: 75,   
             responsive: true,
-            maintainAspectRatio: true,
+            maintainAspectRatio: false,
         }
 
         const graficoTotalDescarregado = new Chart('graficoTotalDescarregado', {

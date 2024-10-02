@@ -10,7 +10,7 @@ $urlBase = '/'
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Página desconhecida</title>
 
-    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>config/img/icone.png">
 
     <link href="<?php echo $urlBase; ?>css/style.css" rel="stylesheet">
     <link href="<?php echo $urlBase; ?>css/erro.css" rel="stylesheet">
@@ -18,11 +18,11 @@ $urlBase = '/'
 
 <body>
     <div class="error-container">
-        <img class="logo-compact" src="/img/zport-logo-3x.png" width="30%">
+        <img class="logo-compact" src="/config/img/zport-logo-3x.png" width="30%">
         <br>
         <div>
             <h1>Página desconhecida!</h1>
-            <p>Nenhuma página encontrada para o link <strong><?php echo $_SERVER['REQUEST_URI'] ?></strong>.
+            <p>Nenhuma página encontrada para o link <strong><?php echo $_SERVER['REQUEST_URI'] ?></strong>.</p>
             <br>
             <a href="/index.php">Voltar para página inicial</a>
         </div>

@@ -1,16 +1,14 @@
-body{
-    overflow: hidden;
-}
-
 .error-container{
     display: flex;
     flex-direction: column;
-    margin: 10%;
+    /* margin: 10%; */
     align-items: center;
-    height: 100vh;
-    background-color: #f8f9fa;
+    justify-content: center;
+    height: 50vh;
+    margin: 50px;
 }
 .error-container img{
+    width: 40vh;
     margin: 30px;
 }
 
@@ -24,5 +22,5 @@ body{
 }
 
 .error-container div{
-    width: 50%;
+    width: fit-content;
 }

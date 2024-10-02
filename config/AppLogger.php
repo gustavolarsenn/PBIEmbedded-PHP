@@ -16,7 +16,7 @@ class AppLogger
     private $emailErrorHandler;
     private $nome_log;
     private static $loggers = [];
-    private function __construct($nome_log, $caminho_log = CAMINHO_BASE . '/logs/', $emailErrorHandler = null)
+    private function __construct($nome_log, $caminho_log = CAMINHO_BASE . '/config/logs/', $emailErrorHandler = null)
     {
         $this->caminho_log = $caminho_log;
         $this->logger = new Logger('app');
@@ -25,7 +25,7 @@ class AppLogger
         // $this->iniciarLogger();
     }
 
-    public static function getInstance($nome_log, $caminho_log = CAMINHO_BASE . '/logs/', $emailErrorHandler = null)
+    public static function getInstance($nome_log, $caminho_log = CAMINHO_BASE . '/config/logs/', $emailErrorHandler = null)
     {
         $log_key = $nome_log;
         

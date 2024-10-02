@@ -25,16 +25,15 @@ if ($possuiPermissao) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Cadastro - Usuário</title>
 
-    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>config/img/icone.png">
 
     <link rel="stylesheet" href="<?php echo $urlBase; ?>vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="<?php echo $urlBase; ?>vendor/owl-carousel/css/owl.theme.default.min.css">
     <link href="<?php echo $urlBase; ?>vendor/jqvmap/css/jqvmap.min.css" rel="stylesheet">
     <link href="<?php echo $urlBase; ?>css/style.css" rel="stylesheet">
-    <link href="<?php echo $urlBase; ?>css/charts.css" rel="stylesheet">
-    <link href="<?php echo $urlBase; ?>login.css" rel="stylesheet">
-    <link href="<?php echo $urlBase; ?>css/MultiSelect.css" rel="stylesheet" type="text/css">
+    <link href="<?php echo $urlBase; ?>css/filtro/MultiSelect.css" rel="stylesheet" type="text/css">
     <link href="<?php echo $urlBase; ?>css/cadastro/usuario.css" rel="stylesheet">
+    <link href="<?php echo $urlBase; ?>css/main.css" rel="stylesheet">
 
 
 </head>
@@ -47,12 +46,12 @@ if ($possuiPermissao) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 
-    <?php include_once CAMINHO_BASE . '/components/loader.php'?>
+    <?php include_once CAMINHO_BASE . '/config/components/loader.php'?>
 
     <div id="main-wrapper">
-        <?php include_once CAMINHO_BASE . '/components/header.php'?>
+        <?php include_once CAMINHO_BASE . '/config/components/header.php'?>
 
-        <?php include_once CAMINHO_BASE . '/components/sidebar.php'?>
+        <?php include_once CAMINHO_BASE . '/config/components/sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
@@ -178,7 +177,7 @@ if ($possuiPermissao) {
                     </div>
                 </div>
             </div>
-        <?php include_once CAMINHO_BASE . '/components/footer.php'?>
+        <?php include_once CAMINHO_BASE . '/config/components/footer.php'?>
 
     <!-- Filtros -->
     <script src="<?php echo $urlBase; ?>js/relatorios/MultiSelect.js"></script>
@@ -203,5 +202,5 @@ if ($possuiPermissao) {
 </html>
 <?php
 } else {
-    include_once CAMINHO_BASE . '/components/pagina_desconhecida.php';
+    include_once CAMINHO_BASE . '/config/components/pagina_desconhecida.php';
 }

@@ -101,7 +101,7 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
             }
     },
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
     }
 
     const graficoDescarregadoDia = new Chart('graficoDescarregadoDia', {

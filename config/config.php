@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 // Set the log file for errors
 ini_set('log_errors', 'On');
-ini_set('error_log', __DIR__ . '/../logs/project_errors.log');
+ini_set('error_log', __DIR__ . '/../config/logs/project_errors.log');
 
 require_once __DIR__ . '/AppLogger.php';
 
