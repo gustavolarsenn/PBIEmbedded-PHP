@@ -1,11 +1,11 @@
 <?php
 $basePath = '../../'; // Adjust this path as needed 
 
-require_once __DIR__ . '/../../config/config.php'; 
+require_once __DIR__ . '/../../utils/config/config.php'; 
 
 require_once CAMINHO_BASE . '/models/SessionManager.php';
 require_once CAMINHO_BASE . '/models/PermissoesPagina.php';
-require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/utils/config/database.php';
 
 SessionManager::checarSessao();
 SessionManager::checarCsrfToken();
@@ -34,7 +34,7 @@ if ($possuiPermissao) {
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Power BI</title>
 
-    <link rel="icon" type="image/png" href="/config/img/icone.png">
+    <link rel="icon" type="image/png" href="/utils/img/icone.png">
 
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.carousel.min.css">
     <link rel="stylesheet" href="<?php echo $basePath; ?>/vendor/owl-carousel/css/owl.theme.default.min.css">
@@ -45,13 +45,13 @@ if ($possuiPermissao) {
 </head>
 
 <body>
-    <?php include_once CAMINHO_BASE . '/config/components/loader.php'?>
+    <?php include_once CAMINHO_BASE . '/utils/components/loader.php'?>
 
     <div id="main-wrapper">
 
-        <?php include_once CAMINHO_BASE . '/config/components/header.php'?>
+        <?php include_once CAMINHO_BASE . '/utils/components/header.php'?>
 
-        <?php include_once CAMINHO_BASE . '/config/components/sidebar.php'?>
+        <?php include_once CAMINHO_BASE . '/utils/components/sidebar.php'?>
 	
         <div class="content-body">
             <div class="container-fluid">
@@ -92,7 +92,7 @@ if ($possuiPermissao) {
                     <div class="error-container"></div>
                 </section>
             </div>
-        <?php include_once CAMINHO_BASE . '/config/components/footer.php'?>
+        <?php include_once CAMINHO_BASE . '/utils/components/footer.php'?>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.js"></script>
     <script src="https://code.jquery.com/jquery-2.0.3.min.js" type="text/javascript" ></script>
@@ -130,5 +130,5 @@ if ($possuiPermissao) {
 </html>
 <?php
 } else {
-    include_once CAMINHO_BASE . '/config/components/pagina_desconhecida.php';
+    include_once CAMINHO_BASE . '/utils/components/pagina_desconhecida.php';
 }

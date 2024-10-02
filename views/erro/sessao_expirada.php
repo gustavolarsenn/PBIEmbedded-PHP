@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../config/config.php'; 
+require_once __DIR__ . '/../../utils/config/config.php'; 
 
 $urlBase = '/'
 ?>
@@ -12,7 +12,7 @@ $urlBase = '/'
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Sessão Expirada</title>
 
-    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>config/img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>utils/img/icone.png">
 
     <link href="<?php echo $urlBase; ?>css/style.css" rel="stylesheet">
     <link href="<?php echo $urlBase; ?>css/erro.css" rel="stylesheet">
@@ -20,7 +20,7 @@ $urlBase = '/'
 
 <body>
     <div class="error-container">
-        <img class="logo-compact" src="/config/img/zport-logo-3x.png" width="30%">
+        <img class="logo-compact" src="/utils/img/zport-logo-3x.png" width="30%">
         <br>
         <div>
             <h1>Sessão expirada.</h1>

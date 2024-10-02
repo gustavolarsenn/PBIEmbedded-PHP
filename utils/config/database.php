@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/config.php';
 
-require_once CAMINHO_BASE . '/config/AppLogger.php';
+require_once CAMINHO_BASE . '/utils/config/AppLogger.php';
 
 class Database {
     private $servername;

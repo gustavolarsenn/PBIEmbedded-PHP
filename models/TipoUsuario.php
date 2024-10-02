@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/config/config.php';
 
 require_once CAMINHO_BASE . '/vendor/autoload.php';
 

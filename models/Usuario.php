@@ -1,12 +1,12 @@
 <?php
 
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/config/config.php';
 
 require_once CAMINHO_BASE . '/models/SessionManager.php';
 require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';
 require_once CAMINHO_BASE . '/models/Azure/Capacidade.php';
-require_once CAMINHO_BASE . '/config/AppLogger.php';
-require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/utils/config/AppLogger.php';
+require_once CAMINHO_BASE . '/utils/config/database.php';
 
 class Usuario
 {
@@ -138,6 +138,7 @@ class Usuario
             $stmt->bind_param('s', $this->email);
             $stmt->execute();
             $result = $stmt->get_result();
+            $usuario = [];
 
             while ($row = $result->fetch_assoc()) {
                 $usuario[] = $row;

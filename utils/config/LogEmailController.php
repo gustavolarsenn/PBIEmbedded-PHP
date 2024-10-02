@@ -3,7 +3,7 @@
 require_once __DIR__ . "/config.php";
 require_once CAMINHO_BASE . '/vendor/autoload.php';
 
-require_once CAMINHO_BASE . '/config/ServicoMailer.php';
+require_once CAMINHO_BASE . '/utils/config/ServicoMailer.php';
 
 use Psr\Log\LoggerInterface;
 

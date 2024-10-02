@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/config/config.php'; 
+require_once __DIR__ . '/utils/config/config.php'; 
 
 require_once CAMINHO_BASE . '/models/SessionManager.php';
-require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/utils/config/database.php';
 
 $pdo = (new Database())->getConnection();
 
@@ -19,7 +19,7 @@ $urlBase = '/'
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Login</title>
 
-    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>config/img/icone.png">
+    <link rel="icon" type="image/png" href="<?php echo $urlBase;?>utils/img/icone.png">
 
     <link href="<?php echo $urlBase;?>css/style.css" rel="stylesheet">
     <link href="<?php echo $urlBase;?>css/login/login.css" rel="stylesheet">
@@ -32,7 +32,7 @@ $urlBase = '/'
         <div class="container-fluid h-100">
             
 		<video autoplay muted loop>
-            <source src="<?php echo $urlBase;?>config/background-video.mp4" type="video/mp4">
+            <source src="<?php echo $urlBase;?>utils/background-video.mp4" type="video/mp4">
         </video>
         
             <div class="row justify-content-center h-100 align-items-center">
@@ -42,7 +42,7 @@ $urlBase = '/'
                             <div class="col-xl-12">
                                 <div class="auth-form">
                                     <div class="logo-container">
-                                        <img class="logo" src="/config/img/zport-logo-3x.png">
+                                        <img class="logo" src="/utils/img/zport-logo-3x.png">
                                     </div>
                                     <h2 id="titulo-form">Login</h2>
                                     <form id="form-login" method="post" action="<?php echo $urlBase;?>controllers/UsuarioController.php">

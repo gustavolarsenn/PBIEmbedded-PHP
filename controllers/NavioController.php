@@ -1,9 +1,9 @@
 <?php
 
-require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../utils/config/config.php';
 
 require_once CAMINHO_BASE . '/models/Navio.php';
-require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/utils/config/database.php';
 require_once CAMINHO_BASE . '/models/SessionManager.php';
 
 $pdo = (new Database())->getConnection();

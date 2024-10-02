@@ -1,9 +1,9 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../utils/config/config.php';
 require_once CAMINHO_BASE . '/models/Azure/AzureAPI.php';
 require_once CAMINHO_BASE . '/models/Azure/Capacidade.php';
 
-require_once CAMINHO_BASE . '/config/database.php';
+require_once CAMINHO_BASE . '/utils/config/database.php';
 require_once CAMINHO_BASE . '/models/PBI/PowerBISession.php';
 
 require_once CAMINHO_BASE . '/models/SessionManager.php';
