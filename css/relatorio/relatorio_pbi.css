@@ -22,24 +22,6 @@ body h2{
     margin: 10px 0px;
     padding: 0px 20px;
 }
-.report-buttons{
-    display: flex;
-    width: fit-content;
-    background-color: rgba(255, 255, 255, 0.25);
-    border-radius: 5px;
-    margin: 10px 0px;
-}
-
-.report-buttons svg{
-    height: 20px;
-    margin: 10px;
-    fill: #593bdb;
-}
-
-.report-buttons svg:hover{
-    cursor: pointer;
-    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
-}
 
 #report-container{
     display: none;

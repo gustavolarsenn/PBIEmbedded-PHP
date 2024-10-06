@@ -71,7 +71,8 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
                 }
             }
         },
-        maintainAspectRatio: true,
+        responsive: true,
+        maintainAspectRatio: false,
     }
 
     // Step 3: Assign the generated colors to `backgroundColor` in your dataset

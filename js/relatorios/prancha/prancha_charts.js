@@ -6,6 +6,7 @@ import { gerarGraficoResumoGeral } from './graficos/resumo_geral.js';
 import { gerarGraficoTempoParalisado } from './graficos/tempo_paralisado.js';
 import { gerarGraficoDescarregadoDiaPeriodo } from './graficos/volume_dia_periodo.js';
 import { generateFilters, updateFilters } from '../../utils/utils.js';
+import { gerarPDF } from '../gerarPDF.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -14,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 const botaoHamburger = document.querySelector('.hamburger');
+
+const botaoExportarPDF = document.getElementById('export-pdf');
 
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
 var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-periodo-container');
@@ -144,8 +147,6 @@ async function generateCharts() {
         paralisacaoSelecionada.innerHTML = '';
     }
 
-    console.log(vesselData)
-
     infoPortTag.innerText = vesselData[0].porto;
     infoVesselTag.innerText = vesselData[0].navio;
     infoBerthTag.innerText = vesselData[0].berco;
@@ -165,10 +166,6 @@ async function generateCharts() {
         }
     });
 
-    console.log(filtroNavio);
-
-
-    console.log(formattedDataDischarged)
     // Assuming the structure of each item in `data` is known and matches the filter criteria
     const filteredDataDischarged = formattedDataDischarged.filter((item) => {
         // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
@@ -255,3 +252,10 @@ async function generateCharts() {
             tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
         }
     }
+
+
+botaoExportarPDF.addEventListener('click', async function() {
+    console.log("Funcionando")
+    gerarPDF();
+    console.log("PDF gerado?")
+})

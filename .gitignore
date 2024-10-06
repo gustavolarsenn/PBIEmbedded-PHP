@@ -1,5 +1,5 @@
 *.mp4
 *.log
 *.bat
-utils/last_email_sent_times.json
+utils/config/last_email_sent_times.json
 utils/documentation

@@ -34,6 +34,7 @@ if ($possuiPermissao) {
         <link href="<?php echo $basePath; ?>/css/style.css" rel="stylesheet">
         <link rel="stylesheet" href="<?php echo $basePath; ?>/css/relatorio/charts.css">
         <link rel="stylesheet" href="<?php echo $basePath; ?>/css/relatorio/prancha.css">
+        <link rel="stylesheet" href="<?php echo $basePath; ?>/css/relatorio/prancha_printing.css">
         <link rel="stylesheet" href="<?php echo $basePath; ?>/css/main.css">
 
         <link href="<?php echo $basePath; ?>/css/filtro/MultiSelect.css" rel="stylesheet" type="text/css">
@@ -48,7 +49,11 @@ if ($possuiPermissao) {
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script>
-        
+
+    <!-- Gerar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+
         <?php include_once CAMINHO_BASE . '/utils/components/loader.php'?>
 
         <div id="main-wrapper">
@@ -79,122 +84,129 @@ if ($possuiPermissao) {
                             <div class="input-label">
                                 <label>Período</label>
                                 <select id='lista-periodo' multiple data-multi-select>
-                                </select>
+                                    </select>
+                                </div>
+                                <div class="input-label" >
+                                    <label>Data</label>
+                                    <input type="date" id='data'>
+                                </div>
+                                <div id='clean-filters' class="input-label svg-buttons" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'relatorio_no', 'motivo_paralisacao']); cleanFiltersData();">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+                                        <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
+                                    </svg>
+                                </div>
+                                <!-- <div id='export-pdf' class="input-label svg-buttons" title="Exportar para PDF">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-download" viewBox="0 0 16 16">
+                                        <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                                        <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708z"/>
+                                    </svg>
+                                </div> -->
                             </div>
-                            <div class="input-label" >
-                                <label>Data</label>
-                                <input type="date" id='data'>
-                            </div>
-                            <div id='clean-filters' class="input-label" title="Limpar filtros" onclick="cleanFiltersField(['navio', 'periodo', 'relatorio_no', 'motivo_paralisacao']); cleanFiltersData();">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
-                                    <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293z"/>
-                                </svg>
-                            </div>
-                        </div>
+                        <!-- <div class="subcontainer-filtro">
+                        </div> -->
                     </div>
                     <section id="relatorio-container">
-
                             <div class="chart-container">
-                                <div id="info-navio-container" class="chart chart-small-block">
-                                    <h1 id="info-navio-titulo"></h1>
-                                    <div id="info-navio">
-                                        <div class="info-navio-row">
-                                            <h4>Porto: </h4>
-                                            <label id="info-port"></label>
-                                        </div>
-                                        <div class="info-navio-row">
-                                            <h4>Berço: </h4>
-                                            <label id="info-berth"></label>
-                                        </div>
-                                        <div class="info-navio-row">
-                                            <h4>Produto: </h4>
-                                            <label id="info-product"></label>
-                                        </div>
-                                        <div class="info-navio-row">
-                                            <h4>Modalidade: </h4>
-                                            <label id="info-modality"></label>
-                                        </div>
-                                        <div class="info-navio-row">
-                                            <h4>Manifestado: </h4>
-                                            <label id="info-volume"></label>
-                                        </div>
-                                        <div class="info-navio-row">
-                                            <h4>Data: </h4>
-                                            <label id="info-date"></label>
-                                        </div>
-                                        <div class="info-navio-row" style="border: none !important">
-                                            <h4>Prancha mínima: </h4>
-                                            <label id="info-minimum-discharge"></label>
-                                        </div>
-                                    </div>
-                                </div>     
-
-                                <div id="descarregado-total-dia-prancha-aferida-container">
-                                    <div id="descarregado-total-prancha-aferida-container">
-                                        <div id="descarregado-total-container" class="chart chart-small-block">
-                                            <label class="label-chart">Total descarregado / restante</label>
-                                            <div id="descarregado-total">
-                                                    <div id="vessel-discharging-info-container" >
-                                                        <div class="vessel-discharging-info">
-                                                            <h4>Descarregado: </h4>
-                                                            <label id="info-descarregado"></label>
-                                                        </div>
-                                                        <div class="vessel-discharging-info">
-                                                            <h4>Restante: </h4>
-                                                            <label id="info-restante"></label>
-                                                        </div>
-                                                    </div>
-                                                    <div id="descarregado-total-grafico-container" style='position: relative !important; height: 25vh !important; padding: 5px 0'>
-                                                        <!-- <canvas id="graficoTotalDescarregado" height="27" width="40"></canvas> -->
-                                                        <canvas id="graficoTotalDescarregado"></canvas>
-                                                        <div id="emptyGraficoTotalDescarregado" class="no-data">
-                                                            <p>Nenhum valor encontrado!</p>
-                                                        </div>
-                                                    </div>
+                                <div id="info-total-prancha-dia-container">
+                                    <div id="info-navio-container" class="chart chart-small-block">
+                                        <h1 id="info-navio-titulo"></h1>
+                                        <div id="info-navio">
+                                            <div class="info-navio-row">
+                                                <h4>Porto: </h4>
+                                                <label id="info-port"></label>
                                             </div>
-                                        </div>  
-
-                                        <div id="prancha-aferida-container" class="chart chart-small-block">
-                                                <div id="prancha-aferida-info">
-                                                    <div id="prancha-aferida-big-numbers">
+                                            <div class="info-navio-row">
+                                                <h4>Berço: </h4>
+                                                <label id="info-berth"></label>
+                                            </div>
+                                            <div class="info-navio-row">
+                                                <h4>Produto: </h4>
+                                                <label id="info-product"></label>
+                                            </div>
+                                            <div class="info-navio-row">
+                                                <h4>Modalidade: </h4>
+                                                <label id="info-modality"></label>
+                                            </div>
+                                            <div class="info-navio-row">
+                                                <h4>Manifestado: </h4>
+                                                <label id="info-volume"></label>
+                                            </div>
+                                            <div class="info-navio-row">
+                                                <h4>Data: </h4>
+                                                <label id="info-date"></label>
+                                            </div>
+                                            <div class="info-navio-row" style="border: none !important">
+                                                <h4>Prancha mínima: </h4>
+                                                <label id="info-minimum-discharge"></label>
+                                            </div>
+                                        </div>
+                                    </div>     
+    
+                                    <div id="descarregado-total-dia-prancha-aferida-container">
+                                        <div id="descarregado-total-prancha-aferida-container">
+                                            <div id="descarregado-total-container" class="chart chart-small-block">
+                                                <label class="label-chart">Total descarregado / restante</label>
+                                                <div id="descarregado-total">
+                                                        <div id="vessel-discharging-info-container" >
+                                                            <div class="vessel-discharging-info">
+                                                                <h4>Descarregado: </h4>
+                                                                <label id="info-descarregado"></label>
+                                                            </div>
+                                                            <div class="vessel-discharging-info">
+                                                                <h4>Restante: </h4>
+                                                                <label id="info-restante"></label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="descarregado-total-grafico-container" style='position: relative !important; height: 20vh !important;'>
+                                                            <canvas id="graficoTotalDescarregado"></canvas>
+                                                            <div id="emptyGraficoTotalDescarregado" class="no-data">
+                                                                <p>Nenhum valor encontrado!</p>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>  
+    
+                                            <div id="prancha-aferida-container" class="chart chart-small-block">
+                                                    <div id="prancha-aferida-info">
+                                                        <div id="prancha-aferida-big-numbers">
+                                                            <div>
+                                                                <h4>Prancha Aferida</h4>
+                                                                <label id="prancha-aferida" class="big-numbers"></label>
+                                                            </div>
+                                                        </div>
+                                                        <div id="meta-alcancada" class="target-stripe">
+                                                        </div>
+                                                    </div>
+    
+                                                    <div id="prancha-aferida-lista-paralisacao-container">
+                                                        <div class="input-label">
+                                                            <select id='lista-motivo_paralisacao' data-multi-select>
+                                                            </select>
+                                                        </div>
                                                         <div>
-                                                            <h4>Prancha Aferida</h4>
-                                                            <label id="prancha-aferida" class="big-numbers"></label>
+                                                            <ul id="paralisacao-selecionada">
+                                                            </ul>                                                
                                                         </div>
                                                     </div>
-                                                    <div id="meta-alcancada" class="target-stripe">
-                                                    </div>
                                                 </div>
-
-                                                <div id="prancha-aferida-lista-paralisacao-container">
-                                                    <div class="input-label">
-                                                        <select id='lista-motivo_paralisacao' data-multi-select>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <ul id="paralisacao-selecionada">
-                                                        </ul>                                                
-                                                    </div>
+                                        </div> 
+                                        <div id="descarregado-dia-container">
+                                            <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'>
+                                                <label class="label-chart">Descarregado por dia</label>
+                                                <canvas id="graficoDescarregadoDia"></canvas>
+                                                <canvas id="graficoDescarregadoDiaSideBar"></canvas>
+                                                <div id="emptyGraficoDescarregadoDia" class="no-data">
+                                                    <p>Nenhum valor encontrado!</p>
                                                 </div>
-                                            </div>
-                                    </div> 
-                                    <div id="descarregado-dia-container">
-                                        <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'>
-                                            <label class="label-chart">Descarregado por dia</label>
-                                            <canvas id="graficoDescarregadoDia"></canvas>
-                                            <!-- <canvas id="graficoDescarregadoDia" height="11" width="65"></canvas> -->
-                                            <canvas id="graficoDescarregadoDiaSideBar"></canvas>
-                                            <div id="emptyGraficoDescarregadoDia" class="no-data">
-                                                <p>Nenhum valor encontrado!</p>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div> 
                             </div>
                             <div id="resumo-geral-tempo-paralisado-container">
                                     <div id="resumo-geral-grafico" class="chart chart-small-block" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
                                         <label class="label-chart">Resumo geral</label>
-                                        <!-- <canvas id="graficoResumoGeral" height="45" width="100"></canvas> -->
                                         <canvas id="graficoResumoGeral"></canvas>
                                         <div id="emptyGraficoResumoGeral" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
@@ -202,19 +214,17 @@ if ($possuiPermissao) {
                                     </div>
                                     <div class="chart chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
                                         <label class="label-chart">Tempo paralisado</label>
-                                        <!-- <canvas id="graficoTempoParalisado" height="30" width="100"></canvas> -->
                                         <canvas id="graficoTempoParalisado"></canvas>
                                         <div id="emptyGraficoTempoParalisado" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>
                                     </div>
                             </div>
-                            <div class="chart">
+                            <div id='descarregado-dia-periodo' class="chart">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
                                 <div id="descarregado-dia-periodo-container" class="chart">
-                                    <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block">
-                                            <!-- <canvas id="graficoDescarregadoDiaPeriodo" height="20" width='120'></canvas>    -->
-                                            <canvas id="graficoDescarregadoDiaPeriodo"></canvas>
+                                    <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block"  style='position: relative !important; width: fit-content !important; height: auto !important; padding-bottom: 20px; border-radius: 0 !important;'>
+                                            <canvas id="graficoDescarregadoDiaPeriodo" height="20" width='120'></canvas>   
                                             <div id="emptyGraficoDescarregadoDiaPeriodo" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
                                             </div>
@@ -236,6 +246,8 @@ if ($possuiPermissao) {
         <script src="<?php echo $basePath; ?>/js/custom.min.js"></script>
         <script src="<?php echo $basePath; ?>/js/logout.js"></script>
         <script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
+
+        <script type="module" src="<?php echo $basePath; ?>/js/relatorios/gerarPDF.js"></script>
         
         <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
         <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>
