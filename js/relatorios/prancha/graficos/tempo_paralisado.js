@@ -78,7 +78,8 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
                 }],
             },
             legend: {
-                display: true
+                display: true,
+                position: 'top',
             },
             responsive: true,
             tooltips: {
@@ -145,6 +146,10 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
             }
         }
 
+        let optionsPrint = {...options};
+        optionsPrint.responsive = false;
+        optionsPrint.maintainAspectRatio = true;
+
         // Create the chart
         const graficoTempoParalisado = new Chart('graficoTempoParalisado', {
             type: 'bar',
@@ -153,7 +158,15 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
             options: options
         });
 
-        return graficoTempoParalisado;
+        // Create the chart
+        const graficoTempoParalisadoPrint = new Chart('graficoTempoParalisadoPrint', {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: data,
+            options: optionsPrint
+        });
+
+        return [graficoTempoParalisado, graficoTempoParalisadoPrint];
     }
 }
 

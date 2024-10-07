@@ -111,31 +111,31 @@ if ($possuiPermissao) {
                                     <div id="info-navio-container" class="chart chart-small-block">
                                         <h1 id="info-navio-titulo"></h1>
                                         <div id="info-navio">
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-port-row">
                                                 <h4>Porto: </h4>
                                                 <label id="info-port"></label>
                                             </div>
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-berth-row">
                                                 <h4>Berço: </h4>
                                                 <label id="info-berth"></label>
                                             </div>
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-product-row">
                                                 <h4>Produto: </h4>
                                                 <label id="info-product"></label>
                                             </div>
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-modality-row">
                                                 <h4>Modalidade: </h4>
                                                 <label id="info-modality"></label>
                                             </div>
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-volume-row">
                                                 <h4>Manifestado: </h4>
                                                 <label id="info-volume"></label>
                                             </div>
-                                            <div class="info-navio-row">
+                                            <div class="info-navio-row" id="info-date-row">
                                                 <h4>Data: </h4>
                                                 <label id="info-date"></label>
                                             </div>
-                                            <div class="info-navio-row" style="border: none !important">
+                                            <div class="info-navio-row" id="info-minimum-discharge-row"style="border: none !important">
                                                 <h4>Prancha mínima: </h4>
                                                 <label id="info-minimum-discharge"></label>
                                             </div>
@@ -159,6 +159,7 @@ if ($possuiPermissao) {
                                                         </div>
                                                         <div id="descarregado-total-grafico-container" style='position: relative !important; height: 20vh !important;'>
                                                             <canvas id="graficoTotalDescarregado"></canvas>
+                                                            <canvas id="graficoTotalDescarregadoPrint" height="400" width="500"></canvas>
                                                             <div id="emptyGraficoTotalDescarregado" class="no-data">
                                                                 <p>Nenhum valor encontrado!</p>
                                                             </div>
@@ -194,7 +195,8 @@ if ($possuiPermissao) {
                                             <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'>
                                                 <label class="label-chart">Descarregado por dia</label>
                                                 <canvas id="graficoDescarregadoDia"></canvas>
-                                                <canvas id="graficoDescarregadoDiaSideBar"></canvas>
+                                                <!-- <canvas id="graficoDescarregadoDiaSideBar"></canvas> -->
+                                                <canvas id="graficoDescarregadoDiaPrint" height="236" width="600"></canvas>
                                                 <div id="emptyGraficoDescarregadoDia" class="no-data">
                                                     <p>Nenhum valor encontrado!</p>
                                                 </div>
@@ -208,6 +210,7 @@ if ($possuiPermissao) {
                                     <div id="resumo-geral-grafico" class="chart chart-small-block" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
                                         <label class="label-chart">Resumo geral</label>
                                         <canvas id="graficoResumoGeral"></canvas>
+                                        <canvas id="graficoResumoGeralPrint" height="350" width="600"></canvas>
                                         <div id="emptyGraficoResumoGeral" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>
@@ -215,6 +218,7 @@ if ($possuiPermissao) {
                                     <div class="chart chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
                                         <label class="label-chart">Tempo paralisado</label>
                                         <canvas id="graficoTempoParalisado"></canvas>
+                                        <canvas id="graficoTempoParalisadoPrint" height="350" width="600"></canvas>
                                         <div id="emptyGraficoTempoParalisado" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>

@@ -1,5 +1,5 @@
 import { getVesselInfo, getVesselData, getUniqueVessels } from './prancha_data.js';
-import { floatParaFloatFormatado, paralisacoesSoma, pbiThemeColors, pbiThemeColorsBorder } from '../charts_utils.js';
+import { floatParaFloatFormatado, paralisacoesSoma, pbiThemeColors, pbiThemeColorsBorder, ajustarInformacoesNavioImpressao} from '../charts_utils.js';
 import { gerarGraficoTotalDescarregado } from './graficos/total_descarregado.js';
 import { gerarGraficoDescarregadoPorDia } from './graficos/volume_dia.js';
 import { gerarGraficoResumoGeral } from './graficos/resumo_geral.js';
@@ -14,13 +14,21 @@ document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
 
-const botaoHamburger = document.querySelector('.hamburger');
-
-const botaoExportarPDF = document.getElementById('export-pdf');
-
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
 var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-periodo-container');
 var tagGraficoDiaPeriodoContainerGrafico = document.getElementById('descarregado-dia-periodo-grafico');
+
+var infoPortRow = document.getElementById('info-port-row');
+var infoVesselRow = document.getElementById('info-vessel-row');
+var infoBerthRow = document.getElementById('info-berth-row');
+var infoProductRow = document.getElementById('info-product-row');
+var infoModalityRow = document.getElementById('info-modality-row');
+var infoVolumeRow = document.getElementById('info-volume-row');
+var infoDateRow = document.getElementById('info-date-row');
+var infoMinimumDischargeRow = document.getElementById('info-minimum-discharge-row');
+
+
+var navioContainer = document.getElementById('info-navio-container');
 
 var infoVesselTag = document.getElementById('info-navio-titulo');
 var infoPortTag = document.getElementById('info-port');
@@ -35,6 +43,9 @@ var infoPranchaAferida = document.getElementById('prancha-aferida');
 var infoMetaAlcancada = document.getElementById('meta-alcancada');
 
 var paralisacaoSelecionada = document.getElementById('paralisacao-selecionada');
+const botaoHamburger = document.querySelector('.hamburger');
+
+const botaoExportarPDF = document.getElementById('export-pdf');
 
 var jaFoiFiltradoNavio = '';
 var jaFiltradoRelatorio = [];
@@ -77,7 +88,11 @@ botaoHamburger.addEventListener('click', function() {
 const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 
-var graficoTotalDescarregado, graficoDescarregadoDia, graficoDescarregadoDiaSideBar, graficoResumoGeral, graficoTempoParalisado, graficoDescarregadoDiaPeriodo;
+var graficoTotalDescarregado, graficoTotalDescarregadoPrint,
+graficoDescarregadoDia, graficoDescarregadoDiaPrint, graficoDescarregadoDiaSideBar, 
+graficoResumoGeral, graficoResumoGeralPrint, 
+graficoTempoParalisado, graficoTempoParalisadoPrint,
+graficoDescarregadoDiaPeriodo;
 
 var count = 0;
 
@@ -147,6 +162,43 @@ async function generateCharts() {
         paralisacaoSelecionada.innerHTML = '';
     }
 
+    ajustarInformacoesNavioImpressao('beforeprint', infoProductRow, vesselData[0].produto.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoProductRow, vesselData[0].produto.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoVesselRow, vesselData[0].navio.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoVesselRow, vesselData[0].navio.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoPortRow, vesselData[0].porto.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoPortRow, vesselData[0].porto.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoBerthRow, vesselData[0].berco.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoBerthRow, vesselData[0].berco.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoModalityRow, vesselData[0].modalidade.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoModalityRow, vesselData[0].modalidade.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoVolumeRow, vesselData[0].volume_manifestado.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoVolumeRow, vesselData[0].volume_manifestado.length, 17);
+
+    ajustarInformacoesNavioImpressao('beforeprint', infoMinimumDischargeRow, vesselData[0].prancha_minima.length, 17);
+    ajustarInformacoesNavioImpressao('afterprint', infoMinimumDischargeRow, vesselData[0].prancha_minima.length, 17);
+
+
+    // window.addEventListener('beforeprint', () => {
+    //     if (vesselData[0].produto.length > 17) {
+    //         infoProductRow.style.flexDirection = 'column';
+    //         infoProductRow.style.alignItems = 'flex-start';
+    //     }
+    // });
+
+    // window.addEventListener('afterprint', () => {
+    //     if (vesselData[0].produto.length > 17) {
+    //         infoProductRow.style.flexDirection = 'row';
+    //         infoProductRow.style.alignItems = 'center';
+    //     }
+    // });
+
+
     infoPortTag.innerText = vesselData[0].porto;
     infoVesselTag.innerText = vesselData[0].navio;
     infoBerthTag.innerText = vesselData[0].berco;
@@ -183,10 +235,18 @@ async function generateCharts() {
     const listaRelatorio = [...new Set(filteredDataDischarged.map(d => d.relatorio_no))].sort();
     
     if (graficoTotalDescarregado) graficoTotalDescarregado.destroy();
+    if (graficoTotalDescarregadoPrint) graficoTotalDescarregadoPrint.destroy();
+
     if (graficoDescarregadoDia) graficoDescarregadoDia.destroy();
+    if (graficoDescarregadoDiaPrint) graficoDescarregadoDiaPrint.destroy();
     if (graficoDescarregadoDiaSideBar) graficoDescarregadoDiaSideBar.destroy();
+
     if (graficoResumoGeral) graficoResumoGeral.destroy();
+    if (graficoResumoGeralPrint) graficoResumoGeralPrint.destroy();
+
     if (graficoTempoParalisado) graficoTempoParalisado.destroy();
+    if (graficoTempoParalisadoPrint) graficoTempoParalisadoPrint.destroy();
+
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
 
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
@@ -212,14 +272,13 @@ async function generateCharts() {
 
     const duracaoTotal = filteredDataDischarged.reduce((acc, d) => acc + d.duracao, 0);
 
-    graficoTotalDescarregado = await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
+    [graficoTotalDescarregado, graficoTotalDescarregadoPrint] = await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
 
-    [graficoDescarregadoDia, graficoDescarregadoDiaSideBar] = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder)
+    [graficoDescarregadoDia, graficoDescarregadoDiaSideBar, graficoDescarregadoDiaPrint] = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder);
 
-    graficoResumoGeral = await gerarGraficoResumoGeral(filteredDataDischarged);
+    [graficoResumoGeral, graficoResumoGeralPrint] = await gerarGraficoResumoGeral(filteredDataDischarged);
 
-    graficoTempoParalisado = await gerarGraficoTempoParalisado(filteredDataDischarged);
-
+    [graficoTempoParalisado, graficoTempoParalisadoPrint] = await gerarGraficoTempoParalisado(filteredDataDischarged);
 
     graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged);
 
@@ -251,11 +310,12 @@ async function generateCharts() {
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
             tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
         }
+
+    
+        window.addEventListener('beforeprint', () => {
+            graficoDescarregadoDia.resize(100, 600);
+        });
+        window.addEventListener('afterprint', () => {
+            graficoDescarregadoDia.resize();
+        });
     }
-
-
-botaoExportarPDF.addEventListener('click', async function() {
-    console.log("Funcionando")
-    gerarPDF();
-    console.log("PDF gerado?")
-})

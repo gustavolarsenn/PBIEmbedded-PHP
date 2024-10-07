@@ -104,6 +104,10 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
         maintainAspectRatio: false,
     }
 
+    let optionsPrint = {...options};
+    optionsPrint.responsive = false;
+    optionsPrint.maintainAspectRatio = true;
+
     const graficoDescarregadoDia = new Chart('graficoDescarregadoDia', {
         type: 'bar',
         data: dados,
@@ -116,7 +120,13 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
         options: options
     });
 
-    return [graficoDescarregadoDia, graficoDescarregadoDiaSideBar];
+    const graficoDescarregadoDiaPrint = new Chart('graficoDescarregadoDiaPrint', {
+        type: 'bar',
+        data: dados,
+        options: optionsPrint
+    });
+
+    return [graficoDescarregadoDia, graficoDescarregadoDiaSideBar, graficoDescarregadoDiaPrint];
     }
 }
 

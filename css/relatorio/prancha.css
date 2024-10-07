@@ -17,6 +17,10 @@
     margin: auto 0;
 }
 
+#graficoDescarregadoDiaPrint, #graficoResumoGeralPrint, #graficoTempoParalisadoPrint, #graficoTotalDescarregadoPrint{
+    display: none !important;
+}
+
 .info-navio-row label, .vessel-discharging-info label{
     font-size: 1.2em;
     font-weight: 400;

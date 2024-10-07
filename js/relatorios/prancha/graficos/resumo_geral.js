@@ -110,6 +110,10 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
             maintainAspectRatio: false,
         }
 
+        let optionsPrint = {...options};
+        optionsPrint.responsive = false;
+        optionsPrint.maintainAspectRatio = true;
+        
         const graficoResumoGeral = new Chart('graficoResumoGeral', {
             type: 'bar',
             plugins: [ChartDataLabels],
@@ -117,7 +121,14 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
             options: options
         });
 
-        return graficoResumoGeral;
+        const graficoResumoGeralPrint = new Chart('graficoResumoGeralPrint', {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: dados,
+            options: optionsPrint
+        });
+
+        return [graficoResumoGeral, graficoResumoGeralPrint];
     }
 }
 

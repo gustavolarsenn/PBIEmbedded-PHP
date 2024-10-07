@@ -30,8 +30,10 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                     colorPalette['softBlue']
                 ],
                 borderColor: [
+                    colorPalette['softBlue'],
                     colorPalette['pbiGreenFull'],
                 ],
+                borderWidth: 0.5,
             }]
         }
 
@@ -42,7 +44,7 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
         
                 // Calculate the center of the chart
                 const centerX = (chartArea.left + chartArea.right) / 2;
-                const centerY = (chartArea.top + chartArea.bottom) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 1.65;
                 
                 const totalDescarregado = data.datasets[0].data[0];
                 const totalManifestado = dadosManifestado;
@@ -50,10 +52,35 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                 const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
         
                 // Set the font properties
-                ctx.font = 'bold 1.75rem Arial';
+                ctx.font = 'bold 2.6rem Arial';
                 ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'top'; // Align vertically in the center
+        
+                // Draw the text in the center of the chart
+                ctx.fillText(percentDescarregado + '%', centerX, centerY);
+            }
+        };
+
+        const doughnutLabelPrint = {
+            id: 'doughnutLabelPrint',
+            beforeDatasetsDraw(chart, args, pluginOptions) {
+                const {ctx, data, chartArea} = chart;
+        
+                // Calculate the center of the chart
+                const centerX = (chartArea.left + chartArea.right) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 1.3;
+                
+                const totalDescarregado = data.datasets[0].data[0];
+                const totalManifestado = dadosManifestado;
+
+                const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
+        
+                // Set the font properties
+                ctx.font = 'bold 2.8rem Arial';
+                ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom'; // Align vertically in the center
         
                 // Draw the text in the center of the chart
                 ctx.fillText(percentDescarregado + '%', centerX, centerY);
@@ -83,6 +110,11 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
             maintainAspectRatio: false,
         }
 
+        let optionsPrint = { ...options };
+        optionsPrint.cutoutPercentage = 65;
+        optionsPrint.responsive = false;
+        optionsPrint.maintainAspectRatio = true;
+
         const graficoTotalDescarregado = new Chart('graficoTotalDescarregado', {
             type: 'doughnut',
             data: dados,
@@ -90,7 +122,14 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
             plugins: [doughnutLabel],
         });
 
-        return graficoTotalDescarregado;
+        const graficoTotalDescarregadoPrint = new Chart('graficoTotalDescarregadoPrint', {
+            type: 'doughnut',
+            data: dados,
+            options: optionsPrint,
+            plugins: [doughnutLabelPrint],
+        });
+
+        return [graficoTotalDescarregado, graficoTotalDescarregadoPrint];
     }
 }
 

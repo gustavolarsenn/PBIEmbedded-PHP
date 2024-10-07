@@ -103,4 +103,25 @@ function assignColorsToList(list, colorTheme) {
     return colorMapping;
 }
 
-export { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, floatParaStringFormatada, colorPalette, pbiThemeColors, pbiThemeColorsBorder }
+function ajustarInformacoesNavioImpressao(acao, elemento, quantidadeChar, limiteChar){
+
+    if (acao === 'afterprint'){
+        window.addEventListener(acao, () => {
+            if (quantidadeChar > limiteChar) {
+                elemento.style.flexDirection = 'row';
+                elemento.style.alignItems = 'center';
+            }
+        })
+    }
+
+    if (acao === 'beforeprint'){
+        window.addEventListener(acao, () => {
+            if (quantidadeChar > limiteChar) {
+                elemento.style.flexDirection = 'column';
+                elemento.style.alignItems = 'flex-start';
+            }
+        })
+    }
+}
+
+export { floatParaFloatFormatado, convertSecondsToTime, paralisacoesSoma, renameKeys, getColorForDate, assignColorsToList, floatParaStringFormatada, colorPalette, pbiThemeColors, pbiThemeColorsBorder, ajustarInformacoesNavioImpressao }
