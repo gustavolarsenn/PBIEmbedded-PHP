@@ -114,19 +114,13 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
         options: options
     });
 
-    const graficoDescarregadoDiaSideBar = new Chart('graficoDescarregadoDiaSideBar', {
-        type: 'bar',
-        data: dados,
-        options: options
-    });
-
     const graficoDescarregadoDiaPrint = new Chart('graficoDescarregadoDiaPrint', {
         type: 'bar',
         data: dados,
         options: optionsPrint
     });
 
-    return [graficoDescarregadoDia, graficoDescarregadoDiaSideBar, graficoDescarregadoDiaPrint];
+    return [graficoDescarregadoDia, graficoDescarregadoDiaPrint];
     }
 }
 

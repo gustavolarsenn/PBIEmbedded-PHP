@@ -159,7 +159,7 @@ if ($possuiPermissao) {
                                                         </div>
                                                         <div id="descarregado-total-grafico-container" style='position: relative !important; height: 20vh !important;'>
                                                             <canvas id="graficoTotalDescarregado"></canvas>
-                                                            <canvas id="graficoTotalDescarregadoPrint" height="400" width="500"></canvas>
+                                                            <canvas id="graficoTotalDescarregadoPrint" height="170" width="260"></canvas>
                                                             <div id="emptyGraficoTotalDescarregado" class="no-data">
                                                                 <p>Nenhum valor encontrado!</p>
                                                             </div>
@@ -195,8 +195,7 @@ if ($possuiPermissao) {
                                             <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'>
                                                 <label class="label-chart">Descarregado por dia</label>
                                                 <canvas id="graficoDescarregadoDia"></canvas>
-                                                <!-- <canvas id="graficoDescarregadoDiaSideBar"></canvas> -->
-                                                <canvas id="graficoDescarregadoDiaPrint" height="236" width="600"></canvas>
+                                                <canvas id="graficoDescarregadoDiaPrint" height="270" width="690"></canvas>
                                                 <div id="emptyGraficoDescarregadoDia" class="no-data">
                                                     <p>Nenhum valor encontrado!</p>
                                                 </div>
@@ -204,25 +203,7 @@ if ($possuiPermissao) {
                                         </div>
                                     </div>
 
-                                </div> 
-                            </div>
-                            <div id="resumo-geral-tempo-paralisado-container">
-                                    <div id="resumo-geral-grafico" class="chart chart-small-block" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
-                                        <label class="label-chart">Resumo geral</label>
-                                        <canvas id="graficoResumoGeral"></canvas>
-                                        <canvas id="graficoResumoGeralPrint" height="350" width="600"></canvas>
-                                        <div id="emptyGraficoResumoGeral" class="no-data">
-                                            <p>Nenhum valor encontrado!</p>
-                                        </div>
-                                    </div>
-                                    <div class="chart chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
-                                        <label class="label-chart">Tempo paralisado</label>
-                                        <canvas id="graficoTempoParalisado"></canvas>
-                                        <canvas id="graficoTempoParalisadoPrint" height="350" width="600"></canvas>
-                                        <div id="emptyGraficoTempoParalisado" class="no-data">
-                                            <p>Nenhum valor encontrado!</p>
-                                        </div>
-                                    </div>
+                                </div>  
                             </div>
                             <div id='descarregado-dia-periodo' class="chart">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
@@ -234,6 +215,24 @@ if ($possuiPermissao) {
                                             </div>
                                         </div>
                                 </div>
+                            </div>
+                            <div id="resumo-geral-tempo-paralisado-container">
+                                    <div id="resumo-geral-grafico" class="chart chart-small-block" style='position: relative !important; height: 40vh !important; padding-bottom: 20px'>
+                                        <label class="label-chart">Resumo geral</label>
+                                        <canvas id="graficoResumoGeral"></canvas>
+                                        <canvas id="graficoResumoGeralPrint" height="270" width="480"></canvas>
+                                        <div id="emptyGraficoResumoGeral" class="no-data">
+                                            <p>Nenhum valor encontrado!</p>
+                                        </div>
+                                    </div>
+                                    <div class="chart chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; height: 40vh !important; padding-bottom: 20px;'>
+                                        <label class="label-chart">Tempo paralisado</label>
+                                        <canvas id="graficoTempoParalisado"></canvas>
+                                        <canvas id="graficoTempoParalisadoPrint" height="270" width="480"></canvas>
+                                        <div id="emptyGraficoTempoParalisado" class="no-data">
+                                            <p>Nenhum valor encontrado!</p>
+                                        </div>
+                                    </div>
                             </div>
                     </section>
                 </div>

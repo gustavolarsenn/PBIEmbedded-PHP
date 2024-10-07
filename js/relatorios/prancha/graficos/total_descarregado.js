@@ -77,7 +77,7 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                 const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
         
                 // Set the font properties
-                ctx.font = 'bold 2.8rem Arial';
+                ctx.font = 'bold 2.25rem Arial';
                 ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom'; // Align vertically in the center

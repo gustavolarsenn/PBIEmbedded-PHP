@@ -2,6 +2,14 @@
     /* @page {
         size: landscape;
     } */
+    body{
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* #relatorio-container{
+        width: 30px !important
+    } */
     #container-filtro{
         height: 0 !important;
     }
@@ -10,7 +18,7 @@
         display: none !important;
     }   
     .quixnav{
-        /* display: none; */
+        display: none;
         width: 0 !important;
         height: 0 !important;
         padding: 0 !important;
@@ -63,10 +71,11 @@
                     display: flex !important;
                     flex-direction: column !important;
                     margin-right: 10px;
+                    width: 100% !important;
                 }
-                    #graficoTotalDescarregado{
-                        display: none !important;
-                        /* padding: 0 10px 20px 10px !important; */
+                #graficoTotalDescarregado{
+                    display: none !important;
+                    /* padding: 0 10px 20px 10px !important; */
                     }
 
                 #prancha-aferida-container{
@@ -85,13 +94,16 @@
 
             #graficoDescarregadoDia{
                     display: none !important;
+                    /* width: fit-content !important; */
                     /* width: 100% !important;
                     height: auto; */
             }
 
             #graficoDescarregadoDiaPrint, #graficoResumoGeralPrint, #graficoTempoParalisadoPrint, #graficoTotalDescarregadoPrint{
-                width: 100%;
+                /* height: auto !important; */
+                /* width: fit-content !important; */
                 display: flex !important;
+                justify-content: center !important;
             }   
 
                 
@@ -129,6 +141,7 @@
     #descarregado-dia-periodo{
         /* display: none !important; */
         width: 100% !important;
+        margin-bottom: 10px !important;
     }
     /* #info-navio-container{
         width: 30% !important;

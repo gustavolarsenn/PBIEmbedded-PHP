@@ -89,7 +89,7 @@ const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffl
 const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 
 var graficoTotalDescarregado, graficoTotalDescarregadoPrint,
-graficoDescarregadoDia, graficoDescarregadoDiaPrint, graficoDescarregadoDiaSideBar, 
+graficoDescarregadoDia, graficoDescarregadoDiaPrint, 
 graficoResumoGeral, graficoResumoGeralPrint, 
 graficoTempoParalisado, graficoTempoParalisadoPrint,
 graficoDescarregadoDiaPeriodo;
@@ -183,22 +183,6 @@ async function generateCharts() {
     ajustarInformacoesNavioImpressao('beforeprint', infoMinimumDischargeRow, vesselData[0].prancha_minima.length, 17);
     ajustarInformacoesNavioImpressao('afterprint', infoMinimumDischargeRow, vesselData[0].prancha_minima.length, 17);
 
-
-    // window.addEventListener('beforeprint', () => {
-    //     if (vesselData[0].produto.length > 17) {
-    //         infoProductRow.style.flexDirection = 'column';
-    //         infoProductRow.style.alignItems = 'flex-start';
-    //     }
-    // });
-
-    // window.addEventListener('afterprint', () => {
-    //     if (vesselData[0].produto.length > 17) {
-    //         infoProductRow.style.flexDirection = 'row';
-    //         infoProductRow.style.alignItems = 'center';
-    //     }
-    // });
-
-
     infoPortTag.innerText = vesselData[0].porto;
     infoVesselTag.innerText = vesselData[0].navio;
     infoBerthTag.innerText = vesselData[0].berco;
@@ -239,7 +223,6 @@ async function generateCharts() {
 
     if (graficoDescarregadoDia) graficoDescarregadoDia.destroy();
     if (graficoDescarregadoDiaPrint) graficoDescarregadoDiaPrint.destroy();
-    if (graficoDescarregadoDiaSideBar) graficoDescarregadoDiaSideBar.destroy();
 
     if (graficoResumoGeral) graficoResumoGeral.destroy();
     if (graficoResumoGeralPrint) graficoResumoGeralPrint.destroy();
@@ -274,7 +257,7 @@ async function generateCharts() {
 
     [graficoTotalDescarregado, graficoTotalDescarregadoPrint] = await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
 
-    [graficoDescarregadoDia, graficoDescarregadoDiaSideBar, graficoDescarregadoDiaPrint] = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder);
+    [graficoDescarregadoDia, graficoDescarregadoDiaPrint] = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder);
 
     [graficoResumoGeral, graficoResumoGeralPrint] = await gerarGraficoResumoGeral(filteredDataDischarged);
 
