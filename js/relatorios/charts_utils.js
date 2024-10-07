@@ -8,12 +8,14 @@ const colorPalette = {
     'coolBlue': 'rgba(144, 200, 255, 0.8)'
 }
 
-const pbiThemeColors = ["rgba(50, 87, 168, 0.65)","rgba(55, 167, 148, 0.65)","rgba(139, 61, 136, 0.65)",
-    "rgba(221, 107, 127, 0.65)","rgba(107, 145, 201, 0.65)","rgba(245, 200, 105, 0.65)","rgba(119, 196, 168, 0.65)",
-    "rgba(222, 166, 207, 0.65)","rgba(186, 74, 197, 0.65)",
-    "rgba(197, 74, 83, 0.65)","rgba(254, 226, 102, 0.65)","rgba(62, 155, 128, 0.65)",
-    "rgba(197, 74, 145, 0.65)","rgba(37, 69, 181, 0.65)","rgba(128, 22, 137, 0.65)",
-    "rgba(137, 22, 30, 0.65)","rgba(22, 31, 137, 0.65)","rgba(137, 22, 88, 0.65)","rgba(24, 45, 121, 0.65)","rgba(15, 21, 92, 0.65)"]
+const opacityThemeColors = '0.6'
+
+const pbiThemeColors = [`rgba(50, 87, 168, ${opacityThemeColors})`,`rgba(55, 167, 148, ${opacityThemeColors})`,`rgba(139, 61, 136, ${opacityThemeColors})`,
+    `rgba(221, 107, 127, ${opacityThemeColors})`,`rgba(107, 145, 201, ${opacityThemeColors})`,`rgba(245, 200, 105, ${opacityThemeColors})`,`rgba(119, 196, 168, ${opacityThemeColors})`,
+    `rgba(222, 166, 207, ${opacityThemeColors})`,`rgba(186, 74, 197, ${opacityThemeColors})`,
+    `rgba(197, 74, 83, ${opacityThemeColors})`,`rgba(254, 226, 102, ${opacityThemeColors})`,`rgba(62, 155, 128, ${opacityThemeColors})`,
+    `rgba(197, 74, 145, ${opacityThemeColors})`,`rgba(37, 69, 181, ${opacityThemeColors})`,`rgba(128, 22, 137, ${opacityThemeColors})`,
+    `rgba(137, 22, 30, ${opacityThemeColors})`,`rgba(22, 31, 137, ${opacityThemeColors})`,`rgba(137, 22, 88, ${opacityThemeColors})`,`rgba(24, 45, 121, ${opacityThemeColors})`,`rgba(15, 21, 92, ${opacityThemeColors})`]
 
 const pbiThemeColorsBorder = ["rgba(50, 87, 168, 1)","rgba(55, 167, 148, 1)","rgba(139, 61, 136, 1)",
     "rgba(221, 107, 127, 1)","rgba(107, 145, 201, 1)","rgba(245, 200, 105, 1)","rgba(119, 196, 168, 1)",
@@ -79,11 +81,16 @@ function renameKeys(obj, keyMap) {
     }, {}); // Initial value for the accumulator is an empty object
 }
 
-function getColorForDate(date, colorTheme) {
+function getColorForDate(date, colorTheme, type) {
     // Assuming `date` is a Date object. Adjust the logic if it's a string or another format.
+    let dayOfWeek;
 
-    const dateDate = new Date(date);
-    const dayOfWeek = dateDate.getDate(); // getDay() returns 0 for Sunday, 1 for Monday, etc.
+    if (type === 'date'){
+        const dateDate = new Date(date);
+        dayOfWeek = dateDate.getDate();
+    } else {
+        dayOfWeek = date.substring(0, 2);
+    }
 
     // Let's say weekends are red, weekdays are green
     return colorTheme[dayOfWeek % pbiThemeColors.length];

@@ -1,12 +1,18 @@
 import { convertSecondsToTime } from '../../charts_utils.js';
 
 function aggregateDataByDate(data, date, category) {
-    return data.filter(d => d.data === date).map(d => d[category]);
+    return data.filter(d => d.data_str === date).map(d => d[category]);
 }
 
 async function gerarGraficoTempoParalisado(dadosDescarregado) {
 
-    const dates = [...new Set(dadosDescarregado.map(d => d.data))];
+
+    dadosDescarregado = dadosDescarregado.map(d => ({
+        ...d,
+        data_str: (new Date(d.data).getDate()).toString().padStart(2, '0') + '/' + ((new Date(d.data).getMonth() + 1)).toString().padStart(2, '0') // Formata data para 'DD/MM'
+    }));
+
+    const dates = [...new Set(dadosDescarregado.map(d => d.data_str))];
 
     const naoPossuiDados = document.getElementById('emptyGraficoTempoParalisado');
     const possuiDados = document.getElementById('graficoTempoParalisado');

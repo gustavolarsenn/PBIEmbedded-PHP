@@ -1,6 +1,12 @@
 import { floatParaFloatFormatado, getColorForDate, pbiThemeColors, pbiThemeColorsBorder } from '../../charts_utils.js';
 
 async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
+
+    dataDischarged = dataDischarged.map(d => ({
+        ...d,
+        data_str: (new Date(d.data).getDate()).toString().padStart(2, '0') + '/' + ((new Date(d.data).getMonth() + 1)).toString().padStart(2, '0') // Formata data para 'DD/MM'
+    }));
+
     const naoPossuiDados = document.getElementById('emptyGraficoDescarregadoDiaPeriodo');
     const possuiDados = document.getElementById('graficoDescarregadoDiaPeriodo');
 
@@ -14,14 +20,17 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         naoPossuiDados.style.display = 'none';
         possuiDados.style.visibility = 'visible';
 
-        const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data}`, `${item.periodo}`]);
+
+        const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data_str}`, `${item.periodo}`]);
+
         const uniqueCombinedLabelsDisplay = [...new Set(combinedLabelsDisplay)];
         
     // Step 2: Apply the function to your data to generate an array of colors
     // Assuming `dataDischarged` contains objects with a `date` property that is a Date object
-    const barColors = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColors));
-    const barColorsBorder = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColorsBorder));
+    const barColors = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColors, 'date'));
+    const barColorsBorder = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColorsBorder, 'date'));
 
+    console.log(dataDischarged.length);
     const dados = {
         labels: uniqueCombinedLabelsDisplay,
         datasets: [
@@ -30,9 +39,13 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
                 data: dataDischarged.map(d => d.meta),
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 borderColor: 'rgba(61, 68, 101, 0.8)',
-                borderWidth: 4,
+                borderWidth: 2,
                 type: 'line',
                 lineTension: 0,
+                pointBorderWidth: 3,
+                pointRadius: 2,
+                pointHoverBorderWidth: 4,
+                pointHoverRadius: 3,
             },
             {
                 label: 'Volume',
@@ -46,21 +59,61 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
 
     const options = {
         legend: {
-            display: false
+            display: true,
+            position: 'chartArea'
         },
         scales: {
-            xAxes: [{
-                position: 'bottom',
+            xAxes: [
+                {
+                gridLines: {
+                        display: true
+                    },
+                },
+            ],
+            yAxes: [{
+                display: false,
                 gridLines: {
                     display: false
                 }
-            }],
-            yAxes: [{
-                display: true,
-                gridLines: {
-                    display: true
-                }
             }]
+        },
+        plugins: {
+            datalabels: {
+                display: true,
+                borderRadius: 0,
+                padding: 3,
+                backgroundColor: (context) => {
+                    if (context.dataset.data[context.dataIndex] > 0) {
+                        return 'rgba(255, 255, 255, 1)';
+                    }
+                    return 'rgba(255, 255, 255, 0)'
+                },
+                borderColor: (context, value) => {
+                    return context.dataset.borderColor[context.dataIndex];
+                },
+                borderWidth: (context) => {
+                    if (context.dataset.data[context.dataIndex] > 0) {
+                        return 1;
+                    }
+                    return 0;
+                },
+                color: 'black',
+                anchor: 'start',
+                align: 'bottom',
+                offset: 5,
+                font: {
+                    size: 12,                    
+                },
+                display: (value, context) => {
+                    return value.dataset.label === 'Volume'; // Só exibe o valor para o dataset de 'Volume', não para o de Meta
+                },
+                formatter: (value, context) => {
+                    if (value > 0) {
+                        return floatParaFloatFormatado(value);  
+                    }
+                    return '';
+                }
+            },
         },
         tooltips: {
             callbacks: {
@@ -78,11 +131,25 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
     // Step 3: Assign the generated colors to `backgroundColor` in your dataset
     const graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
         type: 'bar',
+        plugins: [ChartDataLabels],
         data: dados,
         options: options
     });
 
-    return graficoDescarregadoDiaPeriodo;
+    let optionsPrint = {...options};
+    optionsPrint.responsive = false;
+    optionsPrint.maintainAspectRatio = true;
+    optionsPrint.plugins.datalabels.padding = 1;
+    optionsPrint.plugins.datalabels.font.size = 10;
+
+    const graficoDescarregadoDiaPeriodoPrint = new Chart('graficoDescarregadoDiaPeriodoPrint', {
+        type: 'bar',
+        plugins: [ChartDataLabels],
+        data: dados,
+        options: optionsPrint
+    });
+
+    return [graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint];
     }
 }
 

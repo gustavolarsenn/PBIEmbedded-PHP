@@ -61,7 +61,7 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                 }
             ],
         }
-
+        let delayed;
         const options = {
             scales: {
                 yAxes: [{
