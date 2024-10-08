@@ -218,7 +218,8 @@ if ($possuiPermissao) {
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
                                 <div id="descarregado-dia-periodo-container" class="chart">
                                     <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block"  style='position: relative !important; width: fit-content !important; height: auto !important; padding-bottom: 20px; border-radius: 0 !important;'>
-                                            <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="6.5" width='120'></canvas>   
+                                            <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="15" width='120'></canvas>   
+                                            <canvas id="graficoDescarregadoDiaPeriodoScroll" class="graficoParaPortal" height="6.5" width='120'></canvas>   
                                             <div id="graficoDescarregadoDiaPeriodoEmpty" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
                                             </div>

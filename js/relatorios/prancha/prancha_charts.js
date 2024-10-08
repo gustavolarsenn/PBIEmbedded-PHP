@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
+var tagGraficoDiaPeriodoScroll = document.getElementById('graficoDescarregadoDiaPeriodoScroll');
 var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-periodo-container');
 var tagGraficoDiaPeriodoContainerGrafico = document.getElementById('descarregado-dia-periodo-grafico');
 
@@ -93,7 +94,7 @@ var graficoTotalDescarregado, graficoTotalDescarregadoPrint,
 graficoDescarregadoDia, graficoDescarregadoDiaPrint, 
 graficoResumoGeral, graficoResumoGeralPrint, 
 graficoTempoParalisado, graficoTempoParalisadoPrint,
-graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint;
+graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint, graficoDescarregadoDiaPeriodoScroll;
 
 var count = 0;
 
@@ -278,6 +279,7 @@ async function generateCharts() {
         const numLoops = Math.ceil(filteredDataDischarged.length / maxPerChart);
 
         graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodo');
+        graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodoScroll');
 
         for (let i = 0; i < numLoops; i++) {
             let graficoPrintAtual;
@@ -304,6 +306,7 @@ async function generateCharts() {
     } else {
         const nomeGrafico = 'graficoDescarregadoDiaPeriodo';
         graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico);
+        graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico + 'Scroll');
         graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico + 'Print');
     }
 
@@ -324,12 +327,23 @@ async function generateCharts() {
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
     
     if(totalVolumeDiaPeriodoLabels > 15){
+            tagGraficoDiaPeriodo.style.display = 'none';
+            tagGraficoDiaPeriodo.style.visibility = 'hidden';
+            tagGraficoDiaPeriodoScroll.style.display = 'flex';
+            tagGraficoDiaPeriodoScroll.style.visibility = 'visible';
+            
+            console.log("LALAL")
             tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
             tagGraficoDiaPeriodo.style.maxHeight = '100%';
             tagGraficoDiaPeriodo.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
             tagGraficoDiaPeriodoContainer.style.overflowX = 'scroll';
         } else {
+            tagGraficoDiaPeriodo.style.display = 'flex';
+            tagGraficoDiaPeriodo.style.visibility = 'visible';
+            tagGraficoDiaPeriodoScroll.style.display = 'none';
+            tagGraficoDiaPeriodoScroll.style.visibility = 'hidden';
+
             tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
             tagGraficoDiaPeriodo.style.width = ''
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;

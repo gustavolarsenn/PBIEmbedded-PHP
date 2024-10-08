@@ -11,7 +11,7 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged, nomeGrafico) {
     let possuiDados;
 
     if (!nomeGrafico.includes('Print')) {
-        naoPossuiDados = document.getElementById(`${nomeGrafico}Empty`);
+        naoPossuiDados = document.getElementById(`graficoDescarregadoDiaPeriodoEmpty`);
         possuiDados = document.getElementById(nomeGrafico);
         
         possuiDados.style.visibility = 'hidden';
