@@ -1,25 +1,32 @@
 import { floatParaFloatFormatado, getColorForDate, pbiThemeColors, pbiThemeColorsBorder } from '../../charts_utils.js';
 
-async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
+async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged, nomeGrafico) {
 
     dataDischarged = dataDischarged.map(d => ({
         ...d,
         data_str: (new Date(d.data).getDate()).toString().padStart(2, '0') + '/' + ((new Date(d.data).getMonth() + 1)).toString().padStart(2, '0') // Formata data para 'DD/MM'
     }));
 
-    const naoPossuiDados = document.getElementById('emptyGraficoDescarregadoDiaPeriodo');
-    const possuiDados = document.getElementById('graficoDescarregadoDiaPeriodo');
+    let naoPossuiDados;
+    let possuiDados;
 
-    possuiDados.style.visibility = 'hidden';
-    naoPossuiDados.style.visibility = 'visible';
-    naoPossuiDados.style.display = 'block';
+    if (!nomeGrafico.includes('Print')) {
+        naoPossuiDados = document.getElementById(`${nomeGrafico}Empty`);
+        possuiDados = document.getElementById(nomeGrafico);
+        
+        possuiDados.style.visibility = 'hidden';
+        naoPossuiDados.style.visibility = 'visible';
+        naoPossuiDados.style.display = 'block';
+    }
 
     if (dataDischarged.length > 0) {
 
-        naoPossuiDados.style.visibility = 'hidden';
-        naoPossuiDados.style.display = 'none';
-        possuiDados.style.visibility = 'visible';
+        if (!nomeGrafico.includes('Print')) {
+            naoPossuiDados.style.visibility = 'hidden';
+            naoPossuiDados.style.display = 'none';
+            possuiDados.style.visibility = 'visible';
 
+        }
 
         const combinedLabelsDisplay = dataDischarged.map(item => [`${item.data_str}`, `${item.periodo}`]);
 
@@ -30,7 +37,6 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
     const barColors = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColors, 'date'));
     const barColorsBorder = dataDischarged.map(d => getColorForDate(d.data, pbiThemeColorsBorder, 'date'));
 
-    console.log(dataDischarged.length);
     const dados = {
         labels: uniqueCombinedLabelsDisplay,
         datasets: [
@@ -60,7 +66,8 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
     const options = {
         legend: {
             display: true,
-            position: 'chartArea'
+            position: 'chartArea',
+
         },
         scales: {
             xAxes: [
@@ -68,13 +75,18 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
                 gridLines: {
                         display: true
                     },
+                    ticks: {
+                        fontSize: 12
+                    },
+                barPercentage: 1,
+                    
                 },
             ],
             yAxes: [{
                 display: false,
                 gridLines: {
                     display: false
-                }
+                },
             }]
         },
         plugins: {
@@ -128,28 +140,34 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged) {
         maintainAspectRatio: false,
     }
 
+
+    if (nomeGrafico.includes('Print')) {
+        let optionsPrint = {...options};
+        optionsPrint.responsive = false;
+        optionsPrint.maintainAspectRatio = true;
+        optionsPrint.plugins.datalabels.padding = 1;
+        optionsPrint.plugins.datalabels.font.size = 10;
+        optionsPrint.scales.xAxes[0].ticks.fontSize = 9;
+    
+        const graficoDescarregadoDiaPeriodoPrint = new Chart(nomeGrafico, {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: dados,
+            options: optionsPrint
+        });
+
+        return graficoDescarregadoDiaPeriodoPrint;
+    }
     // Step 3: Assign the generated colors to `backgroundColor` in your dataset
-    const graficoDescarregadoDiaPeriodo = new Chart('graficoDescarregadoDiaPeriodo', {
+    const graficoDescarregadoDiaPeriodo = new Chart(nomeGrafico, {
         type: 'bar',
         plugins: [ChartDataLabels],
         data: dados,
         options: options
     });
 
-    let optionsPrint = {...options};
-    optionsPrint.responsive = false;
-    optionsPrint.maintainAspectRatio = true;
-    optionsPrint.plugins.datalabels.padding = 1;
-    optionsPrint.plugins.datalabels.font.size = 10;
 
-    const graficoDescarregadoDiaPeriodoPrint = new Chart('graficoDescarregadoDiaPeriodoPrint', {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: dados,
-        options: optionsPrint
-    });
-
-    return [graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint];
+    return graficoDescarregadoDiaPeriodo;
     }
 }
 

@@ -116,6 +116,7 @@
         /* display: none !important; */
         width: 100% !important;
         margin-bottom: 10px !important;
+        /* height: 60vh !important; */
     }
         #descarregado-dia-periodo-grafico{
             display: none !important;
