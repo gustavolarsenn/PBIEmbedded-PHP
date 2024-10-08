@@ -302,7 +302,7 @@ prancha aferida e descarregado por dia */
             #prancha-aferida-container{
                 width: 100%; 
                 height: 40vh;
-                margin: 0 0 10px 0;
+                /* margin: 0 0 10px 0; */
                 display: flex;
             }
 
@@ -381,7 +381,9 @@ prancha aferida e descarregado por dia */
         /* margin: 0 0 10px 0; */
         height: 90%;
     }
-
+    #descarregado-dia-periodo{
+        margin-bottom: 10px;
+    }
     /* DESCARREGADO POR DIA E PERIODO */
     #descarregado-dia-periodo-container{
         box-shadow: none;
@@ -391,7 +393,7 @@ prancha aferida e descarregado por dia */
         height: 100%; 
         overflow-x: scroll;
     }
-
+    
     #graficoTempoParalisado{
         height: 30;
         width: 50;

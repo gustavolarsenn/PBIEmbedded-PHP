@@ -233,6 +233,7 @@ async function generateCharts() {
     if (graficoTempoParalisadoPrint) graficoTempoParalisadoPrint.destroy();
 
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
+    if (graficoDescarregadoDiaPeriodoScroll) graficoDescarregadoDiaPeriodoScroll.destroy();
 
     if(listaGraficos){
         for (let i = 0; i < listaGraficos.length; i++) {
@@ -325,27 +326,29 @@ async function generateCharts() {
     })
 
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
+    tagGraficoDiaPeriodoScroll.style.maxHeight = '100%';
+    tagGraficoDiaPeriodoScroll.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
     
-    if(totalVolumeDiaPeriodoLabels > 15){
+    tagGraficoDiaPeriodo.style.width = ''
+    
+    if(totalVolumeDiaPeriodoLabels > 20){
             tagGraficoDiaPeriodo.style.display = 'none';
             tagGraficoDiaPeriodo.style.visibility = 'hidden';
-            tagGraficoDiaPeriodoScroll.style.display = 'flex';
+            tagGraficoDiaPeriodoScroll.style.display = 'block';
             tagGraficoDiaPeriodoScroll.style.visibility = 'visible';
+            tagGraficoDiaPeriodoContainerGrafico.style.display = 'block';
             
-            console.log("LALAL")
             tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
-            tagGraficoDiaPeriodo.style.maxHeight = '100%';
-            tagGraficoDiaPeriodo.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
             tagGraficoDiaPeriodoContainer.style.overflowX = 'scroll';
         } else {
-            tagGraficoDiaPeriodo.style.display = 'flex';
+            tagGraficoDiaPeriodo.style.display = 'block';
             tagGraficoDiaPeriodo.style.visibility = 'visible';
             tagGraficoDiaPeriodoScroll.style.display = 'none';
             tagGraficoDiaPeriodoScroll.style.visibility = 'hidden';
+            tagGraficoDiaPeriodoContainerGrafico.style.display = 'none';
 
             tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
-            tagGraficoDiaPeriodo.style.width = ''
             graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
             tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
         }

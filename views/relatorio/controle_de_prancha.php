@@ -217,15 +217,15 @@ if ($possuiPermissao) {
                             <div id='descarregado-dia-periodo' class="chart">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
                                 <div id="descarregado-dia-periodo-container" class="chart">
-                                    <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block"  style='position: relative !important; width: fit-content !important; height: auto !important; padding-bottom: 20px; border-radius: 0 !important;'>
-                                            <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="15" width='120'></canvas>   
+                                    <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="20" width='120'></canvas>   
+                                    <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block"  style='position: relative !important; width: fit-content !important; height: 30vh !important; padding-bottom: 20px; border-radius: 0 !important;'>
                                             <canvas id="graficoDescarregadoDiaPeriodoScroll" class="graficoParaPortal" height="6.5" width='120'></canvas>   
                                             <div id="graficoDescarregadoDiaPeriodoEmpty" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
                                             </div>
                                         </div>
-                                    <canvas id="graficoDescarregadoDiaPeriodoPrint" class="graficoParaPDF" height="200" width='985'></canvas>   
-                                </div>
+                                        <canvas id="graficoDescarregadoDiaPeriodoPrint" class="graficoParaPDF" height="200" width='985'></canvas>   
+                                    </div>
                             </div>
                             <div id="tempo-paralisado-container">
                             <!-- <div id="resumo-geral-tempo-paralisado-container"> -->
