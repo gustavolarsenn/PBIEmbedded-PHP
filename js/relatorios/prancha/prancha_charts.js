@@ -235,13 +235,18 @@ async function generateCharts() {
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
     if (graficoDescarregadoDiaPeriodoScroll) graficoDescarregadoDiaPeriodoScroll.destroy();
 
+
     if(listaGraficos){
         for (let i = 0; i < listaGraficos.length; i++) {
             const grafico = listaGraficos[i];
             if (grafico) {
+                console.log(grafico.titleBlock.ctx.canvas.id);
+                document.getElementById(grafico.titleBlock.ctx.canvas.id).remove();
                 grafico.destroy();
             }
         }
+        listaGraficos = []
+        console.log("------------")
     }
 
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
