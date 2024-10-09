@@ -13,8 +13,12 @@
 }
 
 #vessel-discharging-info-container{
-    width: 40%;
+    width: 100%;
     margin: auto 0;
+    /* padding: 20px 0; */
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
 }
 
 .graficoParaPDF{
@@ -64,9 +68,9 @@
 .target-stripe{
     background-color: rgba(144, 200, 255, 0.5); 
     text-align: center; 
-    padding: 10px; 
+    padding: 5px 10px; 
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1); 
-    height: 25%; 
+    height: 30%; 
     border-bottom: 1px solid rgba(0, 0, 0, 0.2); 
     border-top: 1px solid rgba(0, 0, 0, 0.2);
     display: flex;
@@ -98,12 +102,13 @@ prancha aferida e descarregado por dia */
     }
         /* INFORMAÇÕES NAVIO */
         #info-navio-container{
-            width: 30%; 
+            width: 40%; 
             height: auto;
             text-align: center;
             display: flex;
             flex-direction: column;
             margin-right: 10px;
+            justify-content: center;
         }
 
             #info-navio-titulo{
@@ -126,42 +131,43 @@ prancha aferida e descarregado por dia */
         /* CONTAINER que engloba: Total descarregado, 
         prancha aferida e descarregado por dia*/
         #descarregado-total-dia-prancha-aferida-container{
-            width: 70%; 
+            width: 60%; 
             height: auto;
             display: flex;
-            flex-direction: column;
-            /* height: 100vh; */
+            flex-direction: row;
         }
 
             #descarregado-total-prancha-aferida-container{
                 display: flex; 
-                flex-direction: row;
-                width: 100%;
-                height: 50%;
-                margin-bottom: 10px;
+                flex-direction: column;
+                width: 50%;
+                height: 100%;
+                margin-right: 10px;
             }
 
                 #descarregado-total-container{
-                    width: 50%; 
-                    height: 100%;
-                    margin-right: 10px;
+                    width: 100%; 
+                    height: 60%;
                 }
 
                     #descarregado-total{
                         display: flex;
-                        flex-direction: row;
+                        flex-direction: column;
                     }
 
                     #descarregado-total-grafico-container{
-                        width: 50%;
-                        height: 100%
+                        width: 100%;
+                        height: 50%;
+                        padding: 15px 30px;
                     }
 
 
                 /* PRANCHA AFERIDA*/
                 #prancha-aferida-container{
-                    width: 50%; 
+                    width: 100%; 
+                    height: 40%;
                     display: flex;
+                    margin-bottom: 10px;
                 }
 
                     #prancha-aferida-info{
@@ -195,8 +201,13 @@ prancha aferida e descarregado por dia */
                     }
 
                     #resumo-geral-grafico{
-                        width: 100%; 
+                        width: 50%; 
                         height: 100%;
+                        display: flex;
+                        flex-direction: column;
+                    }
+                    #graficoResumoGeral{
+                        margin: auto;
                     }
             /* DESCARREGADO POR DIA */
             #graficoDescarregadoDia{
@@ -349,11 +360,18 @@ prancha aferida e descarregado por dia */
                 min-width: 100%; 
                 display: flex; 
                 flex-direction: column;
-                height: 47.76%; 
+                /* height: 47.76%;  */
                 margin: 0 0 10px 0;
             }
-
+            
             #descarregado-dia-grafico{
+                margin: 0;
+                width: 100%;
+                height: 60vh;
+                /* height: 50%; */
+                /* height: auto; */
+            }
+            #graficoDescarregadoDia{
                 margin: 0;
                 width: 100%; 
                 /* height: 50%; */

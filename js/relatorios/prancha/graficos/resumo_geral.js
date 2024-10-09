@@ -1,7 +1,7 @@
 import { convertSecondsToTime } from '../../charts_utils.js';
 
 async function gerarGraficoResumoGeral(dadosDescarregado) {
-    const categories = ['chuva', 'forca_maior', 'transporte', 'duracao', 'horas_operacionais'];
+    const categories = ['duracao', 'horas_operacionais' ,'chuva', 'forca_maior', 'transporte'];
 
     const reducedData = categories.reduce((acc, category) => {
         // Sum the values for the current category
@@ -35,6 +35,14 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
     naoPossuiDados.style.visibility = 'visible';
     naoPossuiDados.style.display = 'block';
 
+    var maiorValor = 0;
+
+    Object.values(reducedData).map((item) => {
+        if (item > maiorValor) {
+            maiorValor = item;
+        }
+    });
+
     if (dadosDescarregado !== null) {
 
         naoPossuiDados.style.visibility = 'hidden';
@@ -42,15 +50,15 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
         naoPossuiDados.style.display = 'none';
 
         const colors = {
+            'Duração': 'rgba(8, 76, 97, 0.5)',
+            'Horas operacionais': 'rgba(6, 214, 160, 0.5)',
             'Chuva': 'rgba(144, 215, 255, 0.5)',
             'Força Maior': 'rgba(191, 208, 224, 0.5)',
             'Transporte': 'rgba(93, 253, 203, 0.5)',
-            'Duração': 'rgba(8, 76, 97, 0.5)',
-            'Horas operacionais': 'rgba(6, 214, 160, 0.5)',
         }
 
         const dados = {
-            labels: ['Chuva', 'Força Maior', 'Transporte', 'Duração', ['Horas', 'operacionais']],
+            labels: ['Duração', ['Horas', 'operacionais'], 'Chuva', 'Força Maior', 'Transporte'],
             datasets: [
                 {
                     label: 'Tempo',
@@ -61,14 +69,13 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                 }
             ],
         }
-        let delayed;
         const options = {
             scales: {
                 yAxes: [{
-                    display: false
+                    display: true
                 }],
                 xAxes: [{
-                    display: true
+                    display: false
                 }]
             },
             legend: {
@@ -77,7 +84,7 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
-                        const value_time = convertSecondsToTime(tooltipItem.yLabel);
+                        const value_time = convertSecondsToTime(tooltipItem.xLabel);
 
                         return value_time;
                     }
@@ -89,12 +96,22 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                     borderRadius: 5,
                     padding: 4,
                     color: 'black',
-                    anchor: 'start',
-                    align: 'top',
+                    anchor: 'end',
+                    align: (context) => {
+                        console.log(context)
+                        if (context.dataset.data[context.dataIndex] / maiorValor > 0.75) {
+                            return 'start';
+                        }
+                        return 'end';
+                    },
                     offset: 0,
+                    
                     formatter: (value, context) => {
-                        const value_time = convertSecondsToTime(value);
-                    return value_time;
+                        if(value > 0){
+                            const value_time = convertSecondsToTime(value);
+                            return value_time;
+                        }
+                        return '';
                     }
                 },
             },
@@ -107,7 +124,7 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                 },
             },
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
         }
 
         let optionsPrint = {...options};
@@ -115,14 +132,14 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
         optionsPrint.maintainAspectRatio = true;
         
         const graficoResumoGeral = new Chart('graficoResumoGeral', {
-            type: 'bar',
+            type: 'horizontalBar',
             plugins: [ChartDataLabels],
             data: dados,
             options: options
         });
 
         const graficoResumoGeralPrint = new Chart('graficoResumoGeralPrint', {
-            type: 'bar',
+            type: 'horizontalBar',
             plugins: [ChartDataLabels],
             data: dados,
             options: optionsPrint

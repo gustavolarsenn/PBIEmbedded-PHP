@@ -69,7 +69,7 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
         
                 // Calculate the center of the chart
                 const centerX = (chartArea.left + chartArea.right) / 2;
-                const centerY = (chartArea.top + chartArea.bottom) / 1.3;
+                const centerY = (chartArea.top + chartArea.bottom) / 1.65;
                 
                 const totalDescarregado = data.datasets[0].data[0];
                 const totalManifestado = dadosManifestado;
@@ -77,7 +77,7 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
                 const percentDescarregado = floatParaFloatFormatado(((totalDescarregado / totalManifestado) * 100));
         
                 // Set the font properties
-                ctx.font = 'bold 2.25rem Arial';
+                ctx.font = 'bold 1.8rem Arial';
                 ctx.fillStyle = 'rgba(61, 68, 101, 0.7)';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom'; // Align vertically in the center
@@ -107,13 +107,15 @@ async function gerarGraficoTotalDescarregado(dadosDescarregado, dadosManifestado
             circumference: 1 * Math.PI,/** put in a much smaller amount  so it does not take up an entire semi circle */
             cutoutPercentage: 75,   
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
         }
 
         let optionsPrint = { ...options };
-        optionsPrint.cutoutPercentage = 65;
+        optionsPrint.cutoutPercentage = 75;
         optionsPrint.responsive = false;
         optionsPrint.maintainAspectRatio = true;
+        optionsPrint.rotation = 1.5 * Math.PI;
+        optionsPrint.circumference = 2 * Math.PI
 
         const graficoTotalDescarregado = new Chart('graficoTotalDescarregado', {
             type: 'doughnut',

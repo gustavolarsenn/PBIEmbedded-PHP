@@ -144,41 +144,18 @@ if ($possuiPermissao) {
     
                                     <div id="descarregado-total-dia-prancha-aferida-container">
                                         <div id="descarregado-total-prancha-aferida-container">
-                                            <div id="descarregado-total-container" class="chart chart-small-block">
-                                                <label class="label-chart">Total descarregado / restante</label>
-                                                <div id="descarregado-total">
-                                                        <div id="vessel-discharging-info-container" >
-                                                            <div class="vessel-discharging-info">
-                                                                <h4>Descarregado: </h4>
-                                                                <label id="info-descarregado"></label>
-                                                            </div>
-                                                            <div class="vessel-discharging-info">
-                                                                <h4>Restante: </h4>
-                                                                <label id="info-restante"></label>
-                                                            </div>
-                                                        </div>
-                                                        <div id="descarregado-total-grafico-container" style='position: relative !important; height: 20vh !important;'>
-                                                            <canvas id="graficoTotalDescarregado" class="graficoParaPortal"></canvas>
-                                                            <canvas id="graficoTotalDescarregadoPrint" class="graficoParaPDF" height="170" width="260"></canvas>
-                                                            <div id="emptyGraficoTotalDescarregado" class="no-data">
-                                                                <p>Nenhum valor encontrado!</p>
-                                                            </div>
-                                                        </div>
-                                                </div>
-                                            </div>  
     
                                             <div id="prancha-aferida-container" class="chart chart-small-block">
-                                                    <div id="prancha-aferida-info">
-                                                        <div id="prancha-aferida-big-numbers">
-                                                            <div>
-                                                                <h4>Prancha Aferida</h4>
-                                                                <label id="prancha-aferida" class="big-numbers"></label>
-                                                            </div>
-                                                        </div>
-                                                        <div id="meta-alcancada" class="target-stripe">
+                                                <div id="prancha-aferida-info">
+                                                    <div id="prancha-aferida-big-numbers">
+                                                        <div>
+                                                            <h4>Prancha Aferida</h4>
+                                                            <label id="prancha-aferida" class="big-numbers"></label>
                                                         </div>
                                                     </div>
-    
+                                                    <div id="meta-alcancada" class="target-stripe">
+                                                    </div>
+                                                </div>
                                                     <div id="prancha-aferida-lista-paralisacao-container">
                                                         <div class="input-label">
                                                             <select id='lista-motivo_paralisacao' data-multi-select>
@@ -190,11 +167,34 @@ if ($possuiPermissao) {
                                                         </div>
                                                     </div>
                                                 </div>
+
+                                                <div id="descarregado-total-container" class="chart chart-small-block">
+                                                    <label class="label-chart">Total descarregado / restante</label>
+                                                    <div id="descarregado-total">
+                                                            <div id="vessel-discharging-info-container" >
+                                                                <div class="vessel-discharging-info">
+                                                                    <h4>Descarregado: </h4>
+                                                                    <label id="info-descarregado"></label>
+                                                                </div>
+                                                                <div class="vessel-discharging-info">
+                                                                    <h4>Restante: </h4>
+                                                                    <label id="info-restante"></label>
+                                                                </div>
+                                                            </div>
+                                                            <div id="descarregado-total-grafico-container">
+                                                                <canvas id="graficoTotalDescarregado" class="graficoParaPortal" height="30" width="60"></canvas>
+                                                                <canvas id="graficoTotalDescarregadoPrint" class="graficoParaPDF" height="170" width="210"></canvas>
+                                                                <div id="emptyGraficoTotalDescarregado" class="no-data">
+                                                                    <p>Nenhum valor encontrado!</p>
+                                                                </div>
+                                                            </div>
+                                                    </div>
+                                            </div>  
                                         </div> 
-                                        <div id="resumo-geral-grafico" class="chart chart-small-block" style='position: relative !important; height: 40vh !important;'>
+                                        <div id="resumo-geral-grafico" class="chart chart-small-block">
                                             <label class="label-chart">Resumo geral</label>
-                                            <canvas id="graficoResumoGeral" class="graficoParaPortal"></canvas>
-                                            <canvas id="graficoResumoGeralPrint" class="graficoParaPDF" height="270" width="680"></canvas>
+                                            <canvas id="graficoResumoGeral" class="graficoParaPortal" height="500" width="470"></canvas>
+                                            <canvas id="graficoResumoGeralPrint" class="graficoParaPDF" height="580" width="300"></canvas>
                                             <div id="emptyGraficoResumoGeral" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
                                             </div>
@@ -204,9 +204,10 @@ if ($possuiPermissao) {
                                 </div>  
                             </div>
                             <div id="descarregado-dia-container">
-                                <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'>
+                                <!-- <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'> -->
+                                <div id="descarregado-dia-grafico" class="chart chart-small-block">
                                     <label class="label-chart">Descarregado por dia</label>
-                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal"></canvas>
+                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="200" width="985"></canvas>
                                     <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
                                     <div id="emptyGraficoDescarregadoDia" class="no-data">
                                         <p>Nenhum valor encontrado!</p>
