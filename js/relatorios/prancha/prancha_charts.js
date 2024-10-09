@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
 
+var containerTempoParalisado = document.getElementById('tempo-paralisado-container');
+
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
 var tagGraficoDiaPeriodoScroll = document.getElementById('graficoDescarregadoDiaPeriodoScroll');
 var tagGraficoDiaPeriodoContainer = document.getElementById('descarregado-dia-periodo-container');
@@ -240,13 +242,11 @@ async function generateCharts() {
         for (let i = 0; i < listaGraficos.length; i++) {
             const grafico = listaGraficos[i];
             if (grafico) {
-                console.log(grafico.titleBlock.ctx.canvas.id);
                 document.getElementById(grafico.titleBlock.ctx.canvas.id).remove();
                 grafico.destroy();
             }
         }
         listaGraficos = []
-        console.log("------------")
     }
 
     if (count < 1 || jaFoiFiltradoNavio !== navioSelecionado) {
@@ -280,42 +280,67 @@ async function generateCharts() {
 
     [graficoTempoParalisado, graficoTempoParalisadoPrint] = await gerarGraficoTempoParalisado(filteredDataDischarged);
 
-    const maxPerChart = 16;
-    if (filteredDataDischarged.length > maxPerChart) {
-        const numLoops = Math.ceil(filteredDataDischarged.length / maxPerChart);
+
+    let loops, newLoops;
+    const uniqueDates = filteredDataDischarged.map(d => d.data).filter((value, index, self) => self.indexOf(value) === index);
+    if (filteredDataDischarged.length > 16){
+
+        loops = uniqueDates.length / 4;
+        let ajustarUltimos = uniqueDates.length % 4 < 2 ? true : false;
+        
+        newLoops = [];
+
+        for (let i = 0; i < Math.ceil(loops); i++) {
+    
+            if (ajustarUltimos && i == Math.ceil(loops) - 2) {
+                newLoops.push(uniqueDates.slice(i * 4, ((i + 1) * 4) - 1));
+            } else if (ajustarUltimos && i == Math.ceil(loops) - 1) {
+                newLoops.push(uniqueDates.slice(i * 4 - 1, ((i + 1) * 4)));
+            } else {
+                newLoops.push(uniqueDates.slice(i * 4, (i + 1) * 4));
+            }
+        }
+    } else {
+        loops = 1;
+        newLoops = [uniqueDates];
+    }
 
         graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodo');
         graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodoScroll');
 
-        for (let i = 0; i < numLoops; i++) {
+        newLoops.forEach(async (loop, i) => {
             let graficoPrintAtual;
             const nomeGrafico = 'graficoDescarregadoDiaPeriodoPrint' + i;
 
             const canvasElement = document.createElement('canvas');
             canvasElement.id = nomeGrafico;
             canvasElement.classList.add('graficoParaPDF');
-            canvasElement.height = '200';
+            canvasElement.height = '185';
             canvasElement.width = '985';
 
+            if (i === Math.floor(loops)){
+                canvasElement.style.marginBottom = '15px';
+            } else {
+                canvasElement.style.marginBottom = 'auto';
+            }
+
             if (i === 0) {
-                graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodoPrint');
+                graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodo');
             } else {
                 graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodoPrint' + (i - 1));
-            }
+            } 
 
             graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
 
-            const slicedData = filteredDataDischarged.slice(i * maxPerChart, (i + 1) * maxPerChart);
+            const slicedData = filteredDataDischarged.filter(d => loop.includes(d.data));
             listaGraficos.push(await gerarGraficoDescarregadoDiaPeriodo(slicedData, nomeGrafico));
-            
-        }
+        });
+    
+    if (Math.ceil(loops) === 2){
+        containerTempoParalisado.classList.add('page-break');
     } else {
-        const nomeGrafico = 'graficoDescarregadoDiaPeriodo';
-        graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico);
-        graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico + 'Scroll');
-        graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, nomeGrafico + 'Print');
+        containerTempoParalisado.classList.remove('page-break');
     }
-
     const pranchaAferidaValor = ((dadosDescarregado.volume / ((duracaoTotal - somaTempoParalisado) / 60 / 60)) * 24)
     const metaAlcancadaDelta = pranchaAferidaValor - vesselData[0].prancha_minima;
 
@@ -336,7 +361,7 @@ async function generateCharts() {
     
     tagGraficoDiaPeriodo.style.width = ''
     
-    if(totalVolumeDiaPeriodoLabels > 20){
+    if(totalVolumeDiaPeriodoLabels > 16){
             tagGraficoDiaPeriodo.style.display = 'none';
             tagGraficoDiaPeriodo.style.visibility = 'hidden';
             tagGraficoDiaPeriodoScroll.style.display = 'block';

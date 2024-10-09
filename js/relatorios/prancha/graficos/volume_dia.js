@@ -98,7 +98,6 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
         },
         legend: {
             display: true,
-            position: 'chartArea',
         },
         plugins: {
             datalabels: {

@@ -67,7 +67,6 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged, nomeGrafico) {
         legend: {
             display: true,
             position: 'chartArea',
-
         },
         scales: {
             xAxes: [
@@ -148,6 +147,9 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged, nomeGrafico) {
         optionsPrint.plugins.datalabels.padding = 1;
         optionsPrint.plugins.datalabels.font.size = 10;
         optionsPrint.scales.xAxes[0].ticks.fontSize = 9;
+        if(!nomeGrafico.includes('0')) {
+            optionsPrint.legend.display = false;
+        }
     
         const graficoDescarregadoDiaPeriodoPrint = new Chart(nomeGrafico, {
             type: 'bar',

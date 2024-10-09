@@ -2,9 +2,18 @@
     /* @page {
         size: landscape;
     } */
+
+    .page-break{
+        page-break-before: always;
+    }
+
     body{
         width: 100% !important;
         height: 100% !important;
+    }
+
+    #footer{
+        display: none !important;
     }
 
     #container-filtro{
@@ -113,10 +122,9 @@
         }
 
     #descarregado-dia-periodo{
-        /* display: none !important; */
         width: 100% !important;
         margin-bottom: 10px !important;
-        /* height: 60vh !important; */
+        height: auto !important;
     }
         #descarregado-dia-periodo-grafico{
             display: none !important;

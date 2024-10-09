@@ -214,7 +214,7 @@ if ($possuiPermissao) {
                                 </div>
                             </div>
 
-                            <div id='descarregado-dia-periodo' class="chart">
+                            <div id='descarregado-dia-periodo' class="chart" style="height: auto !important;">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
                                 <div id="descarregado-dia-periodo-container" class="chart">
                                     <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="20" width='120'></canvas>   
@@ -223,9 +223,8 @@ if ($possuiPermissao) {
                                             <div id="graficoDescarregadoDiaPeriodoEmpty" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
                                             </div>
-                                        </div>
-                                        <canvas id="graficoDescarregadoDiaPeriodoPrint" class="graficoParaPDF" height="200" width='985'></canvas>   
                                     </div>
+                                </div>
                             </div>
                             <div id="tempo-paralisado-container">
                             <!-- <div id="resumo-geral-tempo-paralisado-container"> -->
