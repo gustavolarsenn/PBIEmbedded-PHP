@@ -85,6 +85,12 @@
 
 /* Estilo divs e gráficos */
 
+.grafico-scroll{
+    box-shadow: none;
+    display: flexbox; 
+    overflow-x: scroll;
+    max-height: '100%';
+}
 /* CONTAINER que engloba: Informações do navio, total descarregado, 
 prancha aferida e descarregado por dia */
 .chart-container{
@@ -246,17 +252,12 @@ prancha aferida e descarregado por dia */
         }
 
     /* DESCARREGADO POR DIA E PERIODO */
-    #descarregado-dia-periodo-container{
+    /* #descarregado-dia-periodo-container{
         box-shadow: none;
         margin-bottom: 10px;
-        /* min-width: 100%;  */
         display: flexbox; 
-        /* height: 100%;  */
-        /* margin: 0px 0px 10px 0px;  */
         overflow-x: scroll;
-        /* scrollbar-width: thin; */
-        margin-bottom: 10px;
-    }
+    } */
 
 @media (max-width: 1400px){
     #info-total-prancha-dia-container{

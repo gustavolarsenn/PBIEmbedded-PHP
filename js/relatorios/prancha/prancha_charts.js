@@ -10,6 +10,24 @@ import { gerarPDF } from '../gerarPDF.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
+function graficoScroll(totalLinhasTabela, graficoScroll, grafico, containerGrafico){
+    graficoScroll.style.width = 1500 + (totalLinhasTabela * 65) +'px';
+
+    if(totalLinhasTabela > 16){
+            grafico.style.display = 'none';
+            grafico.style.visibility = 'hidden';
+            containerGrafico.style.display = 'block';
+            
+            containerGrafico.style.minWidth = null;
+        } else {
+            grafico.style.display = 'block';
+            grafico.style.visibility = 'visible';
+            containerGrafico.style.display = 'none';
+
+            containerGrafico.style.minWidth = '100%';
+        }
+    }
+
 document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
@@ -93,7 +111,7 @@ const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffl
 const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()); // Shuffle the colors array
 
 var graficoTotalDescarregado, graficoTotalDescarregadoPrint,
-graficoDescarregadoDia, graficoDescarregadoDiaPrint, 
+graficoDescarregadoDia, graficoDescarregadoDiaPrint, graficoDescarregadoDiaScroll, 
 graficoResumoGeral, graficoResumoGeralPrint, 
 graficoTempoParalisado, graficoTempoParalisadoPrint,
 graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint, graficoDescarregadoDiaPeriodoScroll;
@@ -227,6 +245,7 @@ async function generateCharts() {
 
     if (graficoDescarregadoDia) graficoDescarregadoDia.destroy();
     if (graficoDescarregadoDiaPrint) graficoDescarregadoDiaPrint.destroy();
+    if (graficoDescarregadoDiaScroll) graficoDescarregadoDiaScroll.destroy();
 
     if (graficoResumoGeral) graficoResumoGeral.destroy();
     if (graficoResumoGeralPrint) graficoResumoGeralPrint.destroy();
@@ -355,31 +374,26 @@ async function generateCharts() {
         paralisacaoSelecionada.innerHTML += `<li class="listagem-paralisacao">- ${item.slice(1, -1)}</li>`;
     })
 
+    
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
-    tagGraficoDiaPeriodoScroll.style.maxHeight = '100%';
-    tagGraficoDiaPeriodoScroll.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
     
-    tagGraficoDiaPeriodo.style.width = ''
-    
-    if(totalVolumeDiaPeriodoLabels > 16){
-            tagGraficoDiaPeriodo.style.display = 'none';
-            tagGraficoDiaPeriodo.style.visibility = 'hidden';
-            tagGraficoDiaPeriodoScroll.style.display = 'block';
-            tagGraficoDiaPeriodoScroll.style.visibility = 'visible';
-            tagGraficoDiaPeriodoContainerGrafico.style.display = 'block';
-            
-            tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
-            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
-            tagGraficoDiaPeriodoContainer.style.overflowX = 'scroll';
-        } else {
-            tagGraficoDiaPeriodo.style.display = 'block';
-            tagGraficoDiaPeriodo.style.visibility = 'visible';
-            tagGraficoDiaPeriodoScroll.style.display = 'none';
-            tagGraficoDiaPeriodoScroll.style.visibility = 'hidden';
-            tagGraficoDiaPeriodoContainerGrafico.style.display = 'none';
+    graficoScroll(totalVolumeDiaPeriodoLabels, tagGraficoDiaPeriodoScroll, tagGraficoDiaPeriodo, tagGraficoDiaPeriodoContainerGrafico)
+    graficoScroll(graficoDescarregadoDia.data.labels.length, document.getElementById('graficoDescarregadoDiaScroll'), document.getElementById('graficoDescarregadoDia'), document.getElementById('descarregado-dia-container-grafico'))
+    // tagGraficoDiaPeriodoScroll.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
 
-            tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
-            graficoDescarregadoDiaPeriodo.options.maintainAspectRatio = true;
-            tagGraficoDiaPeriodoContainer.style.overflowX = 'hidden';
-        }
+    // // Diminuir de 16 para 4 ou 8 quando mobile
+    // if(totalVolumeDiaPeriodoLabels > 16){
+    //         tagGraficoDiaPeriodo.style.display = 'none';
+    //         tagGraficoDiaPeriodo.style.visibility = 'hidden';
+    //         tagGraficoDiaPeriodoContainerGrafico.style.display = 'block';
+            
+    //         tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
+    //     } else {
+    //         tagGraficoDiaPeriodo.style.display = 'block';
+    //         tagGraficoDiaPeriodo.style.visibility = 'visible';
+    //         tagGraficoDiaPeriodoContainerGrafico.style.display = 'none';
+
+    //         tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
+    //     }
     }
+

@@ -98,7 +98,6 @@ async function gerarGraficoResumoGeral(dadosDescarregado) {
                     color: 'black',
                     anchor: 'end',
                     align: (context) => {
-                        console.log(context)
                         if (context.dataset.data[context.dataIndex] / maiorValor > 0.75) {
                             return 'start';
                         }

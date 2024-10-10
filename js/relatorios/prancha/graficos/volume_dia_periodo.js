@@ -160,6 +160,11 @@ async function gerarGraficoDescarregadoDiaPeriodo(dataDischarged, nomeGrafico) {
 
         return graficoDescarregadoDiaPeriodoPrint;
     }
+
+    if(!nomeGrafico.includes('Scroll')){
+        options.maintainAspectRatio = true;
+    }
+
     // Step 3: Assign the generated colors to `backgroundColor` in your dataset
     const graficoDescarregadoDiaPeriodo = new Chart(nomeGrafico, {
         type: 'bar',
