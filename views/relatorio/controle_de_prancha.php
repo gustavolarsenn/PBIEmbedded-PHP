@@ -203,14 +203,16 @@ if ($possuiPermissao) {
 
                                 </div>  
                             </div>
-                            <div id="descarregado-dia-container">
-                                <!-- <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'> -->
-                                <div id="descarregado-dia-grafico" class="chart chart-small-block">
-                                    <label class="label-chart">Descarregado por dia</label>
-                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="200" width="985"></canvas>
-                                    <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
-                                    <div id="emptyGraficoDescarregadoDia" class="no-data">
-                                        <p>Nenhum valor encontrado!</p>
+                            <div id="descarregado-dia">
+                                <div id="descarregado-dia-container">
+                                    <!-- <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'> -->
+                                    <div id="descarregado-dia-grafico" class="chart chart-small-block">
+                                        <label class="label-chart">Descarregado por dia</label>
+                                        <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="200" width="985"></canvas>
+                                        <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
+                                        <div id="emptyGraficoDescarregadoDia" class="no-data">
+                                            <p>Nenhum valor encontrado!</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
