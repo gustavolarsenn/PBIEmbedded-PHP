@@ -45,6 +45,14 @@
         border: 1px solid #f0f0f0 !important;
     }   
 
+    .grafico-scroll{
+        all: unset;
+        /* box-shadow: none;
+        display: flexbox; 
+        overflow-x: hidden !important;
+        max-height: '100%'; */
+    }
+
     .graficoParaPDF{
         display: flex !important;
     }
@@ -157,88 +165,4 @@
         #descarregado-dia-periodo-grafico{
             display: none !important;
         }
-
-    /* #info-navio-container{
-        width: 30% !important;
-    }
-
-    #info-total-prancha-dia-container{
-        width: 100%;
-        height: 100% !important;
-        display: flex;
-        flex-direction: row;
-    }
-
-    #descarregado-total-dia-prancha-aferida-container{
-        width: 70%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    #descarregado-total{
-        height: 50% !important;
-        display: flex;
-        flex-direction: row;
-    }
-
-    #descarregado-total-prancha-aferida-container{
-        height: 50% !important;
-        display: flex;
-        flex-direction: row;
-    }
-    
-        #vessel-discharging-info-container{
-            display: flex;
-            flex-direction: column;
-        }
-
-        #prancha-aferida-container{
-            height: 50% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        #prancha-aferida-big-numbers{
-            height: 100% !important;
-        }
-        #descarregado-total-container{
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-        }
-
-        #descarregado-total-grafico-container{
-            height: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-        }
-        
-        #graficoTotalDescarregado{
-            width: 100% !important;
-            height: auto !important;
-        }
-
-        #graficoDescarregadoDia{
-            width: 100% !important;
-            height: auto;
-        }
-
-    #resumo-geral-tempo-paralisado-container{
-        display: flex;
-        flex-direction: row;
-        height: 50%;
-        display: none !important;
-    }
-        #graficoResumoGeral{
-            width: 100% !important;
-            height: 50% !important;
-        }
-        #graficoTempoParalisado{
-            width: 100% !important;
-            height: 50% !important;
-        }
-
-    #descarregado-dia-periodo{
-        display: none !important; */
     }

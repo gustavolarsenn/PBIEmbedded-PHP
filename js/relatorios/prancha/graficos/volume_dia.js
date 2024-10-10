@@ -1,6 +1,6 @@
 import { floatParaFloatFormatado, getColorForDate } from '../../charts_utils.js';
 
-async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias, coresAleatoriasBordas) {
+async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias, coresAleatoriasBordas, nomeGrafico) {
 
     dadosDescarregado = dadosDescarregado.map(d => ({
         ...d,
@@ -31,7 +31,7 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
     }));
 
     const naoPossuiDados = document.getElementById('emptyGraficoDescarregadoDia');
-    const possuiDados = document.getElementById('graficoDescarregadoDia');
+    const possuiDados = document.getElementById(nomeGrafico);
 
     possuiDados.style.visibility = 'hidden';
     naoPossuiDados.style.visibility = 'visible';
@@ -152,30 +152,40 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
             }
     },
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
     }
 
-    const graficoDescarregadoDia = new Chart('graficoDescarregadoDia', {
+    if (nomeGrafico.includes('Print')) {
+        let optionsPrint = {...options};
+        optionsPrint.responsive = false;
+        optionsPrint.maintainAspectRatio = true;
+        optionsPrint.plugins.datalabels.padding = 1;
+        optionsPrint.plugins.datalabels.font.size = 10;
+
+        const graficoDescarregadoDiaPrint = new Chart('graficoDescarregadoDiaPrint', {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: dados,
+            options: optionsPrint
+        });
+        
+        return graficoDescarregadoDiaPrint;
+    }
+
+    if(!nomeGrafico.includes('Scroll')){
+        options.maintainAspectRatio = true;
+        options.responsive = true;
+    }
+
+    const graficoDescarregadoDia = new Chart(nomeGrafico, {
         type: 'bar',
         plugins: [ChartDataLabels],
         data: dados,
         options: options
     });
+    
 
-    let optionsPrint = {...options};
-    optionsPrint.responsive = false;
-    optionsPrint.maintainAspectRatio = true;
-    optionsPrint.plugins.datalabels.padding = 1;
-    optionsPrint.plugins.datalabels.font.size = 10;
-
-    const graficoDescarregadoDiaPrint = new Chart('graficoDescarregadoDiaPrint', {
-        type: 'bar',
-        plugins: [ChartDataLabels],
-        data: dados,
-        options: optionsPrint
-    });
-
-    return [graficoDescarregadoDia, graficoDescarregadoDiaPrint];
+    return graficoDescarregadoDia;
     }
 }
 

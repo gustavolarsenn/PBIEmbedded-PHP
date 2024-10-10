@@ -10,21 +10,30 @@ import { gerarPDF } from '../gerarPDF.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
-function graficoScroll(totalLinhasTabela, graficoScroll, grafico, containerGrafico){
-    graficoScroll.style.width = 1500 + (totalLinhasTabela * 65) +'px';
-
+function graficoScroll(totalLinhasTabela, graficoScroll, grafico, containerGrafico, container){
+    
     if(totalLinhasTabela > 16){
-            grafico.style.display = 'none';
-            grafico.style.visibility = 'hidden';
-            containerGrafico.style.display = 'block';
-            
-            containerGrafico.style.minWidth = null;
-        } else {
-            grafico.style.display = 'block';
-            grafico.style.visibility = 'visible';
-            containerGrafico.style.display = 'none';
-
-            containerGrafico.style.minWidth = '100%';
+        grafico.style.display = 'none';
+        grafico.style.visibility = 'hidden';
+        graficoScroll.style.display = 'block';
+        graficoScroll.style.visibility = 'visible';
+        containerGrafico.style.display = 'block';
+        
+        containerGrafico.style.minWidth = null;
+        graficoScroll.style.width = 1500 + (totalLinhasTabela * 65) +'px';
+        container.classList.add('grafico-scroll');
+    } else {
+        grafico.style.display = 'block';
+        grafico.style.visibility = 'visible';
+        graficoScroll.style.display = 'none';
+        graficoScroll.style.visibility = 'hidden';
+        containerGrafico.style.display = 'none';
+        
+        graficoScroll.style.width = '';
+        containerGrafico.style.minWidth = '100%';
+        
+        // graficoScroll.style.width = 'auto';
+        container.classList.remove('grafico-scroll');
         }
     }
 
@@ -293,7 +302,9 @@ async function generateCharts() {
 
     [graficoTotalDescarregado, graficoTotalDescarregadoPrint] = await gerarGraficoTotalDescarregado(dadosDescarregado.volume, vesselData[0].volume_manifestado);
 
-    [graficoDescarregadoDia, graficoDescarregadoDiaPrint] = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder);
+    graficoDescarregadoDia = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder, 'graficoDescarregadoDia');
+    graficoDescarregadoDiaPrint = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder, 'graficoDescarregadoDiaPrint');
+    graficoDescarregadoDiaScroll = await gerarGraficoDescarregadoPorDia(filteredDataDischarged, shuffledColors, shuffledColorsBorder, 'graficoDescarregadoDiaScroll');
 
     [graficoResumoGeral, graficoResumoGeralPrint] = await gerarGraficoResumoGeral(filteredDataDischarged);
 
@@ -377,23 +388,7 @@ async function generateCharts() {
     
     const totalVolumeDiaPeriodoLabels = graficoDescarregadoDiaPeriodo.data.labels.length
     
-    graficoScroll(totalVolumeDiaPeriodoLabels, tagGraficoDiaPeriodoScroll, tagGraficoDiaPeriodo, tagGraficoDiaPeriodoContainerGrafico)
-    graficoScroll(graficoDescarregadoDia.data.labels.length, document.getElementById('graficoDescarregadoDiaScroll'), document.getElementById('graficoDescarregadoDia'), document.getElementById('descarregado-dia-container-grafico'))
-    // tagGraficoDiaPeriodoScroll.style.width = 1500 + (totalVolumeDiaPeriodoLabels * 65) +'px';
-
-    // // Diminuir de 16 para 4 ou 8 quando mobile
-    // if(totalVolumeDiaPeriodoLabels > 16){
-    //         tagGraficoDiaPeriodo.style.display = 'none';
-    //         tagGraficoDiaPeriodo.style.visibility = 'hidden';
-    //         tagGraficoDiaPeriodoContainerGrafico.style.display = 'block';
-            
-    //         tagGraficoDiaPeriodoContainerGrafico.style.minWidth = null;
-    //     } else {
-    //         tagGraficoDiaPeriodo.style.display = 'block';
-    //         tagGraficoDiaPeriodo.style.visibility = 'visible';
-    //         tagGraficoDiaPeriodoContainerGrafico.style.display = 'none';
-
-    //         tagGraficoDiaPeriodoContainerGrafico.style.minWidth = '100%';
-    //     }
-    }
+    graficoScroll(totalVolumeDiaPeriodoLabels, tagGraficoDiaPeriodoScroll, tagGraficoDiaPeriodo, tagGraficoDiaPeriodoContainerGrafico, tagGraficoDiaPeriodoContainer)
+    graficoScroll(graficoDescarregadoDia.data.labels.length, document.getElementById('graficoDescarregadoDiaScroll'), document.getElementById('graficoDescarregadoDia'), document.getElementById('descarregado-dia-grafico'), document.getElementById('descarregado-dia-container'))
+}
 

@@ -203,14 +203,13 @@ if ($possuiPermissao) {
 
                                 </div>  
                             </div>
-                            <div id="descarregado-dia">
-                                <div id="descarregado-dia-container">
-                                    <!-- <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; height: 30vh !important; padding-bottom: 30px'> -->
-                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="200" width="985"></canvas>
-                                    <div id="descarregado-dia-grafico" class="chart chart-small-block">
-                                        <label class="label-chart">Descarregado por dia</label>
-                                        <canvas id="graficoDescarregadoDiaScroll" class="graficoParaPortal" height="200" width="985"></canvas>
-                                        <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
+                            <div id="descarregado-dia" class="chart">
+                                <label class="label-chart">Descarregado por dia</label>
+                                <div id="descarregado-dia-container" class="chart grafico-scroll">
+                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="50" width="300"></canvas>
+                                    <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
+                                    <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; width: fit-content !important; height: 30vh !important; padding-bottom: 20px; border-radius: 0 !important;'>
+                                        <canvas id="graficoDescarregadoDiaScroll" class="graficoParaPortal" height="6.5" width="120"></canvas>
                                         <div id="emptyGraficoDescarregadoDia" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
                                         </div>
