@@ -172,11 +172,6 @@ async function gerarGraficoDescarregadoPorDia(dadosDescarregado, coresAleatorias
         return graficoDescarregadoDiaPrint;
     }
 
-    if(!nomeGrafico.includes('Scroll')){
-        options.maintainAspectRatio = true;
-        options.responsive = true;
-    }
-
     const graficoDescarregadoDia = new Chart(nomeGrafico, {
         type: 'bar',
         plugins: [ChartDataLabels],

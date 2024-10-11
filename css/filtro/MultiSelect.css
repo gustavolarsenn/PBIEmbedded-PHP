@@ -41,7 +41,6 @@
     align-items: center;
     background-color: #f3f4f7;
     font-size: 12px;
-    /* padding: 3px 8px; */
     border-radius: 5px;
   }
   .multi-select .multi-select-header .multi-select-header-max {
@@ -56,7 +55,7 @@
     top: 100%;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: 1;
     margin-top: 5px;
     padding: 5px;
     background-color: #fff;

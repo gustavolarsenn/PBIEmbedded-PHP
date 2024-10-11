@@ -10335,6 +10335,9 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
     .content-body {
       margin-left: 14.375rem; } }
 
+  @media only screen and (max-width: 767px) {
+    .content-body {
+      margin-left: 0 } }
 .quixnav {
   width: 17.1875rem;
   padding-bottom: 112px;
@@ -19469,6 +19472,5 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
   margin: auto 0;
   text-align: center;
 }
-
 /*# sourceMappingURL=style.css.map */
 

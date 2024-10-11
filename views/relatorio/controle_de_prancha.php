@@ -205,10 +205,10 @@ if ($possuiPermissao) {
                             </div>
                             <div id="descarregado-dia" class="chart">
                                 <label class="label-chart">Descarregado por dia</label>
-                                <div id="descarregado-dia-container" class="chart grafico-scroll">
-                                    <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="50" width="300"></canvas>
+                                <div id="descarregado-dia-container" class="grafico-scroll">
                                     <canvas id="graficoDescarregadoDiaPrint" class="graficoParaPDF" height="200" width="985"></canvas>
-                                    <div id="descarregado-dia-grafico" class="chart chart-small-block" style='position: relative !important; width: fit-content !important; height: 30vh !important; padding-bottom: 20px; border-radius: 0 !important;'>
+                                    <div id="descarregado-dia-grafico" class="chart-small-block" style='position: relative !important; width: fit-content !important; height: 35vh; padding-bottom: 20px; border-radius: 0 !important;'>
+                                        <canvas id="graficoDescarregadoDia" class="graficoParaPortal" height="30" width="100"></canvas>
                                         <canvas id="graficoDescarregadoDiaScroll" class="graficoParaPortal" height="6.5" width="120"></canvas>
                                         <div id="emptyGraficoDescarregadoDia" class="no-data">
                                             <p>Nenhum valor encontrado!</p>
@@ -217,11 +217,11 @@ if ($possuiPermissao) {
                                 </div>
                             </div>
 
-                            <div id='descarregado-dia-periodo' class="chart" style="height: auto !important;">
+                            <div id='descarregado-dia-periodo' class="chart">
                                 <label class="label-chart">Total descarregado por dia e período, MT</label>
-                                <div id="descarregado-dia-periodo-container" class="chart grafico-scroll">
-                                    <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="20" width='120'></canvas>   
+                                <div id="descarregado-dia-periodo-container" class="grafico-scroll">
                                     <div id='descarregado-dia-periodo-grafico' class="chart chart-small-block"  style='position: relative !important; width: fit-content !important; height: 30vh !important; padding-bottom: 20px; border-radius: 0 !important;'>
+                                            <canvas id="graficoDescarregadoDiaPeriodo" class="graficoParaPortal" height="20" width='120'></canvas>   
                                             <canvas id="graficoDescarregadoDiaPeriodoScroll" class="graficoParaPortal" height="6.5" width='120'></canvas>   
                                             <div id="graficoDescarregadoDiaPeriodoEmpty" class="no-data">
                                                 <p>Nenhum valor encontrado!</p>
@@ -229,18 +229,19 @@ if ($possuiPermissao) {
                                     </div>
                                 </div>
                             </div>
-                            <div id="tempo-paralisado-container">
-                            <!-- <div id="resumo-geral-tempo-paralisado-container"> -->
-                                <div class="chart chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; height: 30vh !important; padding-bottom: 20px;'>
-                                    <label class="label-chart">Tempo paralisado</label>
-                                    <canvas id="graficoTempoParalisado" class="graficoParaPortal"></canvas>
+                            <div id="tempo-paralisado" class="chart">
+                                <label class="label-chart">Tempo paralisado</label>
+                                <div id="tempo-paralisado-container" class="grafico-scroll">
                                     <canvas id="graficoTempoParalisadoPrint" class="graficoParaPDF" height="200" width="985"></canvas>
-                                    <div id="emptyGraficoTempoParalisado" class="no-data">
-                                        <p>Nenhum valor encontrado!</p>
+                                    <div class="chart-small-block" id="tempo-paralisado-grafico" style='position: relative !important; width: fit-content !important; height: 30vh; padding-bottom: 20px; border-radius: 0 !important;'>
+                                        <canvas id="graficoTempoParalisado" class="graficoParaPortal" height="20" width="60"></canvas>
+                                        <canvas id="graficoTempoParalisadoScroll" class="graficoParaPortal" height="6.5" width="120"></canvas>
+                                        <div id="emptyGraficoTempoParalisado" class="no-data">
+                                            <p>Nenhum valor encontrado!</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- </div> -->
                     </section>
                 </div>
         <?php include_once CAMINHO_BASE . '/utils/components/footer.php'?>

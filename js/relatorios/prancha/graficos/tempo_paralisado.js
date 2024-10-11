@@ -4,7 +4,7 @@ function aggregateDataByDate(data, date, category) {
     return data.filter(d => d.data_str === date).map(d => d[category]);
 }
 
-async function gerarGraficoTempoParalisado(dadosDescarregado) {
+async function gerarGraficoTempoParalisado(dadosDescarregado, nomeGrafico) {
 
 
     dadosDescarregado = dadosDescarregado.map(d => ({
@@ -15,7 +15,7 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
     const dates = [...new Set(dadosDescarregado.map(d => d.data_str))];
 
     const naoPossuiDados = document.getElementById('emptyGraficoTempoParalisado');
-    const possuiDados = document.getElementById('graficoTempoParalisado');
+    const possuiDados = document.getElementById(nomeGrafico);
 
     const ctx = possuiDados.getContext('2d');
     var gradientStroke = ctx.createLinearGradient(500, 0, 300, 0);
@@ -88,6 +88,7 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
                 position: 'top',
             },
             responsive: true,
+            maintainAspectRatio: false,
             tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
@@ -152,27 +153,31 @@ async function gerarGraficoTempoParalisado(dadosDescarregado) {
             }
         }
 
-        let optionsPrint = {...options};
-        optionsPrint.responsive = false;
-        optionsPrint.maintainAspectRatio = true;
+        if (nomeGrafico.includes('Print')) {
+            let optionsPrint = {...options};
+            optionsPrint.responsive = false;
+            optionsPrint.maintainAspectRatio = true;
+    
+            // Create the chart
+            const graficoTempoParalisadoPrint = new Chart('graficoTempoParalisadoPrint', {
+                type: 'bar',
+                plugins: [ChartDataLabels],
+                data: data,
+                options: optionsPrint
+            });
+
+            return graficoTempoParalisadoPrint;
+        }
 
         // Create the chart
-        const graficoTempoParalisado = new Chart('graficoTempoParalisado', {
+        const graficoTempoParalisado = new Chart(nomeGrafico, {
             type: 'bar',
             plugins: [ChartDataLabels],
             data: data,
             options: options
         });
 
-        // Create the chart
-        const graficoTempoParalisadoPrint = new Chart('graficoTempoParalisadoPrint', {
-            type: 'bar',
-            plugins: [ChartDataLabels],
-            data: data,
-            options: optionsPrint
-        });
-
-        return [graficoTempoParalisado, graficoTempoParalisadoPrint];
+        return graficoTempoParalisado;
     }
 }
 

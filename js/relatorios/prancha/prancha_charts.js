@@ -12,22 +12,22 @@ window.cleanFiltersData = cleanFiltersData;
 
 function graficoScroll(totalLinhasTabela, graficoScroll, grafico, containerGrafico, container){
     
-    if(totalLinhasTabela > 16){
+    const maxLinhas = window.innerWidth < 1440 ? 8 : 16; 
+    const widthMultiplier = grafico.id == 'graficoDescarregadoDiaPeriodo' ? 65 : 20;
+    if(totalLinhasTabela > maxLinhas){
         grafico.style.display = 'none';
         grafico.style.visibility = 'hidden';
         graficoScroll.style.display = 'block';
         graficoScroll.style.visibility = 'visible';
-        containerGrafico.style.display = 'block';
         
         containerGrafico.style.minWidth = null;
-        graficoScroll.style.width = 1500 + (totalLinhasTabela * 65) +'px';
+        graficoScroll.style.width = 1500 + (totalLinhasTabela * widthMultiplier) +'px';
         container.classList.add('grafico-scroll');
     } else {
         grafico.style.display = 'block';
         grafico.style.visibility = 'visible';
         graficoScroll.style.display = 'none';
         graficoScroll.style.visibility = 'hidden';
-        containerGrafico.style.display = 'none';
         
         graficoScroll.style.width = '';
         containerGrafico.style.minWidth = '100%';
@@ -122,7 +122,7 @@ const shuffledColorsBorder = pbiThemeColorsBorder.sort(() => 0.5 - Math.random()
 var graficoTotalDescarregado, graficoTotalDescarregadoPrint,
 graficoDescarregadoDia, graficoDescarregadoDiaPrint, graficoDescarregadoDiaScroll, 
 graficoResumoGeral, graficoResumoGeralPrint, 
-graficoTempoParalisado, graficoTempoParalisadoPrint,
+graficoTempoParalisado, graficoTempoParalisadoPrint, graficoTempoParalisadoScroll,
 graficoDescarregadoDiaPeriodo, graficoDescarregadoDiaPeriodoPrint, graficoDescarregadoDiaPeriodoScroll;
 
 var count = 0;
@@ -261,6 +261,7 @@ async function generateCharts() {
 
     if (graficoTempoParalisado) graficoTempoParalisado.destroy();
     if (graficoTempoParalisadoPrint) graficoTempoParalisadoPrint.destroy();
+    if (graficoTempoParalisadoScroll) graficoTempoParalisadoScroll.destroy();
 
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
     if (graficoDescarregadoDiaPeriodoScroll) graficoDescarregadoDiaPeriodoScroll.destroy();
@@ -308,8 +309,9 @@ async function generateCharts() {
 
     [graficoResumoGeral, graficoResumoGeralPrint] = await gerarGraficoResumoGeral(filteredDataDischarged);
 
-    [graficoTempoParalisado, graficoTempoParalisadoPrint] = await gerarGraficoTempoParalisado(filteredDataDischarged);
-
+    graficoTempoParalisado = await gerarGraficoTempoParalisado(filteredDataDischarged, 'graficoTempoParalisado');
+    graficoTempoParalisadoPrint = await gerarGraficoTempoParalisado(filteredDataDischarged, 'graficoTempoParalisadoPrint');
+    graficoTempoParalisadoScroll = await gerarGraficoTempoParalisado(filteredDataDischarged, 'graficoTempoParalisadoScroll');
 
     let loops, newLoops;
     const uniqueDates = filteredDataDischarged.map(d => d.data).filter((value, index, self) => self.indexOf(value) === index);
@@ -390,5 +392,6 @@ async function generateCharts() {
     
     graficoScroll(totalVolumeDiaPeriodoLabels, tagGraficoDiaPeriodoScroll, tagGraficoDiaPeriodo, tagGraficoDiaPeriodoContainerGrafico, tagGraficoDiaPeriodoContainer)
     graficoScroll(graficoDescarregadoDia.data.labels.length, document.getElementById('graficoDescarregadoDiaScroll'), document.getElementById('graficoDescarregadoDia'), document.getElementById('descarregado-dia-grafico'), document.getElementById('descarregado-dia-container'))
+    graficoScroll(graficoTempoParalisado.data.labels.length, document.getElementById('graficoTempoParalisadoScroll'), document.getElementById('graficoTempoParalisado'), document.getElementById('tempo-paralisado-grafico'), document.getElementById('tempo-paralisado-container'))
 }
 
