@@ -358,8 +358,10 @@ async function generateCharts() {
 
             if (i === 0) {
                 graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodo');
+                console.log(graficoPrintAtual)
             } else {
                 graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodoPrint' + (i - 1));
+                console.log(graficoPrintAtual)
             } 
 
             graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);

@@ -8062,9 +8062,10 @@ a {
       color: #593bdb; 
     }
 
-[data-sidebar-style="mini"] .nav-control,
+/* HAHAHA */
+/* [data-sidebar-style="mini"] .nav-control,
 [data-layout="horizontal"] .nav-control {
-  display: none; }
+  display: none; } */
 
 @media only screen and (max-width: 767px) {
   [data-sidebar-style="overlay"] .nav-header .logo-abbr {
@@ -10773,6 +10774,19 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 The smaller device rules always should write below the bigger device rules
 Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Component
 */
+
+/* MUDANCA - Removendo sidebar ao girar tela mobile de Horizontal para Vertical, porém permitindo abri-lá com botão hamburger */
+@media only screen and (max-width: 767px) {
+  [data-sidebar-style="mini"] .quixnav {
+    display: none;
+    overflow: hidden;
+  }
+  [data-sidebar-style="mini"] .menu-toggle .quixnav {
+    display: block;
+    overflow: visible;
+  }
+}
+
 @media only screen and (min-width: 768px) {
   [data-sidebar-style="mini"] .nav-header {
     width: 3.75rem; }
