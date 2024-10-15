@@ -88,6 +88,9 @@
                 height: 70% !important;
                 margin-bottom: 0px !important;
             }
+                #descarregado-total-grafico-container{
+                    padding: 0 !important; 
+                }
                     #descarregado-total{
                         height: 100% !important;
                         display: flex !important;
@@ -134,6 +137,7 @@
                     }
             #resumo-geral-grafico{
                 height: 100% !important;
+                margin-bottom: 0 !important;
             }
             #descarregado-dia-container{
                 height: 15vh !important;
@@ -165,4 +169,13 @@
         #descarregado-dia-periodo-grafico{
             display: none !important;
         }
+
+    @media (max-width: 1440px){
+        #info-total-prancha-dia-container{
+            height: 100% !important;
+        }
+        .graficoParaPDF{
+            width: 100% !important;
+        }
+    }   
     }
