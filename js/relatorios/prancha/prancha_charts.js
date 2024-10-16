@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
 
-var containerTempoParalisado = document.getElementById('tempo-paralisado-container');
+var containerTempoParalisado = document.getElementById('tempo-paralisado');
 
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
 var tagGraficoDiaPeriodoScroll = document.getElementById('graficoDescarregadoDiaPeriodoScroll');
@@ -368,7 +368,9 @@ async function generateCharts() {
             listaGraficos.push(await gerarGraficoDescarregadoDiaPeriodo(slicedData, nomeGrafico));
         });
     
+    console.log(Math.ceil(loops))
     if (Math.ceil(loops) === 2){
+
         containerTempoParalisado.classList.add('page-break');
     } else {
         containerTempoParalisado.classList.remove('page-break');

@@ -159,6 +159,7 @@
 
         #tempo-paralisado-grafico{
             width: 100% !important;
+            height: fit-content !important;
         }
 
     #descarregado-dia-periodo{
