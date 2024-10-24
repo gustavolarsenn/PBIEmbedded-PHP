@@ -8,11 +8,19 @@ class PowerBISession {
     private $pdo;
     private $id_usuario;
     private $ip;
+    private $pais;
+    private $uf;
+    private $cidade;
     private const LOG_FILE = 'PowerBI';
     public function __construct($pdo, $id_usuario) {
+        $infos_usuario = RastreioIP::pegarIPeLocUsuarioAPI();
+
         $this->pdo = $pdo;
         $this->id_usuario = $id_usuario;
-        $this->ip = RastreioIP::pegarIPUsuario();
+        $this->ip = $infos_usuario['ip'] ?? RastreioIP::pegarIPUsuario();
+        $this->pais = $infos_usuario['country_name'] ?? 'Desconhecido';
+        $this->uf = $infos_usuario['region'] ?? 'Desconhecido';
+        $this->cidade = $infos_usuario['city'] ?? 'Desconhecido';
     }
 
     public function criarSessaoPBI(){
@@ -34,8 +42,8 @@ class PowerBISession {
     
             if (!$powerbi) {
                 $log->info('Criando sessão de PowerBI', ['user' => $this->id_usuario]);
-                $stmt = $this->pdo->prepare('INSERT INTO SessaoPBI (id_usuario, ip) VALUES (?, ?)');
-                $stmt->bind_param('is', $this->id_usuario, $this->ip);
+                $stmt = $this->pdo->prepare('INSERT INTO SessaoPBI (id_usuario, ip, pais, uf, cidade) VALUES (?, ?, ?, ?, ?)');
+                $stmt->bind_param('issss', $this->id_usuario, $this->ip, $this->pais, $this->uf, $this->cidade);
                 $stmt->execute();
                 $stmt->close();
                 return;

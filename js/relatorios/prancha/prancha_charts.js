@@ -41,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function () {
     generateCharts();
 });
 
+// Variáveis de scroll do gráfico de Descarregado por Dia e Período
+var larguraScrollDiaPeriodo, larguraTotalDiaPeriodo, larguraColunaTotalDiaPeriodo, secaoPrintDiaPeriodo;
+var printarTudoDiaPeriodo = false;
+var filteredDataDischarged;
+
+
+
 var containerTempoParalisado = document.getElementById('tempo-paralisado');
 
 var tagGraficoDiaPeriodo = document.getElementById('graficoDescarregadoDiaPeriodo');
@@ -134,19 +141,45 @@ let filtrosParalisacao = {
     'outros': 'Outros'
 };
 
-document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', function() {
-    console.log(document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect())
+document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', async function() {
+    // console.log(document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect())
+    // console.log(graficoDescarregadoDiaPeriodoScroll)
+    // console.log(graficoDescarregadoDiaPeriodoScroll.width)
+    // console.log(graficoDescarregadoDiaPeriodoScroll.data.labels.length)
+    // console.log(posicaoAtual)
+    if (graficoDescarregadoDiaPeriodoPrint) graficoDescarregadoDiaPeriodoPrint.destroy();
+    const colunasPorImpressao = 16;
+    
+    let posicaoAtualDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
+
+    larguraTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width;
+    larguraColunaTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.controller.boxes[0].columnWidths[0];
+
+
+    const limitesGraficoPrintTotal = larguraColunaTotalDiaPeriodo * colunasPorImpressao // 16 colunas
     console.log(graficoDescarregadoDiaPeriodoScroll)
-    console.log(graficoDescarregadoDiaPeriodoScroll.width)
-    console.log(graficoDescarregadoDiaPeriodoScroll.data.labels.length)
-    let posicaoAtual = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
-    console.log(posicaoAtual)
+    
+    console.log(limitesGraficoPrintTotal)
+    
+    const larguraDiaPeriodo = larguraTotalDiaPeriodo - larguraScrollDiaPeriodo;
+    const proporcaoDiaPeriodo = larguraTotalDiaPeriodo / larguraDiaPeriodo;
+    const posicaoAtualTotalDiaPeriodo = posicaoAtualDiaPeriodo * proporcaoDiaPeriodo
 
-    const larguraTotal = graficoDescarregadoDiaPeriodoScroll.width;
-    const larguraColunaTotal = larguraTotal / graficoDescarregadoDiaPeriodoScroll.data.labels.length;
-    const limitesGraficoPrintTotal = larguraColunaTotal * 16 // 16 colunas
+    secaoPrintDiaPeriodo = Math.floor(posicaoAtualTotalDiaPeriodo / limitesGraficoPrintTotal + 1)
 
-    const largura = graficoDescarregadoDiaPeriodoScroll.width;
+    const canvasElement = document.createElement('canvas');
+    canvasElement.id = 'graficoDescarregadoDiaPeriodoPrint';
+    canvasElement.classList.add('graficoParaPDF');
+    canvasElement.height = '185';
+    canvasElement.width = '985';
+
+    const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo * 16 - 16, secaoPrintDiaPeriodo * 16);
+    console.log(secaoPrintDiaPeriodo * 16 - 16, secaoPrintDiaPeriodo * 16)
+    console.log(slicedDataOne)
+    graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(slicedDataOne, 'graficoDescarregadoDiaPeriodoPrint')
+
+    const graficoPrintAtual = document.getElementById('descarregado-dia-periodo-grafico');
+    graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
 
 })
 
@@ -169,6 +202,8 @@ dataField.addEventListener('change', async function() {
 });
 
 async function generateCharts() {
+    larguraScrollDiaPeriodo = document.getElementById('descarregado-dia-periodo-container').scrollWidth
+
     const listaNavio = await getUniqueVessels();
 
     const arrayViagensUnicas = [...new Set(listaNavio)];
@@ -250,7 +285,8 @@ async function generateCharts() {
     });
 
     // Assuming the structure of each item in `data` is known and matches the filter criteria
-    const filteredDataDischarged = formattedDataDischarged.filter((item) => {
+    // const filteredDataDischarged = formattedDataDischarged.filter((item) => {
+    filteredDataDischarged = formattedDataDischarged.filter((item) => {
         // Check for each filter, if the filter array is not empty and the item's property is included in the filter array
         // const matchesNavio = filtroNavio.length === 0 || filtroNavio.includes(`'${item.navio}'`);
         const matchesData = !filtroData || filtroData.includes(item.data); // Assuming `item.data` is in the same format as `filtroData`
@@ -331,7 +367,7 @@ async function generateCharts() {
 
     let loops, newLoops;
     const uniqueDates = filteredDataDischarged.map(d => d.data).filter((value, index, self) => self.indexOf(value) === index);
-    if (filteredDataDischarged.length > 16){
+    if (filteredDataDischarged.length > 16 && printarTudoDiaPeriodo){
 
         loops = uniqueDates.length / 4;
         let ajustarUltimos = uniqueDates.length % 4 < 2 ? true : false;
@@ -348,14 +384,7 @@ async function generateCharts() {
                 newLoops.push(uniqueDates.slice(i * 4, (i + 1) * 4));
             }
         }
-    } else {
-        loops = 1;
-        newLoops = [uniqueDates];
-    }
-
-        graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodo');
-        graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodoScroll');
-
+        
         newLoops.forEach(async (loop, i) => {
             let graficoPrintAtual;
             const nomeGrafico = 'graficoDescarregadoDiaPeriodoPrint' + i;
@@ -377,14 +406,22 @@ async function generateCharts() {
             } else {
                 graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodoPrint' + (i - 1));
             } 
-
+            
+            
             graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
-
             const slicedData = filteredDataDischarged.filter(d => loop.includes(d.data));
             listaGraficos.push(await gerarGraficoDescarregadoDiaPeriodo(slicedData, nomeGrafico));
         });
+    } else {
+        loops = 1;
+        newLoops = [uniqueDates];
+
+    }
+
+        graficoDescarregadoDiaPeriodo = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodo');
+        graficoDescarregadoDiaPeriodoScroll = await gerarGraficoDescarregadoDiaPeriodo(filteredDataDischarged, 'graficoDescarregadoDiaPeriodoScroll');
+
     
-    console.log(Math.ceil(loops))
     if (Math.ceil(loops) === 2){
 
         containerTempoParalisado.classList.add('page-break');
@@ -411,5 +448,6 @@ async function generateCharts() {
     graficoScroll(totalVolumeDiaPeriodoLabels, tagGraficoDiaPeriodoScroll, tagGraficoDiaPeriodo, tagGraficoDiaPeriodoContainerGrafico, tagGraficoDiaPeriodoContainer)
     graficoScroll(graficoDescarregadoDia.data.labels.length, document.getElementById('graficoDescarregadoDiaScroll'), document.getElementById('graficoDescarregadoDia'), document.getElementById('descarregado-dia-grafico'), document.getElementById('descarregado-dia-container'))
     graficoScroll(graficoTempoParalisado.data.labels.length, document.getElementById('graficoTempoParalisadoScroll'), document.getElementById('graficoTempoParalisado'), document.getElementById('tempo-paralisado-grafico'), document.getElementById('tempo-paralisado-container'))
+
 }
 
