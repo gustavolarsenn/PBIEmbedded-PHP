@@ -134,6 +134,22 @@ let filtrosParalisacao = {
     'outros': 'Outros'
 };
 
+document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', function() {
+    console.log(document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect())
+    console.log(graficoDescarregadoDiaPeriodoScroll)
+    console.log(graficoDescarregadoDiaPeriodoScroll.width)
+    console.log(graficoDescarregadoDiaPeriodoScroll.data.labels.length)
+    let posicaoAtual = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
+    console.log(posicaoAtual)
+
+    const larguraTotal = graficoDescarregadoDiaPeriodoScroll.width;
+    const larguraColunaTotal = larguraTotal / graficoDescarregadoDiaPeriodoScroll.data.labels.length;
+    const limitesGraficoPrintTotal = larguraColunaTotal * 16 // 16 colunas
+
+    const largura = graficoDescarregadoDiaPeriodoScroll.width;
+
+})
+
 function cleanFiltersData(){
     [jaFiltradoPeriodo, jaFiltradoRelatorio, jaFiltradoParalisacao].forEach(filtro => {
         filtro = [];

@@ -1,22 +1,25 @@
 <?php
 
 require_once __DIR__ . '/../../utils/config/config.php';
+require_once CAMINHO_BASE . '/utils/config/RastreioIP.php';
 
 class PowerBISession {
 
     private $pdo;
     private $id_usuario;
+    private $ip;
     private const LOG_FILE = 'PowerBI';
     public function __construct($pdo, $id_usuario) {
         $this->pdo = $pdo;
         $this->id_usuario = $id_usuario;
+        $this->ip = RastreioIP::pegarIPUsuario();
     }
 
     public function criarSessaoPBI(){
         /* Cria sessão de usuário assim que ele acessa relatórios PowerBI. Caso ele já tiver sessão validar, renova por mais 1 hora */
         $log = AppLogger::getInstance(self::LOG_FILE);
         try {
-            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI']]);
+            $log->info('Verificando se usuário já possui sessão de PowerBI ativa', ['user' => $this->id_usuario, 'page' => $_SERVER['REQUEST_URI'], 'ip' => $this->ip]);
             $stmt = $this->pdo->prepare('SELECT * FROM SessaoPBI WHERE id_usuario = ? AND data_validade > NOW()');
             $stmt->bind_param('i', $this->id_usuario);
             $stmt->execute();
@@ -31,8 +34,8 @@ class PowerBISession {
     
             if (!$powerbi) {
                 $log->info('Criando sessão de PowerBI', ['user' => $this->id_usuario]);
-                $stmt = $this->pdo->prepare('INSERT INTO SessaoPBI (id_usuario) VALUES (?)');
-                $stmt->bind_param('i', $this->id_usuario);
+                $stmt = $this->pdo->prepare('INSERT INTO SessaoPBI (id_usuario, ip) VALUES (?, ?)');
+                $stmt->bind_param('is', $this->id_usuario, $this->ip);
                 $stmt->execute();
                 $stmt->close();
                 return;
