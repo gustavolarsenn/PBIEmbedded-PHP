@@ -141,45 +141,44 @@ let filtrosParalisacao = {
     'outros': 'Outros'
 };
 
+
 document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', async function() {
-    // console.log(document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect())
-    // console.log(graficoDescarregadoDiaPeriodoScroll)
-    // console.log(graficoDescarregadoDiaPeriodoScroll.width)
-    // console.log(graficoDescarregadoDiaPeriodoScroll.data.labels.length)
-    // console.log(posicaoAtual)
-    if (graficoDescarregadoDiaPeriodoPrint) graficoDescarregadoDiaPeriodoPrint.destroy();
+    if (document.getElementById('graficoDescarregadoDiaPeriodoPrint')) {
+        document.getElementById('graficoDescarregadoDiaPeriodoPrint').remove();
+    }
+
     const colunasPorImpressao = 16;
     
     let posicaoAtualDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
 
     larguraTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width;
-    larguraColunaTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.controller.boxes[0].columnWidths[0];
-
+    larguraColunaTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.controller.boxes[0].width;
 
     const limitesGraficoPrintTotal = larguraColunaTotalDiaPeriodo * colunasPorImpressao // 16 colunas
-    console.log(graficoDescarregadoDiaPeriodoScroll)
-    
-    console.log(limitesGraficoPrintTotal)
     
     const larguraDiaPeriodo = larguraTotalDiaPeriodo - larguraScrollDiaPeriodo;
     const proporcaoDiaPeriodo = larguraTotalDiaPeriodo / larguraDiaPeriodo;
     const posicaoAtualTotalDiaPeriodo = posicaoAtualDiaPeriodo * proporcaoDiaPeriodo
-
-    secaoPrintDiaPeriodo = Math.floor(posicaoAtualTotalDiaPeriodo / limitesGraficoPrintTotal + 1)
-
+    
+    // secaoPrintDiaPeriodo = Math.floor(posicaoAtualTotalDiaPeriodo / limitesGraficoPrintTotal + 1)
+    secaoPrintDiaPeriodo = Math.floor(Math.abs(posicaoAtualTotalDiaPeriodo) / larguraColunaTotalDiaPeriodo)
+    
     const canvasElement = document.createElement('canvas');
     canvasElement.id = 'graficoDescarregadoDiaPeriodoPrint';
     canvasElement.classList.add('graficoParaPDF');
     canvasElement.height = '185';
     canvasElement.width = '985';
-
-    const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo * 16 - 16, secaoPrintDiaPeriodo * 16);
-    console.log(secaoPrintDiaPeriodo * 16 - 16, secaoPrintDiaPeriodo * 16)
-    console.log(slicedDataOne)
-    graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(slicedDataOne, 'graficoDescarregadoDiaPeriodoPrint')
-
+    
     const graficoPrintAtual = document.getElementById('descarregado-dia-periodo-grafico');
     graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
+
+    // const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo * 16 - 16, secaoPrintDiaPeriodo * 16);
+    const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo, secaoPrintDiaPeriodo + 16);
+    console.log('posicaoAtualTotalDiaPeriodo', posicaoAtualTotalDiaPeriodo, 'larguraColunaTotalDiaPeriodo', larguraColunaTotalDiaPeriodo)
+    console.log('secaoPrintDiaPeriodo', secaoPrintDiaPeriodo)
+    console.log(slicedDataOne)
+    console.log(filteredDataDischarged)
+    graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(slicedDataOne, 'graficoDescarregadoDiaPeriodoPrint')
 
 })
 
