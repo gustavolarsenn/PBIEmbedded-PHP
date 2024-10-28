@@ -6,7 +6,6 @@ import { gerarGraficoResumoGeral } from './graficos/resumo_geral.js';
 import { gerarGraficoTempoParalisado } from './graficos/tempo_paralisado.js';
 import { gerarGraficoDescarregadoDiaPeriodo } from './graficos/volume_dia_periodo.js';
 import { generateFilters, updateFilters } from '../../utils/utils.js';
-import { gerarPDF } from '../gerarPDF.js';
 
 window.cleanFiltersData = cleanFiltersData;
 
@@ -42,11 +41,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 // Variáveis de scroll do gráfico de Descarregado por Dia e Período
-var larguraScrollDiaPeriodo, larguraTotalDiaPeriodo, larguraColunaTotalDiaPeriodo, secaoPrintDiaPeriodo, colunasPorImpressaoDiaPeriodo;
+var larguraScrollDiaPeriodo, larguraTotalDiaPeriodo, larguraColunaTotalDiaPeriodo, secaoPrintDiaPeriodo, colunasPorImpressaoDiaPeriodo = 16;
 var printarTudoDiaPeriodo = false;
 var filteredDataDischarged;
-
-
 
 var containerTempoParalisado = document.getElementById('tempo-paralisado');
 
@@ -143,8 +140,6 @@ let filtrosParalisacao = {
 
 
 document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', async function() {
-    colunasPorImpressaoDiaPeriodo = 16;
-    
     let posicaoAtualDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
 
     larguraTotalDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width;
@@ -154,6 +149,8 @@ document.getElementById('descarregado-dia-periodo-container').addEventListener('
     const proporcaoDiaPeriodo = larguraTotalDiaPeriodo / larguraDiaPeriodo;
     const posicaoAtualTotalDiaPeriodo = posicaoAtualDiaPeriodo * proporcaoDiaPeriodo
     
+    console.log(larguraTotalDiaPeriodo)
+    console.log('posicaoAtualTotalDiaPeriodo', Math.abs(posicaoAtualTotalDiaPeriodo), 'larguraColunaTotalDiaPeriodo', larguraColunaTotalDiaPeriodo)
     secaoPrintDiaPeriodo = Math.floor(Math.abs(posicaoAtualTotalDiaPeriodo) / larguraColunaTotalDiaPeriodo)
 })
 
@@ -171,8 +168,9 @@ window.addEventListener('beforeprint', async function() {
     const graficoPrintAtual = document.getElementById('descarregado-dia-periodo-grafico');
     graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
 
-    console.log('secaoPrintDiaPeriodo', secaoPrintDiaPeriodo)
-    const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo ?? 0, secaoPrintDiaPeriodo + colunasPorImpressaoDiaPeriodo);
+    console.log('secaoPrintDiaPeriodo', secaoPrintDiaPeriodo ?? 0)
+    console.log('colunasPorImpressaoDiaPeriodo', colunasPorImpressaoDiaPeriodo)
+    const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo ?? 0, (secaoPrintDiaPeriodo ?? 0) + colunasPorImpressaoDiaPeriodo);
 
     graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(slicedDataOne, 'graficoDescarregadoDiaPeriodoPrint')
 })

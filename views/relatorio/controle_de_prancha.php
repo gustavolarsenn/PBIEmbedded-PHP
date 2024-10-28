@@ -258,8 +258,6 @@ if ($possuiPermissao) {
         <script src="<?php echo $basePath; ?>/js/logout.js"></script>
         <script src="<?php echo $basePath; ?>/js/pbi/links_pbi.js"></script>
 
-        <script type="module" src="<?php echo $basePath; ?>/js/relatorios/gerarPDF.js"></script>
-        
         <script src="<?php echo $basePath; ?>/vendor/jquery-steps/build/jquery.steps.min.js"></script>
         <script src="<?php echo $basePath; ?>/vendor/jquery-validation/jquery.validate.min.js"></script>
         
