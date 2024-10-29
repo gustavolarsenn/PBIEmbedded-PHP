@@ -38,6 +38,28 @@ class RastreioIP{
         }
     }
     
+    public function pegarLocPeloIP($ip, $formato)
+    {
+        $log = AppLogger::getInstance('RastreioIP');
+        try {
+            $infos_usuario = ApiCalls::apiCall('GET', 'https://ipapi.co/' . $ip . '/' . $formato . '/', [], []);
+            $log->info('Localização coletada pelo IP', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'infos_usuario' => $infos_usuario]);
+            
+            if ($formato == 'jsonp') {
+                // Corrige o formato do JSONP para JSON
+                $infos_usuario = trim($infos_usuario, 'callback(');
+                $infos_usuario = rtrim($infos_usuario, ');');
+                
+                // Transforma o JSON para PHP Array
+                $infos_usuario = json_decode($infos_usuario, true);
+            }
+
+            return $infos_usuario;
+        } catch (Exception $e) {
+            $log->error('Erro ao pegar localização do usuário pelo IP', ['user' => $_SESSION['id_usuario'], 'page' => $_SERVER['REQUEST_URI'], 'erro' => $e->getMessage()]);
+        }
+    }
+
     public static function pegarIPeLocUsuarioAPI(){
         $log = AppLogger::getInstance('RastreioIP');
         try {

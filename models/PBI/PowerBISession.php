@@ -13,11 +13,12 @@ class PowerBISession {
     private $cidade;
     private const LOG_FILE = 'PowerBI';
     public function __construct($pdo, $id_usuario) {
-        $infos_usuario = RastreioIP::pegarIPeLocUsuarioAPI();
-
+        $monitoramentoIP = new RastreioIP();
+        $ip = RastreioIP::pegarIPUsuario();
+        $infos_usuario = $monitoramentoIP->pegarLocPeloIP($ip, 'jsonp');
         $this->pdo = $pdo;
         $this->id_usuario = $id_usuario;
-        $this->ip = $infos_usuario['ip'] ?? RastreioIP::pegarIPUsuario();
+        $this->ip = $ip;
         $this->pais = $infos_usuario['country_name'] ?? 'Desconhecido';
         $this->uf = $infos_usuario['region'] ?? 'Desconhecido';
         $this->cidade = $infos_usuario['city'] ?? 'Desconhecido';
