@@ -79,6 +79,73 @@ class MultiSelect {
 
     _eventHandlers() {
         let headerElement = this.element.querySelector('.multi-select-header');
+        
+        let selectAllButton = this.element.querySelector('.multi-select-all');
+
+        // Trata clicks no botão de seleção de todos
+        if (selectAllButton !== undefined && selectAllButton !== 'undefined' && selectAllButton !== null) {
+            var selected = false;
+            selectAllButton.addEventListener('click', () => {
+                selected = !selected;
+                this.element.querySelectorAll('.multi-select-option').forEach(option => {
+                        // Faz o toggle de todas as opções, se SELECTED, adiciona a classe e considera as opções para o filtro, se não, desfaz a seleção e desconsidera
+                        if (selected) {
+                            option.classList.add('multi-select-selected');
+                            if (this.options.listAll === true || this.options.listAll === 'true') {
+                                headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option" data-value="${option.dataset.value}">${option.querySelector('.multi-select-option-text').innerHTML}</span>`);
+                            }
+                            this.element.querySelector('.multi-select').insertAdjacentHTML('afterbegin', `<input type="hidden" name="${this.name}[]" value="${option.dataset.value}">`);
+                            this.data.filter(data => data.value == option.dataset.value)[0].selected = true;
+                        } else {
+                            option.classList.remove('multi-select-selected');
+                            this.element.querySelectorAll('.multi-select-header-option').forEach(headerOption => headerOption.dataset.value == option.dataset.value ? headerOption.remove() : '');
+                            // this.element.querySelector(`input[value="${option.dataset.value}"]`).remove(); // Não sei pra que servia
+                            this.data.filter(data => data.value == option.dataset.value)[0].selected = false;
+                        }
+
+                        if (!option.classList.contains('multi-select-selected')) {
+                            if (this.options.max && this.selectedValues.length >= this.options.max) {
+                                const currentlySelected = this.selectedValues[0]
+                                const currentOptionElement = document.querySelector(`div[data-value="${currentlySelected}"]`)
+                                currentOptionElement.classList.remove('multi-select-selected');
+                                this.data.forEach(item => {
+                                    if (item.value !== option.dataset.value) {
+                                        item.selected = false;
+                                    }
+                                });
+                                option.classList.add('multi-select-selected');
+                            }
+                        } else {
+                        }
+                        
+                        if (this.options.listAll === false || this.options.listAll === 'false') {
+                            if (this.element.querySelector('.multi-select-header-option')) {
+                                this.element.querySelector('.multi-select-header-option').remove();
+                            }
+                            if (this.selectedValues.length > 1) {
+                                headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} selecionados</span>`);
+                            } else if (this.selectedValues.length == 1) {
+                                headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-option">${this.selectedValues.length} selecionado</span>`);
+                            } else {
+                                headerElement.innerHTML = ''
+                            }
+                        }
+                        if (!this.element.querySelector('.multi-select-header-option')) {
+                            headerElement.insertAdjacentHTML('afterbegin', `<span class="multi-select-header-placeholder">${this.placeholder}</span>`);
+                        } else if (this.element.querySelector('.multi-select-header-placeholder')) {
+                            this.element.querySelector('.multi-select-header-placeholder').remove();
+                        }
+                        if (this.options.search === true || this.options.search === 'true') {
+                            this.element.querySelector('.multi-select-search').value = '';
+                        }
+                        this.element.querySelectorAll('.multi-select-option').forEach(option => option.style.display = 'flex');
+                        headerElement.classList.remove('multi-select-header-active');
+                    }
+                )
+            })
+        };
+
+        // Trata clicks nas opções singulares
         this.element.querySelectorAll('.multi-select-option').forEach(option => {
             option.onclick = () => {
                 let selected = true;
@@ -126,14 +193,13 @@ class MultiSelect {
                 } else if (this.element.querySelector('.multi-select-header-placeholder')) {
                     this.element.querySelector('.multi-select-header-placeholder').remove();
                 }
-                // if (this.options.max) {
-                //     this.element.querySelector('.multi-select-header-max').innerHTML = this.selectedValues.length + '/' + this.options.max;
-                // }
+
                 if (this.options.search === true || this.options.search === 'true') {
                     this.element.querySelector('.multi-select-search').value = '';
                 }
                 this.element.querySelectorAll('.multi-select-option').forEach(option => option.style.display = 'flex');
                 headerElement.classList.remove('multi-select-header-active');
+
                 this.options.onChange(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
                 if (selected) {
                     this.options.onSelect(option.dataset.value, option.querySelector('.multi-select-option-text').innerHTML, option);
@@ -154,13 +220,7 @@ class MultiSelect {
         if (this.options.selectAll === true || this.options.selectAll === 'true') {
             let selectAllButton = this.element.querySelector('.multi-select-all');
             selectAllButton.onclick = () => {
-                let allSelected = selectAllButton.classList.contains('multi-select-selected');
-                this.element.querySelectorAll('.multi-select-option').forEach(option => {
-                    let dataItem = this.data.find(data => data.value == option.dataset.value);
-                    if (dataItem && ((allSelected && dataItem.selected) || (!allSelected && !dataItem.selected))) {
-                        option.click();
-                    }
-                });
+                this.options.onSelect()
                 selectAllButton.classList.toggle('multi-select-selected');
             };
         }

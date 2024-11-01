@@ -61,7 +61,6 @@ var infoVolumeRow = document.getElementById('info-volume-row');
 var infoDateRow = document.getElementById('info-date-row');
 var infoMinimumDischargeRow = document.getElementById('info-minimum-discharge-row');
 
-
 var navioContainer = document.getElementById('info-navio-container');
 
 var infoVesselTag = document.getElementById('info-navio-titulo');
@@ -88,36 +87,8 @@ var jaFiltradoParalisacao = [];
 var listaGraficos = []
 
 var count = 0;
-var clicked = false;
 
 const dataField = document.getElementById('data');
-
-botaoHamburger.addEventListener('click', function() {
-    const descarregadoDia = document.getElementById('graficoDescarregadoDia');
-    const descarregadoDiaSideBar = document.getElementById('graficoDescarregadoDiaSideBar');
-
-    if (clicked) {
-        descarregadoDiaSideBar.style.visibility = 'hidden !important'
-        descarregadoDiaSideBar.style.display = 'none !important'
-        descarregadoDiaSideBar.style.maxHeight = '0 !important'
-
-        descarregadoDia.style.visibility = 'visible !important'
-        descarregadoDia.style.display = 'block !important'
-        descarregadoDia.style.maxHeight = '100% !important'
-
-        clicked = false;
-    } else {
-        descarregadoDia.style.visibility = 'hidden !important'
-        descarregadoDia.style.display = 'none !important'
-        descarregadoDia.style.maxHeight = '0 !important'
-
-        descarregadoDiaSideBar.style.visibility = 'visible !important'
-        descarregadoDiaSideBar.style.display = 'block !important'
-        descarregadoDiaSideBar.style.maxHeight = '100% !important'
-
-        clicked = true;
-    }
-})
 
 // Step 1: Define a function to determine the color based on the date
 const shuffledColors = pbiThemeColors.sort(() => 0.5 - Math.random()); // Shuffle the colors array
@@ -138,7 +109,6 @@ let filtrosParalisacao = {
     'outros': 'Outros'
 };
 
-
 document.getElementById('descarregado-dia-periodo-container').addEventListener('scroll', async function() {
     let posicaoAtualDiaPeriodo = graficoDescarregadoDiaPeriodoScroll.width + 301 - document.getElementById('graficoDescarregadoDiaPeriodoScroll').getBoundingClientRect().right
 
@@ -149,8 +119,6 @@ document.getElementById('descarregado-dia-periodo-container').addEventListener('
     const proporcaoDiaPeriodo = larguraTotalDiaPeriodo / larguraDiaPeriodo;
     const posicaoAtualTotalDiaPeriodo = posicaoAtualDiaPeriodo * proporcaoDiaPeriodo
     
-    console.log(larguraTotalDiaPeriodo)
-    console.log('posicaoAtualTotalDiaPeriodo', Math.abs(posicaoAtualTotalDiaPeriodo), 'larguraColunaTotalDiaPeriodo', larguraColunaTotalDiaPeriodo)
     secaoPrintDiaPeriodo = Math.floor(Math.abs(posicaoAtualTotalDiaPeriodo) / larguraColunaTotalDiaPeriodo)
 })
 
@@ -168,8 +136,6 @@ window.addEventListener('beforeprint', async function() {
     const graficoPrintAtual = document.getElementById('descarregado-dia-periodo-grafico');
     graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
 
-    console.log('secaoPrintDiaPeriodo', secaoPrintDiaPeriodo ?? 0)
-    console.log('colunasPorImpressaoDiaPeriodo', colunasPorImpressaoDiaPeriodo)
     const slicedDataOne = filteredDataDischarged.slice(secaoPrintDiaPeriodo ?? 0, (secaoPrintDiaPeriodo ?? 0) + colunasPorImpressaoDiaPeriodo);
 
     graficoDescarregadoDiaPeriodoPrint = await gerarGraficoDescarregadoDiaPeriodo(slicedDataOne, 'graficoDescarregadoDiaPeriodoPrint')
@@ -194,6 +160,7 @@ dataField.addEventListener('change', async function() {
 });
 
 async function generateCharts() {
+
     larguraScrollDiaPeriodo = document.getElementById('descarregado-dia-periodo-container').scrollWidth
 
     const listaNavio = await getUniqueVessels();
@@ -310,7 +277,6 @@ async function generateCharts() {
     if (graficoDescarregadoDiaPeriodo) graficoDescarregadoDiaPeriodo.destroy();
     if (graficoDescarregadoDiaPeriodoScroll) graficoDescarregadoDiaPeriodoScroll.destroy();
 
-
     if(listaGraficos){
         for (let i = 0; i < listaGraficos.length; i++) {
             const grafico = listaGraficos[i];
@@ -398,7 +364,6 @@ async function generateCharts() {
             } else {
                 graficoPrintAtual = document.getElementById('graficoDescarregadoDiaPeriodoPrint' + (i - 1));
             } 
-            
             
             graficoPrintAtual.insertAdjacentElement('afterend', canvasElement);
             const slicedData = filteredDataDischarged.filter(d => loop.includes(d.data));
